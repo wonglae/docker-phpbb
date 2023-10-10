@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html dir="{S_CONTENT_DIRECTION}" lang="{S_USER_LANG}">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="robots" content="noindex" />
+{META}
+<title>{SITENAME} &bull; {PAGE_TITLE} &bull; {L_PRINT_TOPIC}</title>
+
+<link href="{T_THEME_PATH}/print.css" rel="stylesheet">
+<link href="{T_THEME_PATH}/bidi.css" rel="stylesheet">
+<!-- EVENT viewtopic_print_head_append -->
+</head>
+
+<body id="phpbb" class="{S_CONTENT_DIRECTION}">
+	<a id="top" name="top" class="top-anchor" accesskey="t"></a>
+	<table class="center" width="85%" cellspacing="3" cellpadding="0" border="0">
+		<tr>
+			<td colspan="2" align="center"><span class="forum">{SITENAME}</span><br />
+				<span class="gensmall"><a href="{U_FORUM}">{U_FORUM}</a></span><br />
+				<strong>{L_PRINT_TOPIC}</strong>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"><br /></td>
+		</tr>
+		<tr>
+			<td><span class="topic">{TOPIC_TITLE}</span><br /><span class="gensmall"><a href="{U_TOPIC}">{U_TOPIC}</a></span></td>
+			<td align="{S_CONTENT_FLOW_END}" valign="bottom">
+				<!-- IF PAGINATION -->
+					<strong>
+						<!-- IF PREVIOUS_PAGE --><a href="{PREVIOUS_PAGE}&amp;view=print" >&#171; {L_PREVIOUS}</a>&nbsp;<!-- ENDIF -->
+						<span class="gensmall">{PAGE_NUMBER}</span>
+						<!-- IF NEXT_PAGE --> &nbsp;<a href="{NEXT_PAGE}&amp;view=print">{L_NEXT} &#187;</a><!-- ENDIF -->
+					</strong>
+				<!-- ELSE -->
+					<span class="gensmall">{PAGE_NUMBER}</span>
+				<!-- ENDIF -->
+			</td>
+		</tr>
+	</table>
+
+	<!-- BEGIN postrow -->
+		<table class="center box" width="85%" cellspacing="3" cellpadding="0" border="0">
+			<tr>
+				<td class="nowrap" style="width:10%">{L_AUTHOR}:&nbsp;</td>
+				<td><strong>{postrow.POST_AUTHOR}</strong> [ {postrow.POST_DATE} ]</td>
+			</tr>
+			<tr>
+				<td class="nowrap" style="width:10%">{L_POST_SUBJECT}:&nbsp;</td>
+				<td><strong>{postrow.POST_SUBJECT}</strong></td>
+			</tr>
+			<tr>
+				<td class="content" colspan="2"><hr class="sep" />{postrow.MESSAGE}</td>
+			</tr>
+		</table>
+	<!-- END postrow -->
+
+	<table class="center" width="85%" cellspacing="3" cellpadding="0" border="0">
+		<tr>
+			<td><span class="gensmall">{S_TIMEZONE}</span></td>
+			<td style="text-align:{S_CONTENT_FLOW_END}"><span class="gensmall">{PAGE_NUMBER}</span></td>
+		</tr>
+		<tr>
+			<td colspan="2" align="center">
+				<div class="copyright">
+					<p>{{ CREDIT_LINE }}</p>
+					{% if TRANSLATION_INFO %}
+						<p>{{ TRANSLATION_INFO }}</p>
+					{% endif %}
+				</div>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>

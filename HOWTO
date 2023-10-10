@@ -1,0 +1,6 @@
+docker build -t wonglae/phpbb:latest .
+docker run -p 8000:80 --name phpbb-install -e PHPBB_INSTALL=true -d wonglae/phpbb:latest
+docker run --name phpbb -p 8000:8080 -e PHPBB_DB_DRIVER=mysqli -e PHPBB_DB_HOST=towang-mysql.mysql.database.azure.com -e PHPBB_DB_PORT=3306 -e PHPBB_DB_NAME=phpbb_sandbox -e PHPBB_DB_USER=towang -e PHPBB_DB_PASSWD= -d wonglae/phpbb:latest
+docker push wonglae/phpbb:latest
+
+az container create --resource-group towang-forum --file /usr/csuser/clouddrive/phpbb-env-ssl.yaml

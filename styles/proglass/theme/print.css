@@ -1,0 +1,102 @@
+/* Print Style Sheet
+---------------------------------------- */
+/* General markup styles */
+body {font-family:Verdana,serif;font-size:10pt}
+img, .noprint, .box1, .divider, .signature {display:none}
+.content img {display: inline}
+.copyright {font-size: 75%}
+.page-number {float:right; width: auto; text-align: right; font-size: 75%}
+td {font-family:Verdana,serif;font-size:10pt;line-height:150%}
+.code,.quote,{font-size:smaller;border:black solid 1px}
+.forum {font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:18pt}
+.topic {font-family:Arial,Helvetica,sans-serif;font-weight:bold;font-size:14pt}
+.gensmall {font-size:8pt}
+.nowrap {white-space:nowrap}
+.clear {clear:both}
+.center {margin:0 auto 0 auto}
+.box {border:1px #000 solid}
+.quotetitle,.codetitle,.quotecontent,.codecontent { 			 
+	margin-left:.75em;margin-right:5px;
+	padding-left:5px;border:1px 0 0 1px;
+	border-color:#000;border-style:solid
+}
+.quotetitle,.codetitle {font-weight:bold;border-bottom:none}
+.quotecontent .quotetitle {margin-top:5px}
+.quotecontent .quotetitle,.quotecontent .quotecontent {margin-left:.75em;margin-right:5px}
+
+.content {overflow: hidden}
+/* CSS2 Print tip from: http://www.alistapart.com/articles/goingtoprint/ */
+.postbody a:link, .postbody a:visited, .postbody a:hover, .postbody a:active {
+	text-decoration: underline;
+	padding: 0.1em 0.2em;
+	margin: -0.1em -0.2em;
+	color: #666;
+	background: none;
+	font-size: 100%;
+}
+
+html>body .postbody a:link:after, html>body .postbody a:visited:after {
+	content: " (" attr(href) ") ";
+	font-size: 90%;
+	text-decoration: none;
+}
+
+hr {color:#888;height:3px;border-style:solid}
+hr.sep {color:#aaa;height:1px;border-style:dashed}
+
+/* Dont want to print url for names or titles in content area */
+.postbody .author a:link, .postbody .author a:visited, 
+html>body .postbody .author a:link:after, 
+html>body .postbody .author a:visited:after,
+.postquote .quote-by a:link, .postquote .quote-by a:visited, 
+html>body .postquote .quote-by a:link:after, 
+html>body .postquote .quote-by a:visited:after,
+html>body .postbody h1 a:link:after, html>body .postbody h2 a:link:after {
+	text-decoration: none;
+	content: "";
+}
+
+/* Poster profile */
+.postprofile {display: none}
+.grip-show {display: none}
+
+/* Quote */
+.postquote, blockquote {
+	font-size: 85%;
+	margin: 1em 18% 1em 4%;
+	padding: 0.5em;
+	position: relative;
+	line-height: 1.5em;
+	border: 1px #888 solid;
+}
+
+.postquote img {display: none}
+.postquote span {display: block}
+.postquote span .postquote {font-size: 100%}
+.quote-by, blockquote cite {
+	color: black;
+	display : block;
+	font-weight: bold;
+}
+
+/* List */
+ol, ul {margin-left: 15pt}
+
+/* Misc page elements */
+div.spacer {clear: both}
+
+code {display: block}
+
+/* Accessibility tweaks: Mozilla.org */
+.skip_link {display: none}
+
+.codebox p {display: none}
+
+/* stylelint-disable declaration-property-unit-whitelist */
+.emoji {
+	min-height: 18px;
+	min-width: 18px;
+	height: 1em;
+	width: 1em;
+}
+/* stylelint-enable declaration-property-unit-whitelist */

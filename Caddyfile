@@ -1,0 +1,7 @@
+www.wowang.net {
+    reverse_proxy http://localhost:8080
+}
+
+wowang.net {
+    reverse_proxy http://localhost:8080
+}

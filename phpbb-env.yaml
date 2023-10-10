@@ -1,0 +1,52 @@
+apiVersion: 2019-12-01
+location: westus
+name: phpbb_container
+properties:
+  containers:
+  - name: phpbb
+    properties:
+      environmentVariables:
+        - name: 'PHPBB_DB_DRIVER'
+          value: 'mysqli'
+        - name: 'PHPBB_DB_HOST'
+          value: 'towang-mysql.mysql.database.azure.com'
+        - name: 'PHPBB_DB_PORT'
+          value: '3306'
+        - name: 'PHPBB_DB_NAME'
+          value: 'phpbb'
+        - name: 'PHPBB_DB_USER'
+          value: 'towang'
+        - name: 'PHPBB_DB_PASSWD'
+          secureValue: '...'
+      image: wonglae/phpbb:latest
+      ports:
+        - port: 80
+      resources:
+        requests:
+          cpu: 1.0
+          memoryInGB: 2
+      volumeMounts:
+        - mountPath: /phpbb/www/aci/phpbb-upload/
+          name: fileuploadvolume
+        - mountPath: /phpbb/www/aci/phpbb-storage/
+          name: filesharevolume
+  ipAddress:
+    type: Public
+    ports:
+      - port: 80
+    dnsNameLabel: towang-forum
+  volumes:
+    - name: fileuploadvolume
+      azureFile:
+        sharename: phpbb-upload
+        storageAccountName: towangdatawestus
+        storageAccountKey: ...
+    - name: filesharevolume
+      azureFile:
+        sharename: phpbb-storage
+        storageAccountName: towangdatawestus
+        storageAccountKey: ...
+  osType: Linux
+  restartPolicy: OnFailure
+tags: null
+type: Microsoft.ContainerInstance/containerGroups

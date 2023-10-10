@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html dir="{S_CONTENT_DIRECTION}" lang="{S_USER_LANG}">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="robots" content="noindex" />
+{META}
+<title>{SITENAME} &bull; {PAGE_TITLE} &bull; {L_PRINT_PM}</title>
+
+<link href="{T_THEME_PATH}/print.css" rel="stylesheet">
+<link href="{T_THEME_PATH}/bidi.css" rel="stylesheet">
+<!-- EVENT ucp_pm_viewmessage_print_head_append -->
+</head>
+
+<body id="phpbb">
+	<a id="top" name="top" class="top-anchor" accesskey="t"></a>
+	<table class="center" width="85%" cellspacing="3" cellpadding="0" border="0">
+		<tr>
+			<td colspan="2" align="center"><span class="forum">{SITENAME}</span><br />
+				<span>{SITE_DESCRIPTION}</span><br />
+				<strong class="gensmall">{L_PRIVATE_MESSAGING} &bull; {L_PRINT_PM}</strong>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2"><br /></td>
+		</tr>
+		<tr>
+			<td><span class="topic">{SUBJECT}</span><br /></td>
+			<td align="{S_CONTENT_FLOW_END}" valign="bottom">
+				<!-- IF PAGINATION -->
+					<strong>
+					<!-- IF PREVIOUS_PAGE --><a href="{PREVIOUS_PAGE}&amp;view=print" >&#171; {L_PREVIOUS}</a>&nbsp;<!-- ENDIF -->
+					<span class="gensmall">{PAGE_NUMBER}</span>
+					<!-- IF NEXT_PAGE --> &nbsp;<a href="{NEXT_PAGE}&amp;view=print">{L_NEXT} &#187;</a><!-- ENDIF -->
+					</strong>
+				<!-- ELSE -->
+					<span class="gensmall">{PAGE_NUMBER}</span>
+				<!-- ENDIF -->
+			</td>
+		</tr>
+	</table>
+
+	<table class="center box" width="85%" cellspacing="3" cellpadding="0" border="0">
+		<tr>
+			<td class="nowrap" style="width:10%">{L_PM_FROM}:&nbsp;</td>
+			<td><strong>{MESSAGE_AUTHOR}</strong> [ {SENT_DATE} ]</td>
+		</tr>
+
+	<!-- IF S_TO_RECIPIENT -->
+		<tr>
+				<td class="nowrap" style="width:10%">{L_TO}:</td>
+			<td>
+				<!-- BEGIN to_recipient -->
+					<span<!-- IF to_recipient.IS_GROUP --> class="sep"<!-- ENDIF -->>{to_recipient.NAME}</span>&nbsp;
+				<!-- END to_recipient -->
+			</td>
+		</tr>
+	<!-- ENDIF -->
+
+	<!-- IF S_BCC_RECIPIENT -->
+		<tr>
+				<td class="nowrap" style="width:10%">{L_BCC}:</td>
+			<td>
+				<!-- BEGIN bcc_recipient -->
+						<!-- IF bcc_recipient.COLOUR --><span style="color:{bcc_recipient.COLOUR}">
+						<!-- ELSE --><span<!-- IF bcc_recipient.IS_GROUP --> class="sep"<!-- ENDIF -->><!-- ENDIF -->
+							{bcc_recipient.NAME}
+						</span>&nbsp;
+				<!-- END bcc_recipient -->
+			</td>
+		</tr>
+	<!-- ENDIF -->
+		<tr>
+			<td colspan="2"><hr class="sep" />{MESSAGE}
+				<!-- IF S_HAS_ATTACHMENTS -->
+					<br class="clear" /><br />
+	
+					<table class="tablebg" cellspacing="1" style="border: 1px #A9B8C2 dashed; text-align:left">
+						<tr>
+							<td><strong class="genmed">{L_ATTACHMENTS}: </strong></td>
+						</tr>
+						<!-- BEGIN attachment -->
+							<tr>
+								<td>{attachment.DISPLAY_ATTACHMENT}</td>
+							</tr>
+						<!-- END attachment -->
+					</table>
+				<!-- ENDIF -->
+			</td>
+		</tr>
+	</table>
+
+	<table class="center" width="85%" cellspacing="3" cellpadding="0" border="0">
+		<tr>
+			<td><span class="gensmall">{S_TIMEZONE}</span></td>
+			<td style="text-align:{S_CONTENT_FLOW_END}"><span class="gensmall">{PAGE_NUMBER}</span></td>
+		</tr>
+		<tr>
+			<td colspan="2" align="center">
+				<div class="copyright">
+					<span>Powered by <a href="https://www.phpbb.com/">phpBB</a>&reg; Forum Software &copy; phpBB Group</span>
+					<p>{{ CREDIT_LINE }}</p>
+					{% if TRANSLATION_INFO %}
+						<p>{{ TRANSLATION_INFO }}</p>
+					{% endif %}
+				</div>
+			</td>
+		</tr>
+	</table>
+</body>
+</html>
