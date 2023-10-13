@@ -1,0 +1,26 @@
+{
+   "name": "towang/advancedbbcode",
+   "type": "phpbb-extension",
+   "description": "With the advanced bbcode, you can write advanced bbcode e.g. [replied].",
+   "homepage": "https://github.com/towang/phpbb_advanced_bbcode",
+   "version": "1.0.0",
+   "license": "GPL-2.0",
+   "authors": [
+      {
+         "name": "Tony Wang",
+         "email": "tony.w@outlook.com",
+         "homepage": "https://github.com/towang",
+         "role": "Developer"
+      }
+   ],
+   "require": {
+		"php": ">=5.4",
+      "composer/installers": "~1.0.0"
+   },
+   "extra": {
+      "display-name": "Advanced BBcode",
+      "soft-require": {
+         "phpbb/phpbb": ">=3.3.9"
+      }
+   }
+}

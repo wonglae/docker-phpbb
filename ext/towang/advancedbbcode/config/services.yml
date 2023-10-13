@@ -1,0 +1,11 @@
+services:
+    towang.advancedbbcode.listener:
+        class: towang\advancedbbcode\event\listener
+        arguments:
+            - '@dbal.conn'
+            - '@user'
+            - '@template'
+            - '@config'
+            - '@controller.helper'
+        tags:
+            - { name: event.listener }
