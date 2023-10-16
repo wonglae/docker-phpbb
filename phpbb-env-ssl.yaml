@@ -24,7 +24,7 @@ properties:
           - name: proxy-data
             mountPath: /data
           - name: proxy-config
-            mountPath: /config  
+            mountPath: /config
     - name: phpbb
       properties:
         environmentVariables:

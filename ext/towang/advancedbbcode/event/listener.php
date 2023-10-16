@@ -76,7 +76,9 @@ class listener implements EventSubscriberInterface
         // Don't allow quote if S_TOPIC_REPLIED used in BBcode
         if ($post_mode == 'quote')
         {
-            if (strpos($post_text, '[reply]') && strpos($post_text, '[/reply]'))
+            if ((strpos($post_text, '[reply]') && strpos($post_text, '[/reply]')) ||
+                (strpos($post_text, '[member]') && strpos($post_text, '[/member]')) ||
+                (strpos($post_text, '[rank') && strpos($post_text, '[/rank')))
             {
                 $event['is_authed'] = false;
                 $event['error'] = array('POSTING_QUOTE_HIDDEN_CONTENT_NOT_ALLOW');
@@ -91,6 +93,18 @@ class listener implements EventSubscriberInterface
      */
     public function text_formatter_inject_render_params($event)
     {
+        global $ranks;
+
+        if (empty($ranks))
+        {
+            global $cache;
+            $ranks = $cache->obtain_ranks();
+        }
+
+        $user_posts = $this->user->data['user_posts'];
+        $user_rank = $this->user->data['user_rank'];
+        $special_rank = !empty($ranks['special'][$user_rank]) ? true : false;
+        
         $topic_replied = $this->template->retrieve_var('S_TOPIC_REPLIED');
         $forum_id = $this->template->retrieve_var('S_FORUM_ID');
         $topic_id = $this->template->retrieve_var('S_TOPIC_ID');
@@ -105,6 +119,8 @@ class listener implements EventSubscriberInterface
 
         $renderer = $event['renderer']->get_renderer();
         $renderer->setParameters(array(
+            'S_USER_POSTS'          => $user_posts,
+            'S_SPECIAL_RANK'        => $special_rank,
             'S_TOPIC_REPLIED'       => $topic_replied,
             'S_FORUM_ID'            => $forum_id,
             'S_TOPIC_ID'            => $topic_id,
@@ -138,7 +154,6 @@ class listener implements EventSubscriberInterface
             
             if ($user_id == $topic_data['topic_poster'])
             {
-                error_log("viewtopic current user", 0);
                 $this->b_forceUnhide = true;
             }
 
@@ -170,8 +185,6 @@ class listener implements EventSubscriberInterface
 
         if ($auth->acl_get('m_', $forum_id))
         {
-            error_log("viewtopic admin", 0);
-
             // If moderator or admin, skip reply check, auto unhide
             $this->b_forceUnhide = true;
         }
