@@ -242,7 +242,7 @@ $lang = array_merge($lang, array(
 	'EXTENSION_DOES_NOT_EXIST'			=> '扩展 <strong>%s</strong> 不存在。',
 
 	'FACEBOOK'				=> 'Facebook',
-	'FAQ'					=> 'FAQ',
+	'FAQ'					=> '常见问题',
 	'FAQ_EXPLAIN'			=> '常见问题',
 	'FEATURE_NOT_AVAILABLE' => '本论坛不支持这个特性。',	
 	'FILENAME'				=> '文件名',
@@ -417,7 +417,7 @@ $lang = array_merge($lang, array(
 	'MB'					=> 'MB',
 	'MIB'					=> 'MiB',
 	'MCP'					=> '版主控制面板',
-	'MCP_SHORT'				=> 'MCP',
+	'MCP_SHORT'				=> '版主面板',
 	'MEMBERLIST'			=> '用户列表',
 	'MEMBERLIST_EXPLAIN'	=> '查看本站用户的完整列表',
 	'MERGE'					=> '合并',
