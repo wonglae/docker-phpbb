@@ -1,0 +1,98 @@
+parameters:
+    stevotvr.groupsub.currencies:
+        AUD:
+            symbol: '$'
+            subunit_to_unit: 100
+            symbol_first: true
+        BRL:
+            symbol: 'R$'
+            subunit_to_unit: 100
+            symbol_first: true
+        CAD:
+            symbol: '$'
+            subunit_to_unit: 100
+            symbol_first: true
+        CHF:
+            symbol: 'CHF'
+            subunit_to_unit: 100
+            symbol_first: true
+        CZK:
+            symbol: 'Kč'
+            subunit_to_unit: 100
+            symbol_first: false
+        DKK:
+            symbol: 'kr.'
+            subunit_to_unit: 100
+            symbol_first: false
+        EUR:
+            symbol: '€'
+            subunit_to_unit: 100
+            symbol_first: true
+        GBP:
+            symbol: '£'
+            subunit_to_unit: 100
+            symbol_first: true
+        HKD:
+            symbol: '$'
+            subunit_to_unit: 100
+            symbol_first: true
+        HUF:
+            symbol: 'Ft'
+            subunit_to_unit: 1
+            symbol_first: false
+        ILS:
+            symbol: '₪'
+            subunit_to_unit: 100
+            symbol_first: true
+        JPY:
+            symbol: '¥'
+            subunit_to_unit: 1
+            symbol_first: true
+        MXN:
+            symbol: '$'
+            subunit_to_unit: 100
+            symbol_first: true
+        MYR:
+            symbol: 'RM'
+            subunit_to_unit: 100
+            symbol_first: true
+        NOK:
+            symbol: 'kr'
+            subunit_to_unit: 100
+            symbol_first: false
+        NZD:
+            symbol: '$'
+            subunit_to_unit: 100
+            symbol_first: true
+        PHP:
+            symbol: '₱'
+            subunit_to_unit: 100
+            symbol_first: true
+        PLN:
+            symbol: 'zł'
+            subunit_to_unit: 100
+            symbol_first: false
+        RUB:
+            symbol: '₽'
+            subunit_to_unit: 100
+            symbol_first: false
+        SEK:
+            symbol: 'kr'
+            subunit_to_unit: 100
+            symbol_first: false
+        SGD:
+            symbol: '$'
+            subunit_to_unit: 100
+            symbol_first: true
+        THB:
+            symbol: '฿'
+            subunit_to_unit: 100
+            symbol_first: true
+        TWD:
+            symbol: '$'
+            subunit_to_unit: 100
+            symbol_first: true
+        USD:
+            symbol: '$'
+            subunit_to_unit: 100
+            symbol_first: true

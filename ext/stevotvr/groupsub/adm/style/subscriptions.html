@@ -1,0 +1,38 @@
+{% include 'overall_header.html' %}
+
+<a id="maincontent"></a>
+
+{% if S_ADD_SUB or S_EDIT_SUB %}
+
+<a href="{{ U_BACK }}" style="float: {{ S_CONTENT_FLOW_END }};">&laquo; {{ lang('BACK') }}</a>
+
+	{% if ERROR_MESSAGE %}
+<div class="errorbox">
+	<h3>{{ lang('WARNING') }}</h3>
+	<p>{{ ERROR_MESSAGE }}</p>
+</div>
+	{% endif %}
+
+	{% if S_ADD_SUB %}
+<h1>{{ lang('ACP_GROUPSUB_SUB_ADD') }}</h1>
+	{% else %}
+<h1>{{ lang('ACP_GROUPSUB_SUB_EDIT') }}</h1>
+	{% endif %}
+
+{% include '@stevotvr_groupsub/subscription_form.html' %}
+
+{% else %}
+
+<h1>{{ lang('ACP_GROUPSUB_MANAGE_SUBS') }}{% if PKG_NAME %} :: {{ PKG_NAME }}{% endif %}</h1>
+
+	{% if S_READ_ONLY %}
+<p>{{ lang('ACP_GROUPSUB_MANAGE_SUBS_EXPLAIN_READONLY') }}</p>
+	{% else %}
+<p>{{ lang('ACP_GROUPSUB_MANAGE_SUBS_EXPLAIN') }}</p>
+	{% endif %}
+
+{% include '@stevotvr_groupsub/subscription_list.html' %}
+
+{% endif %}
+
+{% include 'overall_footer.html' %}

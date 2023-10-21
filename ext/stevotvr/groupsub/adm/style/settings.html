@@ -1,0 +1,85 @@
+{% include 'overall_header.html' %}
+
+<h1>{{ lang('SETTINGS') }}</h1>
+
+{% if ERROR_MESSAGE %}
+<div class="errorbox">
+	<h3>{{ lang('WARNING') }}</h3>
+	<p>{{ ERROR_MESSAGE }}</p>
+</div>
+{% endif %}
+
+<form id="settings" method="post" action="{{ U_ACTION }}">
+	<fieldset>
+		<legend>{{ lang('ACP_GROUPSUB_SETTINGS_PAYPAL') }}</legend>
+		<dl>
+			<dt><label for="pp_sandbox">{{ lang('ACP_GROUPSUB_PP_SANDBOX') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_GROUPSUB_PP_SANDBOX_EXPLAIN') }}</span></dt>
+			<dd><label><input type="radio" id="pp_sandbox" name="pp_sandbox" value="1"{% if PP_SANDBOX %} checked{% endif %}> {{ lang('YES') }}</label><label><input type="radio" name="pp_sandbox" value="0"{% if not PP_SANDBOX %} checked{% endif %}> {{ lang('NO') }}</label></dd>
+		</dl>
+		<dl>
+			<dt><label for="pp_sb_business">{{ lang('ACP_GROUPSUB_PP_SB_BUSINESS') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_GROUPSUB_PP_SB_BUSINESS_EXPLAIN') }}</span></dt>
+			<dd><input class="text medium" type="text" id="pp_sb_business" name="pp_sb_business" value="{{ PP_SB_BUSINESS }}"></dd>
+		</dl>
+		<dl>
+			<dt><label for="pp_business">{{ lang('ACP_GROUPSUB_PP_BUSINESS') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_GROUPSUB_PP_BUSINESS_EXPLAIN') }}</span></dt>
+			<dd><input class="text medium" type="text" id="pp_business" name="pp_business" value="{{ PP_BUSINESS }}"></dd>
+		</dl>
+	</fieldset>
+	<fieldset>
+		<legend>{{ lang('ACP_GROUPSUB_SETTINGS_GENERAL') }}</legend>
+		<dl>
+			<dt><label for="notify_admins">{{ lang('ACP_GROUPSUB_NOTIFY_ADMINS') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_GROUPSUB_NOTIFY_ADMINS_EXPLAIN') }}</span></dt>
+			<dd><label><input type="radio" id="notify_admins" name="notify_admins" value="1"{% if NOTIFY_ADMINS %} checked{% endif %}> {{ lang('YES') }}</label><label><input type="radio" name="notify_admins" value="0"{% if not NOTIFY_ADMINS %} checked{% endif %}> {{ lang('NO') }}</label></dd>
+		</dl>
+		<dl>
+			<dt><label for="header">{{ lang('ACP_GROUPSUB_HEADER') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_GROUPSUB_HEADER_EXPLAIN') }}</span></dt>
+			<dd><textarea id="header" name="header" rows="5" cols="45" data-bbcode="true">{{ HEADER }}</textarea></dd>
+			<dd>
+				<label><input type="checkbox" class="radio" name="header_bbcode"{% if S_HEADER_BBCODE_CHECKED %} checked{% endif %}> {{ lang('PARSE_BBCODE') }}</label>
+				<label><input type="checkbox" class="radio" name="header_smilies"{% if S_HEADER_SMILIES_CHECKED %} checked{% endif %}> {{ lang('PARSE_SMILIES') }}</label>
+				<label><input type="checkbox" class="radio" name="header_magic_url"{% if S_HEADER_MAGIC_URL_CHECKED %} checked{% endif %}> {{ lang('PARSE_URLS') }}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="footer">{{ lang('ACP_GROUPSUB_FOOTER') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_GROUPSUB_FOOTER_EXPLAIN') }}</span></dt>
+			<dd><textarea id="footer" name="footer" rows="5" cols="45" data-bbcode="true">{{ FOOTER }}</textarea></dd>
+			<dd>
+				<label><input type="checkbox" class="radio" name="footer_bbcode"{% if S_FOOTER_BBCODE_CHECKED %} checked{% endif %}> {{ lang('PARSE_BBCODE') }}</label>
+				<label><input type="checkbox" class="radio" name="footer_smilies"{% if S_FOOTER_SMILIES_CHECKED %} checked{% endif %}> {{ lang('PARSE_SMILIES') }}</label>
+				<label><input type="checkbox" class="radio" name="footer_magic_url"{% if S_FOOTER_MAGIC_URL_CHECKED %} checked{% endif %}> {{ lang('PARSE_URLS') }}</label>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="collapse_terms">{{ lang('ACP_GROUPSUB_COLLAPSE_TERMS') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_GROUPSUB_COLLAPSE_TERMS_EXPLAIN') }}</span></dt>
+			<dd><input class="text" type="number" id="collapse_terms" name="collapse_terms" size="4" min="2" value="{{ COLLAPSE_TERMS }}"></dd>
+		</dl>
+	</fieldset>
+	<fieldset>
+		<legend>{{ lang('ACP_GROUPSUB_SETTINGS_DEFAULTS') }}</legend>
+		<dl>
+			<dt><label for="currency">{{ lang('ACP_GROUPSUB_DEFAULT_CURRENCY') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_GROUPSUB_DEFAULT_CURRENCY_EXPLAIN') }}</span></dt>
+			<dd>
+				<select name="currency" id="currency">
+					{% for c in currency %}
+						<option value="{{ c.CURRENCY }}"{% if c.CURRENCY == CURRENCY %} selected{% endif %}>{{ c.CURRENCY }} ({{ c.SYMBOL }})</option>
+					{% endfor %}
+				</select>
+			</dd>
+		</dl>
+		<dl>
+			<dt><label for="warn_time">{{ lang('ACP_GROUPSUB_WARN_TIME') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_GROUPSUB_WARN_TIME_EXPLAIN') }}</span></dt>
+			<dd><input class="text" type="number" id="warn_time" name="warn_time" size="4" min="0" value="{{ WARN_TIME }}">&nbsp;{{ lang('GROUPSUB_DAYS') }}</dd>
+		</dl>
+		<dl>
+			<dt><label for="grace">{{ lang('ACP_GROUPSUB_GRACE') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_GROUPSUB_GRACE_EXPLAIN') }}</span></dt>
+			<dd><input class="text" type="number" id="grace" name="grace" size="4" min="0" value="{{ GRACE }}">&nbsp;{{ lang('GROUPSUB_DAYS') }}</dd>
+		</dl>
+	</fieldset>
+	<fieldset class="submit-buttons">
+		<input class="button1" type="submit" id="submit" name="submit" value="{{ lang('SUBMIT') }}">&nbsp;
+		<input class="button2" type="reset" id="reset" name="reset" value="{{ lang('RESET') }}">
+		{{ S_FORM_TOKEN }}
+	</fieldset>
+</form>
+
+{% include 'overall_footer.html' %}
