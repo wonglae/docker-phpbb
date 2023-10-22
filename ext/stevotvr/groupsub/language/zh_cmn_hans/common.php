@@ -38,7 +38,7 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-	'GROUPSUB_PACKAGE_LIST'					=> '订阅',
+	'GROUPSUB_PACKAGE_LIST'					=> '捐赠',
 	'GROUPSUB_NO_PACKAGES'					=> '没有可用的订阅。',
 	'GROUPSUB_NO_DESC'							=> '没有可用的描述。',
 	'GROUPSUB_SUBSCRIPTION'					=> '订阅',

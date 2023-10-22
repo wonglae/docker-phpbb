@@ -184,11 +184,11 @@ class main_controller
 			'FOOTER'	=> $footer,
 		));
 
-		$term_id = $this->request->variable('term_id', 0);
-		if ($term_id)
-		{
-			return $this->select_term($term_id);
-		}
+		// $term_id = $this->request->variable('term_id', 0);
+		// if ($term_id)
+		// {
+		// 	return $this->select_term($term_id);
+		// }
 
 		return $this->list_packages($name);
 	}

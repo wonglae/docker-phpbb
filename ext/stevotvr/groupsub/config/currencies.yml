@@ -96,3 +96,7 @@ parameters:
             symbol: '$'
             subunit_to_unit: 100
             symbol_first: true
+        CNY:
+            symbol: '¥'
+            subunit_to_unit: 100
+            symbol_first: true
