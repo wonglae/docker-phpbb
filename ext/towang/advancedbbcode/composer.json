@@ -17,6 +17,9 @@
 		"php": ">=5.4",
       "composer/installers": "~1.0.0"
    },
+   "require-dev": {
+      "phing/phing": "2.4.*"
+   },
    "extra": {
       "display-name": "Advanced BBcode",
       "soft-require": {

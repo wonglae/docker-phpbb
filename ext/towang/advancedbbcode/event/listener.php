@@ -54,7 +54,28 @@ class listener implements EventSubscriberInterface
             'core.viewtopic_assign_template_vars_before'    => 'check_user_posted_viewtopic',
             'core.text_formatter_s9e_render_before'         => 'text_formatter_inject_render_params',
             'core.modify_posting_auth'                      => 'verify_allow_user_posting',
+            'core.twig_environment_render_template_after'   => 'inject_bbcode_css',
         );
+    }
+
+    public function inject_bbcode_css($event)
+    {
+        global $phpbb_root_path, $phpbb_filesystem;
+        
+        $output = $event['output'];
+        $context = $event['context'];
+        $styleSheetsPlaceholder = $context['definition']->__call('STYLESHEETS', null);
+        $bbcodeCSS = $phpbb_root_path . 'aci/phpbb-storage/bbcode.css';
+
+        if ($phpbb_filesystem->exists($bbcodeCSS))
+        {
+            $output = str_replace(
+                $styleSheetsPlaceholder,
+                "<link href=\"{$bbcodeCSS}?assets_version={$this->config['assets_version']}\" rel=\"stylesheet\" media=\"screen\">\n{$styleSheetsPlaceholder}",
+                $output
+            );
+            $event['output'] = $output;
+        }
     }
 
     public function load_language_on_setup($event)
