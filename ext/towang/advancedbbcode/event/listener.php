@@ -71,7 +71,7 @@ class listener implements EventSubscriberInterface
     {
         $post_mode = $event['mode'];
         $post_data = $event['post_data'];
-        $post_text = $post_data['post_text'];
+        $post_text = array_key_exists('post_text',$post_data) ? $post_data['post_text'] : '';
 
         // Don't allow quote if S_TOPIC_REPLIED used in BBcode
         if ($post_mode == 'quote')
