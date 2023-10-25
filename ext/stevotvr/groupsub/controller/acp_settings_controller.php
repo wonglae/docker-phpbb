@@ -71,7 +71,7 @@ class acp_settings_controller extends acp_base_controller implements acp_setting
 				'grace'				=> max(0, $this->request->variable('grace', 0)),
 			);
 
-			$header = $this->request->variable('header', '');
+			$header = $this->request->variable('header', '', true);
 			$header_bbcode = $this->request->variable('header_bbcode', false);
 			$header_smilies = $this->request->variable('header_smilies', false);
 			$header_magic_url = $this->request->variable('header_magic_url', false);
@@ -84,7 +84,7 @@ class acp_settings_controller extends acp_base_controller implements acp_setting
 			));
 			$this->config_text->set('stevotvr_groupsub_header', $header);
 
-			$footer = $this->request->variable('footer', '');
+			$footer = $this->request->variable('footer', '', true);
 			$footer_bbcode = $this->request->variable('footer_bbcode', false);
 			$footer_smilies = $this->request->variable('footer_smilies', false);
 			$footer_magic_url = $this->request->variable('footer_magic_url', false);
