@@ -120,10 +120,10 @@ class main_listener implements EventSubscriberInterface
 		foreach ($this->get_siteIds() as $siteId)
 		{
 			// skip media sites that already exist as a BBCode
-			if (isset($event['configurator']->BBCodes[$siteId]))
-			{
-				continue;
-			}
+			// if (isset($event['configurator']->BBCodes[$siteId]))
+			// {
+			// 	continue;
+			// }
 
 			try
 			{

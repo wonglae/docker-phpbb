@@ -208,7 +208,7 @@ class acp_controller implements acp_controller_interface
 		$configurator = $this->textformatter->get_configurator();
 		foreach ($configurator->MediaEmbed->defaultSites as $siteId => $siteConfig)
 		{
-			$disabled = isset($configurator->BBCodes[$siteId]);
+			$disabled = false; // isset($configurator->BBCodes[$siteId]);
 			$sites[$siteId] = [
 				'id'       => $siteId,
 				'name'     => $siteConfig['name'],
