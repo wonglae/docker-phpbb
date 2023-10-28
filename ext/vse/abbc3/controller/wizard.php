@@ -106,7 +106,8 @@ class wizard
 		foreach ($configurator->MediaEmbed->defaultSites as $siteId => $siteConfig)
 		{
 			// check that siteID is not already a custom bbcode and that it exists in MediaEmbed
-			if (!isset($configurator->BBCodes[$siteId]) && $configurator->tags->exists($siteId))
+			// if (!isset($configurator->BBCodes[$siteId]) && $configurator->tags->exists($siteId))
+			if ($configurator->tags->exists($siteId))
 			{
 				$bbvideo_sites[$siteId] = [
 					'name'    => $siteConfig['name'],
