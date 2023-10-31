@@ -11,6 +11,9 @@ COPY styles/ /phpbb/www/styles/
 ### Extensions
 COPY ext/ /phpbb/www/ext/
 
+### adsense
+COPY ads.txt /phpbb/www/
+
 # WORKDIR /tmp
 
 ### CHN language pack
