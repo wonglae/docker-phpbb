@@ -24,6 +24,8 @@ COPY mandarin_chinese_simplified_script_23_2_0/ /phpbb/www/
 #     && cp -r mandarin_chinese_simplified_script_22_12_0/* /phpbb/www \
 #     && rm -fR mandarin_chinese_simplified_script_22_12_0
 
+CMD curl -f https://towang-functions.azurewebsites.net/api/update-forum & start.sh
+
 WORKDIR /phpbb/www
 
 EXPOSE 8080
