@@ -167,9 +167,6 @@ class listener implements EventSubscriberInterface
     $watch_topic = $this->template->retrieve_var('U_WATCH_TOPIC');
     $view_topic = $this->template->retrieve_var('U_VIEW_TOPIC');
 
-    error_log("S_DISPLAY_PREVIEW", 0);
-    error_log($in_posting, 0);
-
     $renderer = $event['renderer']->get_renderer();
     $renderer->setParameters(array(
       'S_IN_POSTING'          => $in_posting,
