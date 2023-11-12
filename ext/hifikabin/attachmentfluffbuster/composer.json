@@ -1,0 +1,28 @@
+{
+	"name": "hifikabin/attachmentfluffbuster",
+	"type": "phpbb-extension",
+	"description": "Removes the information shown below attachments",
+	"homepage": "https://phpbb.hifikabin.me.uk",
+	"version": "3.2.0",
+	"license": "GPL-2.0-only",
+	"authors": [{
+		"name": "James Newcombe",
+		"email": "webmaster@hifikabin.me.uk",
+		"homepage": "http://phpbb.hifikabin.me.uk",
+		"role": "Developer"
+	}],
+	"require": {
+		"php": ">=5.4"
+	},
+	"extra": {
+		"display-name": "Attachment Fluff Buster",
+		"soft-require": {
+		"phpbb/phpbb": ">=3.2.0@dev"
+	},
+	"version-check": {
+		"host": "versioncheck.hifikabin.me.uk",
+		"directory": "/320",
+		"filename": "/attachmentfluffbuster__versions.json"
+		}
+	}
+}

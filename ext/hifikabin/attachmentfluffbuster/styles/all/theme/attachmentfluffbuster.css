@@ -1,0 +1,9 @@
+.file dd {
+	display: none !important;
+}
+
+/* Remove Conflict With dmzx/filedownload */
+
+dl.files dd {
+	display: none !important;
+}

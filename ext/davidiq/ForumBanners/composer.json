@@ -1,0 +1,43 @@
+{
+    "name": "davidiq/ForumBanners",
+    "type": "phpbb-extension",
+    "description": "Add a banner on a per-forum basis.",
+    "homepage": "https://www.phpbb.com/customise/db/extension/ForumBanners/",
+    "version": "1.1.0",
+    "keywords": [
+        "phpbb",
+        "extension",
+        "images",
+        "banner",
+        "forum banner"
+    ],
+    "license": "GPL-2.0-only",
+    "authors": [
+        {
+            "name": "David Colón",
+            "email": "phpbb@davidiq.com",
+            "homepage": "https://www.davidiq.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0",
+        "composer/installers": "~1.0.0",
+        "phpbb/phpbb": ">=3.2.0,<4.0.0@dev"
+    },
+    "require-dev": {
+        "phpbb/epv": "master"
+    },
+    "extra": {
+        "display-name": "Forum Banners",
+        "soft-require": {
+            "phpbb/phpbb": ">=3.2.0,<4.0.0@dev"
+        },
+        "version-check": {
+            "host": "www.phpbb.com",
+            "directory": "/customise/db/extension/forumbanners",
+            "filename": "version_check",
+            "ssl": true
+        }
+    }
+}

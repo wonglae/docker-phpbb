@@ -1,0 +1,12 @@
+.forumbanner {
+	margin: 0 auto;
+	padding-top: 10px;
+	width: 100%;
+	text-align: center;
+}
+
+.forumbanner img {
+    max-width: 100%;
+    height: auto;
+    width: auto\9; /* ie8 */
+}
