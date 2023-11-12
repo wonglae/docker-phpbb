@@ -1,0 +1,15 @@
+{% INCLUDECSS '@cabot_firstletteravatar/firstletteravatar.css' %}
+<script>
+if ($(".no-avatar").length) {
+	$(".no-avatar").each(function() {
+		var link = $(this).children("[class*='username']").clone().addClass("avatar avatar-letter");
+		var color = $(this).children("[class*='username']").css("color");
+		var classname = link.attr("class").replace("-coloured", "");
+		var letter = link.html().slice(0,1);
+		link.html(letter).attr("class", classname).css("color", color);
+		$(this).toggleClass("no-avatar has-avatar")
+			.find(".avatar-container")
+			.append(link);
+	});
+}
+</script>
