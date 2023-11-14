@@ -100,6 +100,10 @@ class listener implements EventSubscriberInterface
 	 */
 	public function submit_post_check($event)
 	{
+		if (!array_key_exists('poster_id', $event['data']))
+		{
+			return;
+		}
 		$this->manager->check_condition('phpbb.autogroups.type.posts', array(
 			'users'		=> $event['data']['poster_id'],
 		));

@@ -774,8 +774,8 @@ class driver
         * @var  string  $html_string input string
         * @since 1.0.12
         */
-        $vars = array('item', 'append');
-        extract($this->phpbb_dispatcher->trigger_event('ger.feedpostbot.html2bbcode_convert', compact($vars)));   
+        // $vars = array('item', 'append');
+        // extract($this->phpbb_dispatcher->trigger_event('ger.feedpostbot.html2bbcode_convert', compact($vars)));   
         
 		// Replace main stuff and strip anything else
 		return strip_tags(preg_replace(array_keys($convert), array_values($convert), $html_string));
