@@ -7,7 +7,7 @@
 */
 
 #vertical-ticker{
-	height:20px;
+	height:100px;
 	overflow:hidden;
     position:relative;
 }
