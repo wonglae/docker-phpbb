@@ -92,17 +92,20 @@ class listener implements EventSubscriberInterface
     
     $output = $event['output'];
     $context = $event['context'];
-    $styleSheetsPlaceholder = $context['definition']->__call('STYLESHEETS', null);
-    $bbcodeCSS = $phpbb_root_path . 'aci/phpbb-storage/bbcode.css';
-
-    if ($phpbb_filesystem->exists($bbcodeCSS))
+    if (array_key_exists('definition', $context))
     {
-      $output = str_replace(
-        $styleSheetsPlaceholder,
-        "<link href=\"{$bbcodeCSS}?assets_version={$this->config['assets_version']}\" rel=\"stylesheet\" media=\"screen\">\n{$styleSheetsPlaceholder}",
-        $output
-      );
-      $event['output'] = $output;
+      $styleSheetsPlaceholder = $context['definition']->__call('STYLESHEETS', null);
+      $bbcodeCSS = $phpbb_root_path . 'aci/phpbb-storage/bbcode.css';
+
+      if ($phpbb_filesystem->exists($bbcodeCSS))
+      {
+        $output = str_replace(
+          $styleSheetsPlaceholder,
+          "<link href=\"{$bbcodeCSS}?assets_version={$this->config['assets_version']}\" rel=\"stylesheet\" media=\"screen\">\n{$styleSheetsPlaceholder}",
+          $output
+        );
+        $event['output'] = $output;
+      }
     }
   }
 
