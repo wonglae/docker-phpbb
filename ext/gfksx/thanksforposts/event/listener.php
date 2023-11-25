@@ -137,7 +137,8 @@ class listener implements EventSubscriberInterface
 		{
 			$user_id = $user_data['user_id'];
 			$received_thanks_count = $this->helper->get_received_thanks_count($user_id);
-			$event['user_posts'] = $user_posts + $received_thanks_count;
+			// The value is evaluated with rank's min value
+			$event['user_posts'] = $user_posts + $received_thanks_count * 2;
 		}
 	}
 

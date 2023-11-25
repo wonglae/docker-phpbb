@@ -192,7 +192,8 @@ class listener implements EventSubscriberInterface
       'U_VIEW_TOPIC'          => html_entity_decode($view_topic),
     ));
 
-    if ($user_thanks)
+    error_log('text_formatter_inject_render_params' . $user_posts . '-' . $user_thanks, 0);
+    if (isset($user_thanks))
     {
       $renderer->setParameters(array(
         'S_USER_RANK_VALUE'   => $user_posts + $user_thanks * 2,
