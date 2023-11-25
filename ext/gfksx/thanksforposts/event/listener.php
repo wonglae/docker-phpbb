@@ -125,7 +125,20 @@ class listener implements EventSubscriberInterface
 			'paybas.recenttopics.modify_tpl_ary'		=> 'recenttopics_output_topics_reput',
 			'paybas.recenttopics.modify_topics_list'	=> 'recenttopics_get_topics_reput',
 			'core.permissions'							=> 'add_permission',
+			'core.modify_user_rank'					=> 'apply_rank_thanks_count',
 		);
+	}
+
+	public function apply_rank_thanks_count($event)
+	{
+		$user_data = $event['user_data'];
+		$user_posts = $event['user_posts'];
+		if (empty($user_data['user_rank']))
+		{
+			$user_id = $user_data['user_id'];
+			$received_thanks_count = $this->helper->get_received_thanks_count($user_id);
+			$event['user_posts'] = $user_posts + $received_thanks_count;
+		}
 	}
 
 	public function get_thanks_list($event)
@@ -210,6 +223,17 @@ class listener implements EventSubscriberInterface
 		if ($this->request->is_set('list_thanks'))
 		{
 			$this->helper->clear_list_thanks($this->request->variable('p', 0), $this->request->variable('list_thanks', ''));
+		}
+
+		$user_rank = $this->user->data['user_rank'];
+		$user_id = $this->user->data['user_id'];
+		
+		if (empty($user_rank))
+		{
+			$user_thanks = $this->helper->get_received_thanks_count($user_id);
+			$this->template->assign_vars(array(
+				'S_USER_THANKS' => $user_thanks,
+			));
 		}
 	}
 

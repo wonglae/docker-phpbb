@@ -155,8 +155,9 @@ class listener implements EventSubscriberInterface
 
     $user_posts = $this->user->data['user_posts'];
     $user_rank = $this->user->data['user_rank'];
-    $special_rank = !empty($ranks['special'][$user_rank]) ? true : false;
+    $special_rank = !empty($ranks['special'][$user_rank]) ? $user_rank : -1;
     
+    $user_thanks = $this->template->retrieve_var('S_USER_THANKS');
     $in_posting = $this->template->retrieve_var('S_IN_POSTING') ? true : false;
     $topic_replied = $this->template->retrieve_var('S_TOPIC_REPLIED') ? true : false;
     $forum_id = $this->template->retrieve_var('S_FORUM_ID');
@@ -170,11 +171,14 @@ class listener implements EventSubscriberInterface
     $watch_topic = $this->template->retrieve_var('U_WATCH_TOPIC');
     $view_topic = $this->template->retrieve_var('U_VIEW_TOPIC');
 
+    $search_results = $this->template->retrieve_block_vars('searchresults', array());
+    
     $renderer = $event['renderer']->get_renderer();
     $renderer->setParameters(array(
       'S_IN_POSTING'          => $in_posting,
+      'S_IN_SEARCHING'        => empty($search_results) ? false: true,
       'S_USER_POSTS'          => $user_posts,
-      'S_SPECIAL_RANK'        => $special_rank,
+      'S_USER_RANK_SPECIAL'   => $special_rank, // -1 means no special rank
       'S_TOPIC_REPLIED'       => $topic_replied,
       'S_FORUM_ID'            => $forum_id,
       'S_TOPIC_ID'            => $topic_id,
@@ -187,6 +191,13 @@ class listener implements EventSubscriberInterface
       'U_WATCH_TOPIC'         => html_entity_decode($watch_topic),
       'U_VIEW_TOPIC'          => html_entity_decode($view_topic),
     ));
+
+    if ($user_thanks)
+    {
+      $renderer->setParameters(array(
+        'S_USER_RANK_VALUE'   => $user_posts + $user_thanks * 2,
+      ));
+    }
   }
 
   /**

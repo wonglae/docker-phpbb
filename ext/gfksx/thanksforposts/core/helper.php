@@ -899,4 +899,22 @@ class helper
 
 		return ($row) ?: [];
 	}
+
+	public function get_received_thanks_count($user_id)
+	{
+		if (isset($this->poster_list_count[$user_id]['R']))
+		{
+			return $this->poster_list_count[$user_id]['R'] ?? 0;
+		}
+		else
+		{
+			$poster_count = 0;
+			$sql = 'SELECT COUNT(poster_id) AS poster_count FROM ' . $this->thanks_table . '
+				WHERE poster_id =' . (int)$user_id;
+			$result = $this->db->sql_query($sql);
+			$poster_count = (int) $this->db->sql_fetchfield('poster_count');
+			$this->db->sql_freeresult($result);
+			return $poster_count;
+		}
+	}
 }
