@@ -1,10 +1,9 @@
 Subject: {THANKS_SUBG} — "{POST_SUBJECT}"
 
-Hello {POSTER_NAME},
+你好，{POSTER_NAME}，
 
-You are receiving this notification because {USERNAME} {POST_THANKS} "{POST_SUBJECT}" at "{SITENAME}".
+您收到此通知是因为{USERNAME}在“{SITENAME}”上{POST_THANKS}“{POST_SUBJECT}”。
 
-If you want to view the post, click the following link:
-{U_POST_THANKS}
+如果您想查看帖子，请单击以下链接： {U_POST_THANKS}
 
 {EMAIL_SIG}
