@@ -63,11 +63,11 @@ class main_module
 
 	protected function get_custom_css()
 	{
-		return file_get_contents($this->custom_css_file);
+		return htmlspecialchars(file_get_contents($this->custom_css_file), ENT_COMPAT);
 	}
 
 	protected function put_custom_css($content)
 	{
-		file_put_contents($this->custom_css_file, $content);
+		file_put_contents($this->custom_css_file, htmlspecialchars_decode($content));
 	}
 }
