@@ -42,7 +42,7 @@ if (empty($lang) || !is_array($lang))
 $lang = array_merge($lang, [
 	'DISABLE_REMOVE_THANKS'						=> '管理员已禁用删除感谢。',
 
-	'GIVEN'														=> '已感谢',
+	'GIVEN'														=> '已发感谢',
 	'GLOBAL_INCORRECT_THANKS'					=> '您不能为没有特定论坛参考的全局公告表示感谢。',
 	'GRATITUDES'											=> '感谢列表',
 
@@ -70,7 +70,7 @@ $lang = array_merge($lang, [
 	'NOTIFICATION_TYPE_THANKS_GIVE'		=> '有人感谢您的帖子',
 	'NOTIFICATION_TYPE_THANKS_REMOVE'	=> '有人取消了对您帖子的感谢',
 
-	'RECEIVED'												=> '已感谢',
+	'RECEIVED'												=> '已收感谢',
 	'REMOVE_THANKS'										=> '删除您的感谢：',
 	'REMOVE_THANKS_CONFIRM'						=> '您确定要删除您的感谢吗？',
 	'REMOVE_THANKS_SHORT'							=> '删除感谢',
