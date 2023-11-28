@@ -40,7 +40,14 @@ function updateEnd() {
 	var start = $('#sub_start').val().split('-');
 
 	var date = new Date(start[0], start[1] - 1, start[2]);
-	date.setDate(date.getDate() + terms[package_id][term_id].DAYS);
+	// date.setDate(date.getDate() + terms[package_id][term_id].DAYS);
+	var offsetDays = terms[package_id][term_id].DAYS;
+	if (offsetDays % 30) {
+		date.setDate(date.getDate() + offsetDays);
+	} else {
+		var offsetMonths = offsetDays / 30;
+		date.setMonth(date.getMonth() + offsetMonths);
+	}
 
 	var y = date.getFullYear();
 	var m = pad(date.getMonth() + 1);

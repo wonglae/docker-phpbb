@@ -147,7 +147,7 @@ class version_0_1_0 extends migration
 			array('config.add', array('stevotvr_groupsub_pp_business', '')),
 			array('config.add', array('stevotvr_groupsub_currency', 'USD')),
 			array('config.add', array('stevotvr_groupsub_warn_time', 5)),
-			array('config.add', array('stevotvr_groupsub_grace', 5)),
+			array('config.add', array('stevotvr_groupsub_grace', 1)),
 			array('config.add', array('stevotvr_groupsub_cron_last_run', 0)),
 
 			array('module.add', array(
