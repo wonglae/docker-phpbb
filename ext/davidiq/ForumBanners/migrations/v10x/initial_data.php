@@ -22,7 +22,7 @@ class initial_data extends \phpbb\db\migration\migration
 	public function update_data()
 	{
 		return [
-			['config.add', ['forum_banners_path', 'images/forums']],
+			['config.add', ['forum_banners_path', 'aci/phpbb-storage/images/forums']],
 		];
 	}
 }
