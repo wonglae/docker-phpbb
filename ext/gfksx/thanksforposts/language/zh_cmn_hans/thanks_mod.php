@@ -40,6 +40,12 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, [
+	'CLEAR_LIST_THANKS'								=> '清除感谢列表',
+	'CLEAR_LIST_THANKS_CONFIRM'				=> '清除用户的感谢列表吗？',
+	'CLEAR_LIST_THANKS_GIVE'					=> '用户发出的感谢清单已被清除。',
+	'CLEAR_LIST_THANKS_POST'					=> '消息中的感谢清单已被清除。',
+	'CLEAR_LIST_THANKS_RECEIVE'				=> '用户获得的感谢清单已被清除。',
+
 	'DISABLE_REMOVE_THANKS'						=> '管理员已禁用删除感谢。',
 
 	'GIVEN'														=> '已发感谢',
