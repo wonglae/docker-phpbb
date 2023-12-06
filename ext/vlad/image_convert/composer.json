@@ -1,0 +1,28 @@
+{
+    "name": "vlad/image_convert",
+    "type": "phpbb-extension",
+    "description": "Auto convert PNG image on upload",
+    "homepage": "http://www.phpbbguru.net",
+    "version": "1.0.0",
+    "time": "2017-09-09",
+    "license": "GPL-2.0",
+    "authors": [
+        {
+            "name": "Vlad",
+            "homepage": "http://www.phpbbguru.net",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.3"
+    },
+    "require-dev": {
+      "phpbb/epv": "dev-master"
+    },
+    "extra": {
+        "display-name": "Attached PNG Image Convert",
+        "soft-require": {
+            "phpbb/phpbb": "3.1.*@dev"
+        }
+    }
+}

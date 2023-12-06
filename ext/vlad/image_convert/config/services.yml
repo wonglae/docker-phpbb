@@ -1,0 +1,8 @@
+services:
+    vlad.image_convert.listener:
+        class: vlad\image_convert\event\listener
+        arguments:
+            - '%core.root_path%'
+            - '@config'
+        tags:
+            - { name: event.listener }

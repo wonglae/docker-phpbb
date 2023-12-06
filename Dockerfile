@@ -2,7 +2,7 @@ FROM selim13/phpbb:3.3.9
 
 LABEL maintainer="tony.w@outlook.com"
 
-RUN apk add php81-simplexml
+RUN apk add php81-simplexml php81-exif
 
 ### Apache overrides
 COPY apache2/httpd.conf /etc/apache2/
