@@ -60,4 +60,5 @@ $lang = array_merge($lang, array(
 	'FPB_TYPE_RSS'											=> 'RSS',
 	'FPB_USER_ID'												=> '源用户ID',
 	'FPB_USER_ID_EXPLAIN'								=> '将用于发布新项目的用户的ID。',
+	'FPB_NO_TITLE'											=> '无题',
 ));

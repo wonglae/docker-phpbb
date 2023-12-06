@@ -60,4 +60,5 @@ $lang = array_merge($lang, array(
 	'FPB_TYPE_RSS'						=> 'RSS',
     'FPB_USER_ID'						=> 'Feed user id',
 	'FPB_USER_ID_EXPLAIN'				=> 'The id of the user that will be used to post new items.',
+	'FPB_NO_TITLE'							=> 'No title',
 ));

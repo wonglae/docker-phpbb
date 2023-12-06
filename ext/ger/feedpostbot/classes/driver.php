@@ -24,6 +24,8 @@ class driver
 	protected $php_ext;
 	protected $phpbb_dispatcher;
 	public $current_state;
+	protected $helper;
+	protected $phpbb_extension_manager;
 
 	/**
 	 * Constructor
@@ -39,7 +41,7 @@ class driver
 	 * @param string									$php_ext
 	 * @param \phpbb\event\dispatcher					$phpbb_dispatcher
 	 */
-	public function __construct(\phpbb\config\config $config,  \phpbb\config\db_text $config_text, \phpbb\user $user, \phpbb\language\language $language, \phpbb\auth\auth $auth, \phpbb\db\driver\driver_interface $db, \phpbb\log\log $log, $phpbb_root_path, $php_ext, \phpbb\event\dispatcher $phpbb_dispatcher)
+	public function __construct(\phpbb\config\config $config,  \phpbb\config\db_text $config_text, \phpbb\user $user, \phpbb\language\language $language, \phpbb\auth\auth $auth, \phpbb\db\driver\driver_interface $db, \phpbb\log\log $log, $phpbb_root_path, $php_ext, \phpbb\event\dispatcher $phpbb_dispatcher, $helper, \phpbb\extension\manager $phpbb_extension_manager)
 	{
 		$this->config = $config;
 		$this->config_text = $config_text;
@@ -51,6 +53,8 @@ class driver
 		$this->phpbb_root_path = $phpbb_root_path;
 		$this->php_ext = $php_ext;
 		$this->phpbb_dispatcher = $phpbb_dispatcher;
+		$this->helper = $helper;
+		$this->phpbb_extension_manager = $phpbb_extension_manager;
 	}
 
 	/**
@@ -507,6 +511,11 @@ class driver
 		// Make sure we have UTF-8 and handle HTML
 		$description = $rss_item['description'];
 		$title = $this->clean_title($rss_item['title']);
+		if (empty($title) || ctype_space($title) || $title == 'No title')
+		{
+			$title = $this->user->lang('FPB_NO_TITLE');
+		}
+
 		if (!empty($source['prefix']))
 		{
 			$title = trim($source['prefix']) . ' ' . $title;
@@ -530,8 +539,18 @@ class driver
             }
 		}
 
+        $attachments = false;
         if (is_numeric($source['forum_id']))
         {
+            $post_data = array(
+                'poster_id' => $this->user->data['user_id'],
+                'message'   => $post_text,
+                'attachment_data' => $attachments,
+            );
+            $post_data = $this->modify_message($post_data);
+            $post_text = $post_data['message'];
+            $attachments = $post_data['attachment_data'];
+
             // Prep posting
             $poll = $uid = $bitfield = $options = '';
             $allow_bbcode = $allow_urls = $allow_smilies = true;
@@ -561,6 +580,7 @@ class driver
                 'post_time'			 => empty($source['curdate']) ? strtotime($rss_item['pubDate']) : 0, // Set a specific time, use 0 to let submit_post() take care of getting the proper time (int)
                 'forum_name'		 => $this->get_forum_name($source['forum_id']), // For identifying the name of the forum in a notification email. (string)    // Indexing
                 'enable_indexing'	 => true, // Allow indexing the post? (bool)    // 3.0.6
+                'attachment_data'    => $attachments
             );
         }
         // Maybe an extension handles the content other than by posting
@@ -581,8 +601,21 @@ class driver
         extract($this->phpbb_dispatcher->trigger_event('ger.feedpostbot.submit_post_before', compact($vars)));
         if ($do_post)
         {
-            return submit_post('post', $title, $this->user->data['username'], POST_NORMAL, $poll, $data);
+            $url = submit_post('post', $title, $this->user->data['username'], POST_NORMAL, $poll, $data);
+
+            if (!empty($attachments)) {
+                foreach ($attachments as $att) {
+                    $attach_ids[] = $att['attach_id'];
+                }
+                $sql = 'UPDATE ' . ATTACHMENTS_TABLE . '
+					SET post_msg_id = ' . $data['post_id'] . ', topic_id = ' . $data['topic_id'] . ', is_orphan = 0
+					WHERE ' . $this->db->sql_in_set('attach_id', $attach_ids);
+                $this->db->sql_query($sql);
+            }
+
+            return $url;
         }
+        
         return true;
 	}
 
@@ -799,5 +832,72 @@ class driver
         // Clear libxml error buffer
         libxml_clear_errors();
         return;
+    }
+
+    private function modify_message($post_data)
+    {
+        // if ($this->auth->acl_get('u_convert_img')) {
+            $attachments = array();
+
+            $text = $post_data['message'];
+            preg_match_all('#\[img\]((.*?)|(.*?).jpg|(.*?).jpeg|(.*?).png|(.*?).gif)\[\/img\]#i', $text, $current_posted_img);
+
+            if (!empty($current_posted_img[1])) {
+                $img_number = sizeof($current_posted_img[1]);
+
+                $text = preg_replace_callback(
+                    '#\[attachment=(.*?)\]#',
+                    function ($matches) use (&$img_number) {
+                        return "[attachment=" . ($matches[1] + $img_number) . "]";
+                    },
+                    $text
+                );
+
+                foreach ($current_posted_img[1] as $posted_img) {
+                    $url = preg_replace(array('#&\#46;#', '#&\#58;#', '/\[(.*?)\]/'), array('.', ':', ''), $posted_img);
+                    $url = str_replace('https', 'http', $url);
+                    $filename = strrchr($url, "/");
+                    $filename = substr($filename, 1);
+                    $filename = strtolower(preg_replace('#[^a-zA-Z0-9_+.-]#', '', $filename));
+                    $filename_img = substr($filename, 0, -4);
+                    if ($this->helper->url_exists($url)) {
+                        $post_id = (isset($post_data['post_id'])) ? $post_data['post_id'] : 0;
+                        $topic_id = (isset($post_data['topic_id'])) ? $post_data['topic_id'] : 0;
+
+                        $attachments[] = $this->helper->create_attach($url, $filename, $post_data['poster_id'], $post_id, $topic_id);
+                    }
+                }
+
+                if (!empty($attachments)) {
+                    $text = preg_replace_callback(
+                        '#\[img\]((.*?)|(.*?).jpg|(.*?).jpeg|(.*?).png|(.*?).gif)\[\/img\]#',
+                        function ($matches) use (&$img_number) {
+                            $str = substr($matches[1], strrpos($matches[1], '/') + 1);
+                            $path_parts = pathinfo($matches[1]);
+                            $file_ext = $path_parts['extension'];
+
+                            // Extension "Attached PNG Image Convert" by vlad enabled?
+                            // https://www.phpbbguru.net/community/viewtopic.php?f=59&t=47951#p533248
+                            if ($this->phpbb_extension_manager->is_enabled('vlad/image_convert') && $file_ext === 'png') {
+                                $str = substr_replace($str, 'jpg', strrpos($str, '.') + 1);
+                            }
+                            return "[attachment=" . --$img_number . "]" . $str . "[/attachment]";
+                        },
+                        $text
+                    );
+
+                    // can't surround attachment with a link
+                    $text = preg_replace(
+                        '(\[\/attachment\](\n)*\[\/url\])',
+                        '[/attachment]',
+                        $text
+                    );
+
+                    $post_data['message'] = $text;
+                    $post_data['attachment_data'] = $attachments;
+                }
+            }
+        // }
+        return $post_data;
     }
 }

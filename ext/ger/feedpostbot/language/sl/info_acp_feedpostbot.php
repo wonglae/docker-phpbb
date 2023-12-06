@@ -60,4 +60,5 @@ $lang = array_merge($lang, array(
 	'FPB_TYPE_RSS'						=> 'RSS',
     'FPB_USER_ID'						=> 'ID uporabnika vira',
 	'FPB_USER_ID_EXPLAIN'				=> 'ID uporabnika, ki bo uporabljen za objavo novih elementov.',
+	'FPB_NO_TITLE'							=> 'No title',
 ));

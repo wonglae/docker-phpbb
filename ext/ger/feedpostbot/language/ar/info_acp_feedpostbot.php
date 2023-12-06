@@ -62,4 +62,5 @@ $lang = array_merge($lang, array(
 	'FPB_TYPE_RSS'						=> 'RSS',
     'FPB_USER_ID'						=> 'رقم العضو',
 	'FPB_USER_ID_EXPLAIN'				=> 'رقم العضو الذي سيتم نشر عناصر التغذية بإسمه.',
+	'FPB_NO_TITLE'							=> 'No title',
 ));

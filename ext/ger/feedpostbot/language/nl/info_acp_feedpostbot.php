@@ -61,4 +61,5 @@ $lang = array_merge($lang, array(
 	'FPB_TYPE_RSS'						=> 'RSS',
 	'FPB_USER_ID'						=> 'Feed gebruiker id',
 	'FPB_USER_ID_EXPLAIN'				=> 'De id van de gebruiker op wiens naam de nieuwe berichten geplaatst worden.',
+	'FPB_NO_TITLE'							=> 'No title',
 ));

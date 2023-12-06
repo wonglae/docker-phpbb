@@ -12,7 +12,18 @@ services:
             - '%core.root_path%'
             - '%core.php_ext%'
             - '@dispatcher'
-    
+            - '@ger.feedpostbot.classes.helper'
+            - '@ext.manager'
+
+    ger.feedpostbot.classes.helper:
+        class: ger\feedpostbot\classes\helper
+        arguments:
+            - '@config'
+            - '@dbal.conn'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+            - '@ext.manager'
+
     ger.feedpostbot.cron.task.feedpostbot_cron:
         class: ger\feedpostbot\cron\task\feedpostbot_cron
         arguments:
