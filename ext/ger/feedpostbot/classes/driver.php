@@ -416,24 +416,29 @@ class driver
 			return $posted;
 		}
 
-		$new_latest = array(
-			'link' => $this->prop_to_string($items[0]['link']),
-			'pubDate' => $this->prop_to_string($items[0]['pubDate']),
-			'guid' => empty($items[0]['guid']) ? '' : $items[0]['guid'],
-		);
+		// $new_latest = array(
+		// 	'link' => $this->prop_to_string($items[0]['link']),
+		// 	'pubDate' => $this->prop_to_string($items[0]['pubDate']),
+		// 	'guid' => empty($items[0]['guid']) ? '' : $items[0]['guid'],
+		// );
+		$new_latest = $this->current_state[$source_id]['latest'];
 
-        $to_post = array();
+		$to_post = array();
 		foreach($items as $item)
 		{
 			if ($this->is_handled($item, $this->current_state[$source_id]['latest']))
 			{
 				// We've had this one and all below
-				$this->current_state[$source_id]['latest'] = $new_latest;
-				break;
+				// $this->current_state[$source_id]['latest'] = $new_latest;
+				continue;
 			}
 			else
 			{
 				$to_post[] = $item;
+				if (!empty($item['pubDate']) && (strtotime($item['pubDate']) >= strtotime($new_latest['pubDate']))) 
+				{
+					$new_latest = $item;
+				}
 			}
 		}
 		if (!empty($to_post))

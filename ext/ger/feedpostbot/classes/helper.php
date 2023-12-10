@@ -63,7 +63,7 @@ class helper
 		$physical_filename = $poster_id . '_' . md5($file.$filetime);
 		$attach_file = $this->phpbb_root_path . $this->config['upload_path'] . '/' . $physical_filename;
 
-		if (copy($file, $attach_file))
+		if (file_put_contents($attach_file, file_get_contents($file)))
 		{
 			$thumb = 0;
 
@@ -149,6 +149,8 @@ class helper
 			);
 			return $attachment_data;
 		}
+		
+		return false;
 	}
 
 	public function url_exists($url)
