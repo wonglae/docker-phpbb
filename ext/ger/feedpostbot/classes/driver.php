@@ -434,10 +434,13 @@ class driver
 			}
 			else
 			{
-				$to_post[] = $item;
-				if (!empty($item['pubDate']) && (strtotime($item['pubDate']) >= strtotime($new_latest['pubDate']))) 
+				if (!empty($item['pubDate']) && (strtotime($item['pubDate']) >= strtotime('-2 days')))
 				{
-					$new_latest = $item;
+					$to_post[] = $item;
+					if (strtotime($item['pubDate']) >= strtotime($new_latest['pubDate']))
+					{
+						$new_latest = $item;
+					}
 				}
 			}
 		}
@@ -870,13 +873,19 @@ class driver
                         $topic_id = (isset($post_data['topic_id'])) ? $post_data['topic_id'] : 0;
 
                         $attachments[] = $this->helper->create_attach($url, $filename, $post_data['poster_id'], $post_id, $topic_id);
+                    } else {
+                        $attachments[] = false;
                     }
                 }
 
                 if (!empty($attachments)) {
                     $text = preg_replace_callback(
                         '#\[img\]((.*?)|(.*?).jpg|(.*?).jpeg|(.*?).png|(.*?).gif)\[\/img\]#',
-                        function ($matches) use (&$img_number) {
+                        function ($matches) use (&$img_number, &$attachments) {
+                            if ($attachments[$img_number - 1] === false) {
+                                return $matches[1];
+                            }
+
                             $str = substr($matches[1], strrpos($matches[1], '/') + 1);
                             $path_parts = pathinfo($matches[1]);
                             $file_ext = $path_parts['extension'];
@@ -899,7 +908,9 @@ class driver
                     );
 
                     $post_data['message'] = $text;
-                    $post_data['attachment_data'] = $attachments;
+                    $post_data['attachment_data'] = array_filter($attachments, function ($attachment) {
+                        return $attachment !== false;
+                    });
                 }
             }
         // }

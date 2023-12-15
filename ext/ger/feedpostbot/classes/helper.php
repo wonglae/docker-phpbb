@@ -45,7 +45,7 @@ class helper
 	{
 		$size = @getimagesize($file);
 		$filedata = array();
-		if (!count($size) || !isset($size[0]) || !isset($size[1]))
+		if ($size === false || !count($size) || !isset($size[0]) || !isset($size[1]))
 		{
 			return false;
 		}
@@ -149,7 +149,7 @@ class helper
 			);
 			return $attachment_data;
 		}
-		
+
 		return false;
 	}
 
@@ -158,7 +158,7 @@ class helper
 		$handle = @fopen($url, 'r');
 		if ($handle === false)
 		{
-			@fclose($handle);
+			// @fclose($handle);
 			return false;
 		}
 		else
