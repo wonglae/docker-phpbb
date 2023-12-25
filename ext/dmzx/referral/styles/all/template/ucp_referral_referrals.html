@@ -1,0 +1,18 @@
+{% INCLUDE 'ucp_header.html' %}
+
+<h2>{{ lang('UCP_REFERRALS') }}</h2>
+
+<div class="panel">
+	<div class="inner">
+		<h3>{{ lang('YOUR_REFERRALS') }}</h3>
+		<p>
+		{% for referrals in loops.referrals %}
+		{{ referrals.REFERRAL_USERNAME }}{% if not referrals.S_LAST_ROW %},{% endif %}
+		{% else %}
+		{{ lang('NO_REFERRALS') }}
+		{% endfor %}
+		</p>
+	</div>
+</div>
+
+{% INCLUDE 'ucp_footer.html' %}

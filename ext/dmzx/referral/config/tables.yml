@@ -1,0 +1,3 @@
+parameters:
+    dmzx.referral.table.referral: '%core.table_prefix%referrals'
+    dmzx.referral.table.referral.contests: '%core.table_prefix%referral_contests'

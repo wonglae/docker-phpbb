@@ -1,0 +1,39 @@
+imports:
+    - { resource: tables.yml }
+services:
+    dmzx.referral.admin.controller:
+        class: dmzx\referral\controller\admin_controller
+        arguments:
+            - '@user'
+            - '@template'
+            - '@dbal.conn'
+            - '@config'
+            - '@request'
+            - '@pagination'
+            - '%core.root_path%'
+            - '%dmzx.referral.table.referral%'
+            - '%dmzx.referral.table.referral.contests%'
+    dmzx.referral.ucp.controller:
+        class: dmzx\referral\controller\ucp_controller
+        arguments:
+            - '@user'
+            - '@template'
+            - '@dbal.conn'
+            - '@request'
+            - '%core.root_path%'
+            - '%core.php_ext%'
+            - '%dmzx.referral.table.referral%'
+            - '%dmzx.referral.table.referral.contests%'
+    dmzx.referral.listener:
+        class: dmzx\referral\event\listener
+        arguments:
+            - '@user'
+            - '@template'
+            - '@dbal.conn'
+            - '@config'
+            - '@request'
+            - '%core.root_path%'
+            - '%dmzx.referral.table.referral%'
+            - '%dmzx.referral.table.referral.contests%'
+        tags:
+            - { name: event.listener }            

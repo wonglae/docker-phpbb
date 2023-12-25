@@ -1,0 +1,18 @@
+{% INCLUDE 'ucp_header.html' %}
+
+<h2>{{ lang('UCP_STATISTICS') }}</h2>
+
+<div class="panel">
+	<div class="inner">
+		<h3>{{ lang('YOUR_STATISTICS') }}</h3>
+		<dl class="details">
+			<dt><b>{{ lang('REFERRAL_LINK') }}{{ lang('COLON') }}</b></dt> <dd>{{ REFERRAL_LINK }}</dd>
+			<dt></dt>
+			<dd></dd>
+			<dt>{{ lang('MEMBERS_REFERRED') }}{{ lang('COLON') }}</dt> <dd>{{ TOTAL_REFERRALS }}</dd>
+			<dt>{{ lang('CONTESTS_WON') }}{{ lang('COLON') }}</dt> <dd>{{ CONTESTS_WON }}</dd>
+		</dl>
+	</div>
+</div>
+
+{% INCLUDE 'ucp_footer.html' %}

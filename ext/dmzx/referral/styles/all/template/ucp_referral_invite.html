@@ -1,0 +1,40 @@
+{% INCLUDE 'ucp_header.html' %}
+
+<form id="postform" method="post" action="{{ S_UCP_ACTION }}"{{ S_FORM_ENCTYPE }}>
+
+	<h2>{{ lang('UCP_INVITE') }}</h2>
+
+	<div class="panel">
+		<div class="inner">
+			{% if FORM_ERROR %}
+			<p class="error">{{ lang('FORM_ERROR') }}</p>
+			{% endif %}
+			<fieldset class="fields2">
+				<dl>
+					<dt><label for="sender_email">{{ lang('SENDER_EMAIL') }}{{ lang('COLON') }}</label></dt>
+					<dd><input type="text" name="sender_email" id="sender_email" class="inputbox" value="{{ SENDER_EMAIL }}" /></dd>
+				</dl>
+				<dl>
+					<dt><label for="recipients">{{ lang('RECIPIENTS') }}{{ lang('COLON') }}</label><br /><span>{{ lang('RECIPIENTS_EXPLAIN') }}</span></dt>
+					<dd><textarea name="recipients" id="recipients" class="inputbox" rows="5" cols="30">{{ RECIPIENTS }}</textarea></dd>
+				</dl>
+
+				<dl>
+					<dt><label for="subject">{{ lang('SUBJECT') }}{{ lang('COLON') }}</label></dt>
+					<dd><input type="text" name="subject" id="subject" class="inputbox" value="{{ SUBJECT }}" /></dd>
+				</dl>
+				<dl>
+					<dt><label for="message">{{ lang('MESSAGE') }}{{ lang('COLON') }}</label><br /><span>{{ lang('MESSAGE_EXPLAIN') }}</span></dt>
+					<dd><textarea name="message" id="message" class="inputbox" rows="7" cols="30">{{ MESSAGE }}</textarea></dd>
+				</dl>
+			</fieldset>
+			<fieldset class="submit-buttons">
+				{{ S_HIDDEN_FIELDS }}<input type="reset" value="{{ lang('RESET') }}" name="reset" class="button2" />&nbsp;
+				<input type="submit" name="submit" value="{{ lang('EMAIL') }}" class="button1" />
+				{{ S_FORM_TOKEN }}
+			</fieldset>
+		</div>
+	</div>
+</form>
+
+{% INCLUDE 'ucp_footer.html' %}

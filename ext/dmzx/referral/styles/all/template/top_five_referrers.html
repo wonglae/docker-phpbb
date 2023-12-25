@@ -1,0 +1,8 @@
+<h3>{{ lang('TOP_FIVE_REFERRERS') }}</h3>
+<p>
+{% for top_five_referrers in loops.top_five_referrers %}
+<b>{{ top_five_referrers.USERNAME }}</b> ({{ top_five_referrers.REFERRALS }}){% if not top_five_referrers.S_LAST_ROW %}, {% endif %}
+{% else %}
+{{ lang('NO_REFERRERS') }}
+{% endfor %}
+</p>

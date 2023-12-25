@@ -1,0 +1,87 @@
+{% INCLUDE 'overall_header.html' %}
+
+<a name="maincontent"></a>
+
+<h1>{{ lang('ACP_REFERRAL') }} {{ lang('ACP_REFERRERS_LIST') }}</h1>
+
+<p><img src="https://img.shields.io/badge/{{ lang('Version') }}-{{ MOD_VERSION }}-green.svg?style=plastic" /></p>
+
+{% if not VIEW_REFERRALS %}
+<form action="{{ U_ACTION }}" method="POST">
+	<fieldset class="display-options" style="float: left">
+		{{ lang('SEARCH_REFERRER') }}{{ lang('COLON') }} <input type="text" name="search_referrer" value="{{ SEARCH_INPUT }}">&nbsp;<input type="submit" class="button2" name="filter" value="Search">
+	</fieldset>
+</form>
+{% if loops.pagination|length or TOTAL_REFERRERS %}
+<div class="pagination">
+	{{ TOTAL_REFERRERS }}
+	{% if loops.pagination|length %}
+		{% INCLUDE 'pagination.html' %}
+	{% else %}
+		&bull; {{ PAGE_NUMBER }}
+	{% endif %}
+</div>
+{% endif %}
+<div><br style="clear: both;"></div>
+<fieldset class="tabulated">
+	<legend>{{ lang('ACP_REFERRERS_LIST') }}</legend>
+	<table cellspacing="1">
+		<thead>
+			<tr>
+			<th>{{ lang('USERNAME') }}</th>
+			<th>{{ lang('REFERRALS') }}</th>
+			<th>{{ lang('ACTION') }}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for referrers_list in loops.referrers_list %}
+				{% if referrers_list.S_ROW_COUNT is even %}<tr class="row1">{% else %}<tr class="row2">{% endif %}
+				<td>{{ referrers_list.USERNAME }}</td>
+				<td>{{ referrers_list.REFERRALS }}</td>
+				<td><a href="{{ referrers_list.U_VIEW_REFERRALS }}">{{ lang('VIEW_REFERRALS') }}</a></td>
+				</tr>
+			{% else %}
+				<tr class="row3">
+					<td colspan="5">{% if SEARCH_REFERRER %}{{ lang('REFERRER_NOT_FOUND') }}{% else %}{{ lang('NO_REFERRERS') }}{% endif %}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	{% else %}
+	<table cellspacing="1">
+		<thead>
+			<tr>
+				<th>{{ lang('USERNAME') }}</th>
+				<th>{{ lang('REFERRER') }}</th>
+				<th>{{ lang('REFERRED_ON') }}</th>
+				<th>{{ lang('POSTS') }}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for referrals_list in loops.referrals_list %}
+			{% if referrals_list.S_ROW_COUNT is even %}<tr class="row1">{% else %}<tr class="row2">{% endif %}
+				<td>{{ referrals_list.USERNAME }}</td>
+				<td>{{ referrals_list.REFERRER }}</td>
+				<td>{{ referrals_list.REFERRAL_SINCE }}</td>
+				<td>{{ referrals_list.REFERRAL_POSTS }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</fieldset>
+<br />
+<span><a href="{{ U_BACK }}" style="float: {{ S_CONTENT_FLOW_BEGIN }};">&laquo; {{ lang('BACK') }}</a></span>
+{% endif %}
+
+{% if loops.pagination|length or TOTAL_REFERRERS %}
+<div class="pagination">
+	{{ TOTAL_REFERRERS }}
+	{% if loops.pagination|length %}
+		{% INCLUDE 'pagination.html' %}
+	{% else %}
+		&bull; {{ PAGE_NUMBER }}
+	{% endif %}
+</div>
+{% endif %}
+
+{% INCLUDE 'overall_footer.html' %}

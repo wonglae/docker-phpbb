@@ -1,0 +1,153 @@
+{% if VIEW_REFERRALS %}{% INCLUDE 'simple_header.html' %}{% else %}{% INCLUDE 'overall_header.html' %}{% endif %}
+
+<a name="maincontent"></a>
+
+<h1>{{ lang('ACP_REFERRAL') }} {{ lang('ACP_REFERRAL_CONTESTS') }}</h1>
+
+<p><img src="https://img.shields.io/badge/{{ lang('Version') }}-{{ MOD_VERSION }}-green.svg?style=plastic" /></p>
+
+{% if S_EDIT_CONTEST %}
+<form id="acp_referral" method="post" action="{{ U_ACTION }}">
+	<fieldset>
+		<legend>{{ lang('CONTEST_ADD') }}</legend>
+		<dl>
+			<dt><label for="contest_name">{{ lang('CONTEST_NAME') }}{{ lang('COLON') }}</label></dt>
+			<dd><input id="contest_name" type="text" name="contest_name" value="{{ CONTEST_NAME }}" maxlength="255" /></dd>
+		</dl>
+		<dl>
+			<dt><label for="contest_description">{{ lang('CONTEST_DESCRIPTION') }}{{ lang('COLON') }}</label></dt>
+			<dd><textarea id="contest_description" name="contest_description" rows="5" cols="45">{{ CONTEST_DESCRIPTION }}</textarea></dd>
+		</dl>
+		<dl>
+			<dt><label for="contest_condition">{{ lang('REFERRAL_MINIMUM_POSTS') }}{{ lang('COLON') }}</label><br /><span>{{ lang('REFERRAL_MINIMUM_POSTS_EXPLAIN') }}</span></dt>
+			<dd>
+				<input name="contest_condition" type="text" id="CONTEST_CONDITION" size="1" maxlength="2" value="{{ CONTEST_CONDITION }}" />
+			</dd>
+		</dl>
+		<dl>
+			<dt><label>{{ lang('CONTEST_DURATION') }}{{ lang('COLON') }}</label></dt>
+			<dd>
+			<input type="text" name="contest_duration[]" size="1" value="{{ CONTEST_DURATION_VAL }}" />
+				<select name="contest_duration[]">
+					{{ CONTEST_DURATION_OPTIONS }}
+				</select>
+			</dd>
+		</dl>
+		{{ S_HIDDEN_FIELDS }}
+
+		<p class="submit-buttons">
+		<input class="button1" type="submit" id="submit" name="save" value="{{ lang('SUBMIT') }}" />&nbsp;
+		<input class="button2" type="reset" id="reset" name="reset" value="{{ lang('RESET') }}" />
+		{{ S_FORM_TOKEN }}
+		</p>
+	</fieldset>
+	<a href="{{ U_BACK }}" style="float: {{ S_CONTENT_FLOW_BEGIN }};">&laquo; {{ lang('BACK') }}</a>
+</form>
+{% elseif VIEW_STATS %}
+	<fieldset class="tabulated">
+		<legend>{{ lang('ACP_REFERRAL_CONTESTS') }}</legend>
+		<table cellspacing="1">
+			<thead>
+				<tr>
+				<th style="width:5%;">{{ lang('CONTEST_POS') }}</th>
+				<th style="width:40%;">{{ lang('REFERRER_USERNAME') }}</th>
+				<th style="width:40%;">{{ lang('REFERRALS') }}</th>
+				<th style="width:10%;">{{ lang('ACTION') }}</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for contest_stats in loops.contest_stats %}
+				<tr class="row1">
+					<td style="text-align:center;">{{ contest_stats.CONTEST_POS }}</td>
+					<td>{{ contest_stats.REFERRER_USERNAME }}</td>
+					<td>{{ contest_stats.REFERRALS_COUNT }}</td>
+					<td><a href="{{ contest_stats.VIEW_REFERRALS }}" onclick="find_username(this.href); return false;">{{ lang('VIEW_REFERRALS') }}</a></td>
+				</tr>
+				{% if contest_stats.S_LAST_ROW %}
+				<tr class="row3">
+					<td colspan="4"><b>{{ lang('CONTEST_TOTAL_REFERRALS') }}{{ lang('COLON') }}</b> {{ contest_stats.TOTAL_REFERRALS }}</td>
+				</tr>
+				{% endif %}
+					{% else %}
+					<tr class="row3">
+						<td colspan="4">{{ lang('NO_STATS') }}</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</fieldset>
+	<br />
+	<a href="{{ U_BACK }}" style="float: {{ S_CONTENT_FLOW_BEGIN }};">&laquo; {{ lang('BACK') }}</a>
+	{% elseif VIEW_REFERRALS %}
+	<fieldset class="tabulated">
+		<legend>{{ lang('ACP_REFERRAL_CONTESTS') }}</legend>
+		<table cellspacing="1">
+			<thead>
+				<tr>
+					<th>{{ lang('USERNAME') }}</th>
+					<th>{{ lang('REFERRED_ON') }}</th>
+					<th style="width:10%;">{{ lang('POSTS') }}</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for view_referrals in loops.view_referrals %}
+				<tr class="row1">
+					<td>{{ view_referrals.REFERRAL_USERNAME }}</td>
+					<td>{{ view_referrals.REFERRAL_SINCE }}</td>
+					<td>{{ view_referrals.USER_POSTS }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</fieldset>
+{% else %}
+<form id="acp_referrals" method="post" action="{{ U_ACTION }}">
+	<fieldset class="tabulated">
+		<legend>{{ lang('ACP_REFERRAL_CONTESTS') }}</legend>
+		<p class="quick">
+			{{ S_HIDDEN_FIELDS }}
+			<input class="button2" name="add" type="submit" value="{{ lang('CONTEST_ADD') }}" />
+		</p>
+		<table cellspacing="1">
+			<thead>
+				<tr>
+					<th>{{ lang('CONTEST_NAME') }}</th>
+					<th>{{ lang('CONTEST_DURATION') }}</th>
+					<th>{{ lang('CONTEST_START_DATE') }}</th>
+					<th>{{ lang('CONTEST_END_DATE') }}</th>
+					<th>{{ lang('CONTEST_STATUS') }}</th>
+					<th style="width:80px;">{{ lang('ACTION') }}</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for contests in loops.contests %}
+				{% if contests.S_ROW_COUNT is even %}<tr class="row1">{% else %}<tr class="row2">{% endif %}
+					<td><b>{{ contests.CONTEST_NAME }}</b></td>
+					<td>{{ contests.CONTEST_DURATION }}</td>
+					<td>{{ contests.CONTEST_START_DATE }}</td>
+					<td>{{ contests.CONTEST_END_DATE }}</td>
+					<td>{{ contests.CONTEST_STATUS }}</td>
+					<td>&nbsp;<a href="{{ contests.U_EDIT }}">{{ ICON_EDIT }}</a>&nbsp;&nbsp;<a href="{{ contests.U_DELETE }}" data-ajax="row_delete">{{ ICON_DELETE }}</a>&nbsp;&nbsp;&nbsp;<a href="{{ contests.U_STATS }}">{{ ICON_STATS }}</a>&nbsp;</td>
+				</tr>
+				{% else %}
+				<tr class="row3">
+					<td colspan="6">{{ lang('NO_CONTESTS') }}</td>
+				</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</fieldset>
+	{{ S_FORM_TOKEN }}
+</form>
+{% endif %}
+{% if loops.pagination|length or TOTAL_CONTESTS %}
+	<div class="pagination">
+		{{ TOTAL_CONTESTS }}
+		{% if loops.pagination|length %}
+			{% INCLUDE 'pagination.html' %}
+		{% else %}
+			&bull; {{ PAGE_NUMBER }}
+		{% endif %}
+	</div>
+{% endif %}
+{% if VIEW_REFERRALS %}{% INCLUDE 'simple_footer.html' %}{% else %}{% INCLUDE 'overall_footer.html' %}{% endif %}

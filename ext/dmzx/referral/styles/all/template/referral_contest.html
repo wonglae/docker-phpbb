@@ -1,0 +1,44 @@
+<div class="forabg">
+	<div class="inner">
+		<ul class="topiclist">
+			<li class="header">
+				<dl class="row-item">
+					<dd>{{ lang('REFERRAL_CONTEST') }} ({{ CONTEST_NAME }})</dd>
+				</dl>
+			</li>
+		</ul>
+		<ul class="topiclist forums contest">
+			<li class="row">
+				<div id="contest-info">
+					<table>
+						<tr>
+							<td width="20%" valign="top"><b>{{ lang('CONTEST_INFO') }}{{ lang('COLON') }}</b></td>
+							<td>{{ CONTEST_DESCRIPTION }}</td>
+						</tr>
+						<tr>
+							<td><b>{{ lang('CONTEST_START_DATE') }}{{ lang('COLON') }}</b></td>
+							<td>{{ CONTEST_START_DATE }}</td>
+						</tr>
+						<tr>
+							<td><b>{{ lang('CONTEST_END_DATE') }}{{ lang('COLON') }}</b></td>
+							<td>{{ CONTEST_END_DATE }}</td>
+						</tr>
+						<tr>
+							<td><b>{{ lang('CONTEST_STATUS') }}{{ lang('COLON') }}</b></td>
+							<td><b>{{ CONTEST_STATUS }}</b></td>
+						</tr>
+					</table>
+				</div>
+				<div id="contest-stastistics">
+					<p><b>{{ lang('TOP_THREE_REFERRERS') }}{{ lang('COLON') }}</b></p>
+					{% for contest_stats in loops.contest_stats %}
+					<p>{{ contest_stats.CONTEST_POS }} {{ contest_stats.REFERRER_USERNAME }} ({{ contest_stats.REFERRALS_COUNT }})</p>
+					{% else %}
+					<p>{{ lang('NO_REFERRERS') }}</p>
+					{% endfor %}
+				</div>
+				<div class="clear"></div>
+			</li>
+		</ul>
+	</div>
+</div>
