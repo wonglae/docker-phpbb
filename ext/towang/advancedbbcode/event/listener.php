@@ -157,7 +157,8 @@ class listener implements EventSubscriberInterface
     $user_rank = $this->user->data['user_rank'];
     $special_rank = !empty($ranks['special'][$user_rank]) ? $user_rank : -1;
     
-    $user_thanks = $this->template->retrieve_var('S_USER_THANKS');
+    $user_received_thanks = $this->template->retrieve_var('S_USER_RECEIVED_THANKS');
+    $user_given_thanks = $this->template->retrieve_var('S_USER_GIVEN_THANKS');
     $in_posting = $this->template->retrieve_var('S_IN_POSTING') ? true : false;
     $topic_replied = $this->template->retrieve_var('S_TOPIC_REPLIED') ? true : false;
     $forum_id = $this->template->retrieve_var('S_FORUM_ID');
@@ -192,10 +193,10 @@ class listener implements EventSubscriberInterface
       'U_VIEW_TOPIC'          => html_entity_decode($view_topic),
     ));
 
-    if (isset($user_thanks))
+    if (isset($user_given_thanks) && isset($user_received_thanks))
     {
       $renderer->setParameters(array(
-        'S_USER_RANK_VALUE'   => $user_posts + $user_thanks * 2,
+        'S_USER_RANK_VALUE'   => $user_posts + $user_given_thanks + $user_received_thanks * 3,
       ));
     }
   }

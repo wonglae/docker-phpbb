@@ -900,6 +900,21 @@ class helper
 		return ($row) ?: [];
 	}
 
+	public function get_given_thanks_count($user_id)
+	{
+		if (isset($this->poster_list_count[$user_id]['G'])) {
+			return $this->poster_list_count[$user_id]['G'] ?? 0;
+		} else {
+			$user_count = 0;
+			$sql = 'SELECT COUNT(user_id) AS user_count FROM ' . $this->thanks_table . '
+				WHERE user_id =' . (int) $user_id;
+			$result = $this->db->sql_query($sql);
+			$user_count = (int) $this->db->sql_fetchfield('user_count');
+			$this->db->sql_freeresult($result);
+			return $user_count;
+		}
+	}
+
 	public function get_received_thanks_count($user_id)
 	{
 		if (isset($this->poster_list_count[$user_id]['R']))

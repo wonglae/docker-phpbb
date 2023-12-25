@@ -137,8 +137,9 @@ class listener implements EventSubscriberInterface
 		{
 			$user_id = $user_data['user_id'];
 			$received_thanks_count = $this->helper->get_received_thanks_count($user_id);
+			$given_thanks_count = $this->helper->get_given_thanks_count($user_id);
 			// The value is evaluated with rank's min value
-			$event['user_posts'] = $user_posts + $received_thanks_count * 2;
+			$event['user_posts'] = $user_posts + $given_thanks_count + $received_thanks_count * 3;
 		}
 	}
 
@@ -231,9 +232,11 @@ class listener implements EventSubscriberInterface
 		
 		if (empty($user_rank))
 		{
-			$user_thanks = $this->helper->get_received_thanks_count($user_id);
+			$user_received_thanks = $this->helper->get_received_thanks_count($user_id);
+			$user_given_thanks = $this->helper->get_given_thanks_count($user_id);
 			$this->template->assign_vars(array(
-				'S_USER_THANKS' => $user_thanks,
+				'S_USER_RECEIVED_THANKS' => $user_received_thanks,
+				'S_USER_GIVEN_THANKS' => $user_given_thanks,
 			));
 		}
 	}
