@@ -199,7 +199,7 @@ class helper
 		return $i;
 	}
 
-	public function insert_thanks($post_id, $user_id, $forum_id)
+	public function insert_thanks($post_id, $user_id, $forum_id, $redirect_url)
 	{
 		$to_id = $this->request->variable('to_id', 0);
 		$from_id = $this->request->variable('from_id', 0);
@@ -229,7 +229,11 @@ class helper
 
 				$this->add_notification($thanks_data);
 
-				if ($this->config['thanks_info_page'])
+				if (!empty($redirect_url))
+				{
+					redirect($redirect_url);
+				}
+				else if ($this->config['thanks_info_page'])
 				{
 					meta_refresh (1, append_sid("{$this->phpbb_root_path}viewtopic.$this->php_ext", 'f=' . $forum_id .'&amp;p=' . $post_id . '#p' . $post_id));
 					trigger_error($this->language->lang('THANKS_INFO_' . $lang_act) . '<br /><br />' . $this->language->lang('RETURN_POST', '<a href="' . append_sid("{$this->phpbb_root_path}viewtopic.$this->php_ext", 'f=' . $forum_id .'&amp;p=' . $post_id . '#p' . $post_id) . '">', '</a>'));

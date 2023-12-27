@@ -113,4 +113,6 @@ $lang = array_merge($lang, [
 	'THANKS_PM_SUBJECT_REMOVE'				=> '已删除您对该帖子的感谢',
 	'THANKS_USER'											=> '感谢列表',
 	'TOPLIST'													=> '帖子排行榜',
+	'TOOLTIP_THANKS_REPLY' 						=> '感谢作者并且回复帖子',
+	'BUTTON_THANKS_REPLY'							=> '感谢并回复',
 ]);

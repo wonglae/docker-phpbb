@@ -113,4 +113,6 @@ $lang = array_merge($lang, [
 	'THANKS_PM_SUBJECT_REMOVE'	=> 'Removed thank for the post',
 	'THANKS_USER'				=> 'List of thanks',
 	'TOPLIST'					=> 'Posts toplist',
+	'TOOLTIP_THANKS_REPLY' => 'Say Thanks to the author of the post and post a reply',
+	'BUTTON_THANKS_REPLY' => 'Thanks & Reply',
 ]);
