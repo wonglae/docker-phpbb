@@ -236,10 +236,6 @@ class listener implements EventSubscriberInterface
 		$user_rank = $this->user->data['user_rank'];
 		$user_id = $this->user->data['user_id'];
 
-		$poster_id = (int) $event['topic_data']['topic_poster'];
-		$post_id = (int) $event['topic_data']['topic_first_post_id'];
-		$enable_thanks = ($event['topic_data']['topic_type'] != POST_GLOBAL || $this->config['thanks_global_post']) && $poster_id != ANONYMOUS && $poster_id != $user_id && !$this->helper->already_thanked($post_id, $user_id);
-		$thank_mode = 'reply_thanks';
 		if (empty($user_rank))
 		{
 			$user_received_thanks = $this->helper->get_received_thanks_count($user_id);
@@ -247,12 +243,19 @@ class listener implements EventSubscriberInterface
 			$this->template->assign_vars(array(
 				'S_USER_RECEIVED_THANKS' => $user_received_thanks,
 				'S_USER_GIVEN_THANKS' => $user_given_thanks,
-				'S_ENABLE_TOPIC_THANKS' => (bool) $enable_thanks,
-				'U_THANKS_REPLY_LINK' => append_sid("{$this->phpbb_root_path}viewtopic.$this->php_ext", 'f=' . $forum_id . '&amp;p=' . $post_id . '&amp;' . $thank_mode . '=' . $post_id . '&amp;to_id=' . $poster_id . '&amp;from_id=' . $user_id),
-				'L_THANKS_REPLY' => $this->language->lang('TOOLTIP_THANKS_REPLY'),
-				'L_BUTTON_THANKS_REPLY' => $this->language->lang('BUTTON_THANKS_REPLY'),
 			));
 		}
+
+		$poster_id = (int) $event['topic_data']['topic_poster'];
+		$post_id = (int) $event['topic_data']['topic_first_post_id'];
+		$enable_thanks = ($event['topic_data']['topic_type'] != POST_GLOBAL || $this->config['thanks_global_post']) && $poster_id != ANONYMOUS && $poster_id != $user_id && !$this->helper->already_thanked($post_id, $user_id);
+		$thank_mode = 'reply_thanks';
+		$this->template->assign_vars(array(
+			'S_ENABLE_TOPIC_THANKS' => (bool) $enable_thanks,
+			'U_THANKS_REPLY_LINK' => append_sid("{$this->phpbb_root_path}viewtopic.$this->php_ext", 'f=' . $forum_id . '&amp;p=' . $post_id . '&amp;' . $thank_mode . '=' . $post_id . '&amp;to_id=' . $poster_id . '&amp;from_id=' . $user_id),
+			'L_THANKS_REPLY' => $this->language->lang('TOOLTIP_THANKS_REPLY'),
+			'L_BUTTON_THANKS_REPLY' => $this->language->lang('BUTTON_THANKS_REPLY'),
+		));
 	}
 
 	public function viewtopic_modify_postrow($event)
