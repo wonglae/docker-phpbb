@@ -36,8 +36,8 @@ if (empty($lang) || !is_array($lang))
 // in a url you again do not need to specify an order e.g., 'Click %sHERE%s' is fine
 
 $lang = array_merge($lang, [
-	'ACL_F_THANKS' => '可以感谢帖子',
-	'ACL_M_THANKS' => '可以清除感谢列表',
-	'ACL_U_VIEWTHANKS' => '可以查看所有感谢列表',
+	'ACL_F_THANKS' => '可以点赞帖子',
+	'ACL_M_THANKS' => '可以清除点赞列表',
+	'ACL_U_VIEWTHANKS' => '可以查看所有点赞列表',
 	'ACL_U_VIEWTOPLIST' => '可以查看排行榜',
 ]);
