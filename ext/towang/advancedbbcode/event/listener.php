@@ -128,7 +128,7 @@ class listener implements EventSubscriberInterface
     }
     else
     {
-      $topic_row['TOPIC_THUMBNAIL_IMG'] = $phpbb_root_path . $this->config['upload_path'] . '/missing_thumbnail.jpg';
+      $topic_row['TOPIC_THUMBNAIL_IMG'] = $phpbb_root_path . 'aci/phpbb-storage/missing_thumbnail.jpg';
     }
     $event['topic_row'] = $topic_row;
   }
