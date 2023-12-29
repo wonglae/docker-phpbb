@@ -867,3 +867,33 @@ table.fixed-width-table {
 #memberlist tr.inactive, #team tr.inactive {
 	font-style: italic;
 }
+
+div.grid_container {
+	background-color: #ECF3F7;
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+	grid-row-gap: 30px;
+	padding: 20px;
+}
+
+div.grid_item {
+	text-align: center;
+	height: 350px;
+	width: 200px;
+	margin: auto;
+  overflow: hidden;
+}
+
+div.grid_item img {
+	object-fit: cover;
+	height: 326px;
+	width: 200px;
+}
+
+div.grid_item a.topictitle {
+  white-space: nowrap;
+	display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+	margin: 5px;
+}

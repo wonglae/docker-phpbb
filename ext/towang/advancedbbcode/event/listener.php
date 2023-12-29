@@ -30,6 +30,9 @@ class listener implements EventSubscriberInterface
 
   private $hbuid; // Hide Bbcode UID (Unique Identification Digit)
 
+  private $enable_topic_thumbnail = false;
+  private $attachments = [];
+
   /**
    * Constructor
    *
@@ -57,7 +60,77 @@ class listener implements EventSubscriberInterface
       'core.text_formatter_s9e_render_before'         => 'text_formatter_inject_render_params',
       'core.modify_posting_auth'                      => 'verify_allow_user_posting',
       'core.twig_environment_render_template_after'   => 'inject_bbcode_css',
+      'core.viewforum_get_topic_data'                 => 'viewforum_get_topic_data',
+      'core.viewforum_modify_topics_data'             => 'viewforum_modify_topics_data',
+      'core.viewforum_modify_topicrow'                => 'viewforum_modify_topicrow',
     );
+  }
+
+  public function viewforum_get_topic_data($event)
+  {
+    $forum_data = $event['forum_data'];
+    $this->enable_topic_thumbnail = $forum_data['forum_style'] == 12;
+  }
+
+  public function viewforum_modify_topics_data($event)
+  {
+    if (!$this->enable_topic_thumbnail)
+    {
+      return;
+    }
+
+    $rowset = $event['rowset'];
+    $attach_list = array();
+    foreach ($rowset as $t_id => $row)
+    {
+      $attach_list[] = (int) $row['topic_first_post_id'];
+    }
+
+    $sql = 'SELECT *
+			FROM ' . ATTACHMENTS_TABLE . '
+			WHERE ' . $this->db->sql_in_set('post_msg_id', $attach_list) . '
+				AND in_message = 0
+			ORDER BY attach_id DESC, post_msg_id ASC';
+    $result = $this->db->sql_query($sql);
+
+    while ($row = $this->db->sql_fetchrow($result))
+		{
+			$this->attachments[$row['post_msg_id']][] = $row;
+		}
+  }
+
+  public function viewforum_modify_topicrow($event)
+  {
+    if (!$this->enable_topic_thumbnail)
+    {
+      return;
+    }
+    
+    global $phpbb_root_path, $phpEx;
+    $row = $event['row'];
+    $post_id = (int) $row['topic_first_post_id'];
+    if (array_key_exists($post_id, $this->attachments)) {
+      $attachments = $this->attachments[$post_id];
+      $topic_thumbnail = null;
+      foreach ($attachments as $attachment)
+      {
+        if ($attachment['mimetype'] == 'image/jpeg' && ($topic_thumbnail === null || $attachment['attach_comment'] == 'thumbnail'))
+        {
+          $topic_thumbnail = $attachment['attach_id'];
+        }
+      }
+
+      $topic_row = $event['topic_row'];
+      if ($topic_thumbnail !== null)
+      {
+        $topic_row['TOPIC_THUMBNAIL_IMG'] = append_sid("{$phpbb_root_path}download/file.$phpEx", 'id=' . $attachment['attach_id']);
+      }
+      else
+      {
+        $topic_row['TOPIC_THUMBNAIL_IMG'] = $phpbb_root_path . $this->config['upload_path'] . '/missing_thumbnail.jpg';
+      }
+      $event['topic_row'] = $topic_row;
+    }
   }
 
   public function check_user_posted_posting($event)

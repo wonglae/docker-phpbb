@@ -138,8 +138,9 @@
 	<!-- ENDIF -->
 
 	<!-- IF topicrow.S_FIRST_ROW or not topicrow.S_TOPIC_TYPE_SWITCH -->
-		<div class="forumbg<!-- IF topicrow.S_TOPIC_TYPE_SWITCH and (topicrow.S_POST_ANNOUNCE or topicrow.S_POST_GLOBAL) --> announcement<!-- ENDIF -->">
+		<div class="forumbg<!-- IF topicrow.S_TOPIC_TYPE_SWITCH --> announcement<!-- ENDIF -->">
 		<div class="inner">
+		<!-- IF topicrow.S_POST_ANNOUNCE or topicrow.S_POST_GLOBAL -->
 		<ul class="topiclist">
 			<li class="header">
 				<dl class="row-item">
@@ -151,8 +152,13 @@
 			</li>
 		</ul>
 		<ul class="topiclist topics">
+		<!-- ELSE -->
+		<ul class="topiclist topics">
+		<div class="grid_container">
+		<!-- ENDIF -->
 	<!-- ENDIF -->
 
+	<!-- IF topicrow.S_POST_ANNOUNCE or topicrow.S_POST_GLOBAL -->
 		<!-- EVENT viewforum_body_topicrow_row_before -->
 		<li class="row<!-- IF topicrow.S_ROW_COUNT is even --> bg1<!-- ELSE --> bg2<!-- ENDIF --><!-- IF topicrow.S_POST_GLOBAL --> global-announce<!-- ENDIF --><!-- IF topicrow.S_POST_ANNOUNCE --> announce<!-- ENDIF --><!-- IF topicrow.S_POST_STICKY --> sticky<!-- ENDIF --><!-- IF topicrow.S_TOPIC_REPORTED --> reported<!-- ENDIF -->">
 			<!-- EVENT viewforum_body_topic_row_prepend -->
@@ -239,8 +245,18 @@
 			<!-- EVENT viewforum_body_topic_row_append -->
 		</li>
 		<!-- EVENT viewforum_body_topic_row_after -->
+	<!-- ELSE -->
+		<div class="grid_item">
+			<a href="{topicrow.U_VIEW_TOPIC}"><img src="{topicrow.TOPIC_THUMBNAIL_IMG}" /></a>
+			<a href="{topicrow.U_VIEW_TOPIC}" class="topictitle">{topicrow.TOPIC_TITLE}</a>
+		</div>
+	<!-- ENDIF -->
 
 	<!-- IF topicrow.S_LAST_ROW -->
+	<!-- IF topicrow.S_POST_ANNOUNCE or topicrow.S_POST_GLOBAL -->
+	<!-- ELSE -->
+		</div>
+	<!-- ENDIF -->
 			</ul>
 		</div>
 	</div>
