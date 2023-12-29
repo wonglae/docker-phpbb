@@ -109,9 +109,9 @@ class listener implements EventSubscriberInterface
     global $phpbb_root_path, $phpEx;
     $row = $event['row'];
     $post_id = (int) $row['topic_first_post_id'];
+    $topic_thumbnail = null;
     if (array_key_exists($post_id, $this->attachments)) {
       $attachments = $this->attachments[$post_id];
-      $topic_thumbnail = null;
       foreach ($attachments as $attachment)
       {
         if ($attachment['mimetype'] == 'image/jpeg' && ($topic_thumbnail === null || $attachment['attach_comment'] == 'thumbnail'))
@@ -119,18 +119,18 @@ class listener implements EventSubscriberInterface
           $topic_thumbnail = $attachment['attach_id'];
         }
       }
-
-      $topic_row = $event['topic_row'];
-      if ($topic_thumbnail !== null)
-      {
-        $topic_row['TOPIC_THUMBNAIL_IMG'] = append_sid("{$phpbb_root_path}download/file.$phpEx", 'id=' . $attachment['attach_id']);
-      }
-      else
-      {
-        $topic_row['TOPIC_THUMBNAIL_IMG'] = $phpbb_root_path . $this->config['upload_path'] . '/missing_thumbnail.jpg';
-      }
-      $event['topic_row'] = $topic_row;
     }
+
+    $topic_row = $event['topic_row'];
+    if ($topic_thumbnail !== null)
+    {
+      $topic_row['TOPIC_THUMBNAIL_IMG'] = append_sid("{$phpbb_root_path}download/file.$phpEx", 'id=' . $attachment['attach_id']);
+    }
+    else
+    {
+      $topic_row['TOPIC_THUMBNAIL_IMG'] = $phpbb_root_path . $this->config['upload_path'] . '/missing_thumbnail.jpg';
+    }
+    $event['topic_row'] = $topic_row;
   }
 
   public function check_user_posted_posting($event)
