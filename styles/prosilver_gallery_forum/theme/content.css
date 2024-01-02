@@ -871,23 +871,26 @@ table.fixed-width-table {
 div.grid_container {
 	background-color: #ECF3F7;
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+	grid-template-columns: repeat(auto-fit, minmax(266px, 1fr));
 	grid-row-gap: 30px;
 	padding: 20px;
 }
 
 div.grid_item {
 	text-align: center;
-	height: 350px;
-	width: 200px;
+	height: 460px;
+	width: 256px;
 	margin: auto;
   overflow: hidden;
+	box-shadow: 0 12px 10px rgba(120, 172, 241, 0.2);
+	border-radius: 5px;
+	background: #fff;
 }
 
 div.grid_item img {
 	object-fit: cover;
-	height: 326px;
-	width: 200px;
+	height: 418px;
+	width: 256px;
 }
 
 div.grid_item a.topictitle {
@@ -895,5 +898,8 @@ div.grid_item a.topictitle {
 	display: block;
   overflow: hidden;
   text-overflow: ellipsis;
-	margin: 5px;
+	font-size: 1rem;
+	font-weight: bold;
+	color: #000;
+	margin: 10px;
 }
