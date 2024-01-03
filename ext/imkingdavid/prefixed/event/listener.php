@@ -272,13 +272,58 @@ class listener implements EventSubscriberInterface
 	 */
 	public function filter_viewforum_by_prefix($event)
 	{
-		if ($prefix = $this->request->variable('prefix', 0)) {
-			$sql_ary = $event['sql_ary'];
-			$sql_ary['LEFT_JOIN'] = [[
+		$prefix = $this->request->variable('prefix', 0);
+		$prefix1 = $this->request->variable('prefix1', 0);
+		$prefix2 = $this->request->variable('prefix2', 0);
+		$prefix3 = $this->request->variable('prefix3', 0);
+		$prefix4 = $this->request->variable('prefix4', 0);
+		$prefix5 = $this->request->variable('prefix5', 0);
+		$sql_ary = $event['sql_ary'];
+		$join_statements = array();
+		if ($prefix) {
+			array_push($join_statements, [
 				'FROM'  => array(PREFIX_INSTANCES_TABLE => 'pr'),
 				'ON'    => 'pr.topic = t.topic_id',
-			]];
+			]);
 			$sql_ary['WHERE'] .= 'AND pr.prefix = ' . (int) $prefix . ' ';
+		}
+		if ($prefix1) {
+			array_push($join_statements, [
+				'FROM' => array(PREFIX_INSTANCES_TABLE => 'pr1'),
+				'ON' => 'pr1.topic = t.topic_id',
+			]);
+			$sql_ary['WHERE'] .= 'AND pr1.prefix = ' . (int) $prefix1 . ' ';
+		}
+		if ($prefix2) {
+			array_push($join_statements, [
+				'FROM' => array(PREFIX_INSTANCES_TABLE => 'pr2'),
+				'ON' => 'pr2.topic = t.topic_id',
+			]);
+			$sql_ary['WHERE'] .= 'AND pr2.prefix = ' . (int) $prefix2 . ' ';
+		}
+		if ($prefix3) {
+			array_push($join_statements, [
+				'FROM' => array(PREFIX_INSTANCES_TABLE => 'pr3'),
+				'ON' => 'pr3.topic = t.topic_id',
+			]);
+			$sql_ary['WHERE'] .= 'AND pr3.prefix = ' . (int) $prefix3 . ' ';
+		}
+		if ($prefix4) {
+			array_push($join_statements, [
+				'FROM' => array(PREFIX_INSTANCES_TABLE => 'pr4'),
+				'ON' => 'pr4.topic = t.topic_id',
+			]);
+			$sql_ary['WHERE'] .= 'AND pr4.prefix = ' . (int) $prefix4 . ' ';
+		}
+		if ($prefix5) {
+			array_push($join_statements, [
+				'FROM' => array(PREFIX_INSTANCES_TABLE => 'pr5'),
+				'ON' => 'pr5.topic = t.topic_id',
+			]);
+			$sql_ary['WHERE'] .= 'AND pr5.prefix = ' . (int) $prefix5 . ' ';
+		}
+		if (count($join_statements) > 0) {
+			$sql_ary['LEFT_JOIN'] = $join_statements;
 			$event['sql_ary'] = $sql_ary;
 		}
 	}
