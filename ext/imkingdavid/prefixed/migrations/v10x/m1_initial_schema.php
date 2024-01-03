@@ -36,7 +36,7 @@ class m1_initial_schema extends \phpbb\db\migration\migration
 						'short'		=> ['VCHAR_UNI', ''],
 						'style'		=> ['VCHAR_UNI', ''],
 						'forums'	=> ['VCHAR_UNI', ''],
-						'groups'	=> ['VCHAR_UNI', ''],
+						'`groups`'	=> ['VCHAR_UNI', ''],
 						'users'		=> ['VCHAR_UNI', ''],
 					],
 					'PRIMARY_KEY'	=> 'id',

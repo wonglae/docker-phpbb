@@ -63,7 +63,14 @@ class prefixed_module
 							$prefix = [];
 							foreach (['title', 'short', 'forums', 'groups', 'users'] as $prefix_key)
 							{
-								$prefix[$prefix_key] = $request->variable('prefix_' . $prefix_key, '', in_array($prefix_key, ['title', 'short']));
+								if ($prefix_key == 'groups')
+								{
+									$prefix['`groups`'] = $request->variable('prefix_' . $prefix_key, '', in_array($prefix_key, ['title', 'short']));
+								}
+								else
+								{
+									$prefix[$prefix_key] = $request->variable('prefix_' . $prefix_key, '', in_array($prefix_key, ['title', 'short']));
+								}
 							}
 
 							$uid = $bitfield = $options = '';

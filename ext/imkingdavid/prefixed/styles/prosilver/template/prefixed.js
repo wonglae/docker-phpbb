@@ -7,17 +7,25 @@ $(document).ready(function() {
 		over: function(event, ui) {
 			$('.no-prefix-text:visible').hide();
 		}
-	}).disableSelection();
+	}).disableSelection().on('mouseup', '.prefix-item-click-area', function () {
+		$(this).appendTo($("#available_prefixes").not($(this).closest("span")));
+		if ($('#used_prefixes').children().length < 2) {
+			$('.no-prefix-text:hidden').show();
+		}
+	});
 
 	$('#available_prefixes').sortable({
 		connectWith: '.prefixed_sortable',
 		placeholder: 'prefix_placeholder',
 		over: function(event, ui) {
-			if ($('#used_prefixes').children().size() < 2) {
+			if ($('#used_prefixes').children().length < 2) {
 				$('.no-prefix-text:hidden').show();
 			}
 		}
-	}).disableSelection();
+	}).disableSelection().on('mouseup', '.prefix-item-click-area', function () {
+		$(this).appendTo($("#used_prefixes").not($(this).closest("span")));
+		$('.no-prefix-text:visible').hide();
+	});
 
 	// Add data to the form on submission
 	$(this).on('submit', '#postform', function(event) {

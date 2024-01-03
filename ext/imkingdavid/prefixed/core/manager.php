@@ -110,7 +110,7 @@ class manager
 		{
 			// If we're refreshing, we have to reset the array first
 			$this->prefixes = [];
-			$sql = 'SELECT id, title, short, users, forums, groups, bbcode_uid, bbcode_bitfield
+			$sql = 'SELECT id, title, short, users, forums, `groups`, bbcode_uid, bbcode_bitfield
 				FROM ' . PREFIXES_TABLE;
 			$result = $this->db->sql_query($sql);
 			while ($row = $this->db->sql_fetchrow($result))
