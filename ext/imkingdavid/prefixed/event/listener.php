@@ -128,6 +128,7 @@ class listener implements EventSubscriberInterface
 		$this->db = $this->container->get('dbal.conn');
 		$this->request = $this->container->get('request');
 		$this->manager = $this->container->get('prefixed.manager');
+		$this->template = $this->container->get('template');
 	}
 
 	/**
@@ -326,6 +327,45 @@ class listener implements EventSubscriberInterface
 			$sql_ary['LEFT_JOIN'] = $join_statements;
 			$event['sql_ary'] = $sql_ary;
 		}
+
+		$this->template->assign_vars(
+			array(
+				'U_PREFIX_1_NONE' => http_build_query(array('prefix1' => 0, 'prefix2' => $prefix2)),
+				'S_PREFIX_1_NONE' => ($prefix1 == 0 ? 'selected' : ''),
+				'U_PREFIX_1_SPG' => http_build_query(array('prefix1' => 2, 'prefix2' => $prefix2)),
+				'S_PREFIX_1_SPG' => ($prefix1 == 2 ? 'selected' : ''),
+				'U_PREFIX_1_OTH' => http_build_query(array('prefix1' => 3, 'prefix2' => $prefix2)),
+				'S_PREFIX_1_OTH' => ($prefix1 == 3 ? 'selected' : ''),
+				'U_PREFIX_1_ADV' => http_build_query(array('prefix1' => 4, 'prefix2' => $prefix2)),
+				'S_PREFIX_1_ADV' => ($prefix1 == 4 ? 'selected' : ''),
+				'U_PREFIX_1_ACT' => http_build_query(array('prefix1' => 6, 'prefix2' => $prefix2)),
+				'S_PREFIX_1_ACT' => ($prefix1 == 6 ? 'selected' : ''),
+				'U_PREFIX_1_MPG' => http_build_query(array('prefix1' => 7, 'prefix2' => $prefix2)),
+				'S_PREFIX_1_MPG' => ($prefix1 == 7 ? 'selected' : ''),
+				'U_PREFIX_1_SHT' => http_build_query(array('prefix1' => 8, 'prefix2' => $prefix2)),
+				'S_PREFIX_1_SHT' => ($prefix1 == 8 ? 'selected' : ''),
+				'U_PREFIX_1_FTG' => http_build_query(array('prefix1' => 9, 'prefix2' => $prefix2)),
+				'S_PREFIX_1_FTG' => ($prefix1 == 9 ? 'selected' : ''),
+				'U_PREFIX_1_SMG' => http_build_query(array('prefix1' => 10, 'prefix2' => $prefix2)),
+				'S_PREFIX_1_SMG' => ($prefix1 == 10 ? 'selected' : ''),
+				'U_PREFIX_1_CSG' => http_build_query(array('prefix1' => 11, 'prefix2' => $prefix2)),
+				'S_PREFIX_1_CSG' => ($prefix1 == 11 ? 'selected' : ''),
+				'U_PREFIX_1_RAC' => http_build_query(array('prefix1' => 12, 'prefix2' => $prefix2)),
+				'S_PREFIX_1_RAC' => ($prefix1 == 12 ? 'selected' : ''),
+				'U_PREFIX_1_SLG' => http_build_query(array('prefix1' => 13, 'prefix2' => $prefix2)),
+				'S_PREFIX_1_SLG' => ($prefix1 == 13 ? 'selected' : ''),
+				'U_PREFIX_1_RPG' => http_build_query(array('prefix1' => 14, 'prefix2' => $prefix2)),
+				'S_PREFIX_1_RPG' => ($prefix1 == 14 ? 'selected' : ''),
+				'U_PREFIX_1_PZG' => http_build_query(array('prefix1' => 15, 'prefix2' => $prefix2)),
+				'S_PREFIX_1_PZG' => ($prefix1 == 15 ? 'selected' : ''),
+				'U_PREFIX_1_MSG' => http_build_query(array('prefix1' => 16, 'prefix2' => $prefix2)),
+				'S_PREFIX_1_MSG' => ($prefix1 == 16 ? 'selected' : ''),
+				'U_PREFIX_2_NONE' => http_build_query(array('prefix1' => $prefix1, 'prefix2' => 0)),
+				'S_PREFIX_2_NONE' => ($prefix2 == 0 ? 'selected' : ''),
+				'U_PREFIX_2_DOWNLOAD' => http_build_query(array('prefix1' => $prefix1, 'prefix2' => 1)),
+				'S_PREFIX_2_DOWNLOAD' => ($prefix2 == 1 ? 'selected' : ''),
+			)
+		);
 	}
 
 	/**

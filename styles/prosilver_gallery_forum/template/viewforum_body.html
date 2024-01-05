@@ -138,6 +138,42 @@
 	<!-- ENDIF -->
 
 	<!-- IF topicrow.S_FIRST_ROW or not topicrow.S_TOPIC_TYPE_SWITCH -->
+		<!-- IF topicrow.S_POST_ANNOUNCE or topicrow.S_POST_GLOBAL -->
+		<!-- ELSE -->
+			<table class="topic_filter">
+				<tr>
+					<th>游戏类型:</th>
+					<td>
+						<ul>
+							<li><a class="{S_PREFIX_1_NONE}" href="{U_VIEW_FORUM}?{U_PREFIX_1_NONE}">全部</a></li>
+							<li><a class="{S_PREFIX_1_RPG}" href="{U_VIEW_FORUM}&{U_PREFIX_1_RPG}">角色扮演</a></li>
+							<li><a class="{S_PREFIX_1_SLG}" href="{U_VIEW_FORUM}&{U_PREFIX_1_SLG}">策略</a></li>
+							<li><a class="{S_PREFIX_1_ADV}" href="{U_VIEW_FORUM}&{U_PREFIX_1_ADV}">冒险</a></li>
+							<li><a class="{S_PREFIX_1_ACT}" href="{U_VIEW_FORUM}&{U_PREFIX_1_ACT}">动作</a></li>
+							<li><a class="{S_PREFIX_1_SHT}" href="{U_VIEW_FORUM}&{U_PREFIX_1_SHT}">射击</a></li>
+							<li><a class="{S_PREFIX_1_FTG}" href="{U_VIEW_FORUM}&{U_PREFIX_1_FTG}">格斗</a></li>
+							<li><a class="{S_PREFIX_1_SMG}" href="{U_VIEW_FORUM}&{U_PREFIX_1_SMG}">模拟</a></li>
+							<li><a class="{S_PREFIX_1_CSG}" href="{U_VIEW_FORUM}&{U_PREFIX_1_CSG}">益智</a></li>
+							<li><a class="{S_PREFIX_1_RAC}" href="{U_VIEW_FORUM}&{U_PREFIX_1_RAC}">竞速</a></li>
+							<li><a class="{S_PREFIX_1_PZG}" href="{U_VIEW_FORUM}&{U_PREFIX_1_PZG}">解密</a></li>
+							<li><a class="{S_PREFIX_1_SPG}" href="{U_VIEW_FORUM}&{U_PREFIX_1_SPG}">体育</a></li>
+							<li><a class="{S_PREFIX_1_MSG}" href="{U_VIEW_FORUM}&{U_PREFIX_1_MSG}">音乐</a></li>
+							<li><a class="{S_PREFIX_1_MPG}" href="{U_VIEW_FORUM}&{U_PREFIX_1_MPG}">多人</a></li>
+							<li><a class="{S_PREFIX_1_OTH}" href="{U_VIEW_FORUM}&{U_PREFIX_1_OTH}">其他</a></li>
+						</ul>
+					</td>
+				</tr>
+				<tr>
+					<th>资源链接:</th>
+					<td>
+						<ul>
+							<li><a class="{S_PREFIX_2_NONE}" href="{U_VIEW_FORUM}&{U_PREFIX_2_NONE}">全部</a></li>
+							<li><a class="{S_PREFIX_2_DOWNLOAD}" href="{U_VIEW_FORUM}&{U_PREFIX_2_DOWNLOAD}">有资源</a></li>
+						</ul>
+					</td>
+				</tr>
+			</table>
+		<!-- ENDIF -->
 		<div class="forumbg<!-- IF topicrow.S_TOPIC_TYPE_SWITCH --> announcement<!-- ENDIF -->">
 		<div class="inner">
 		<!-- IF topicrow.S_POST_ANNOUNCE or topicrow.S_POST_GLOBAL -->
@@ -260,6 +296,41 @@
 			</ul>
 		</div>
 	</div>
+		<!-- IF topicrow.S_POST_ANNOUNCE or topicrow.S_POST_GLOBAL -->
+			<table class="topic_filter">
+				<tr>
+					<th>游戏类型:</th>
+					<td>
+						<ul>
+							<li><a class="{S_PREFIX_1_NONE}" href="{U_VIEW_FORUM}?{U_PREFIX_1_NONE}">全部</a></li>
+							<li><a class="{S_PREFIX_1_RPG}" href="{U_VIEW_FORUM}&{U_PREFIX_1_RPG}">角色扮演</a></li>
+							<li><a class="{S_PREFIX_1_SLG}" href="{U_VIEW_FORUM}&{U_PREFIX_1_SLG}">策略</a></li>
+							<li><a class="{S_PREFIX_1_ADV}" href="{U_VIEW_FORUM}&{U_PREFIX_1_ADV}">冒险</a></li>
+							<li><a class="{S_PREFIX_1_ACT}" href="{U_VIEW_FORUM}&{U_PREFIX_1_ACT}">动作</a></li>
+							<li><a class="{S_PREFIX_1_SHT}" href="{U_VIEW_FORUM}&{U_PREFIX_1_SHT}">射击</a></li>
+							<li><a class="{S_PREFIX_1_FTG}" href="{U_VIEW_FORUM}&{U_PREFIX_1_FTG}">格斗</a></li>
+							<li><a class="{S_PREFIX_1_SMG}" href="{U_VIEW_FORUM}&{U_PREFIX_1_SMG}">模拟</a></li>
+							<li><a class="{S_PREFIX_1_CSG}" href="{U_VIEW_FORUM}&{U_PREFIX_1_CSG}">益智</a></li>
+							<li><a class="{S_PREFIX_1_RAC}" href="{U_VIEW_FORUM}&{U_PREFIX_1_RAC}">竞速</a></li>
+							<li><a class="{S_PREFIX_1_PZG}" href="{U_VIEW_FORUM}&{U_PREFIX_1_PZG}">解密</a></li>
+							<li><a class="{S_PREFIX_1_SPG}" href="{U_VIEW_FORUM}&{U_PREFIX_1_SPG}">体育</a></li>
+							<li><a class="{S_PREFIX_1_MSG}" href="{U_VIEW_FORUM}&{U_PREFIX_1_MSG}">音乐</a></li>
+							<li><a class="{S_PREFIX_1_MPG}" href="{U_VIEW_FORUM}&{U_PREFIX_1_MPG}">多人</a></li>
+							<li><a class="{S_PREFIX_1_OTH}" href="{U_VIEW_FORUM}&{U_PREFIX_1_OTH}">其他</a></li>
+						</ul>
+					</td>
+				</tr>
+				<tr>
+					<th>资源链接:</th>
+					<td>
+						<ul>
+							<li><a class="{S_PREFIX_2_NONE}" href="{U_VIEW_FORUM}&{U_PREFIX_2_NONE}">全部</a></li>
+							<li><a class="{S_PREFIX_2_DOWNLOAD}" href="{U_VIEW_FORUM}&{U_PREFIX_2_DOWNLOAD}">有资源</a></li>
+						</ul>
+					</td>
+				</tr>
+			</table>
+		<!-- ENDIF -->
 	<!-- ENDIF -->
 
 <!-- BEGINELSE -->

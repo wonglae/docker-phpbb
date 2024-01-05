@@ -903,3 +903,30 @@ div.grid_item a.topictitle {
 	color: #000;
 	margin: 10px;
 }
+
+table.topic_filter tr th {
+	display: inline-block;
+	color: #105289;
+	margin: 8px 10px 5px 20px;
+	font-size: 1.5em;
+}
+
+table.topic_filter tr td ul li {
+	display: inline-block;
+	margin: 5px 10px;
+	font-size: 1.5em;
+}
+
+table.topic_filter tr td ul li a {
+	text-decoration: none;
+	color: #536482;
+	padding: 3px;
+}
+
+table.topic_filter tr td ul li a.selected {
+	border-bottom: 3px solid #0076B1;
+}
+
+span.prefix-item-click-area {
+	cursor: pointer;
+}
