@@ -65,6 +65,8 @@ class listener implements EventSubscriberInterface
 	 */
 	protected $table_prefix;
 
+	protected $topic_type_switched;
+
 	/**
 	 * We don't want to run the setup() method twice so we keep track of
 	 * whether or not it has been run. This is mainly for the
@@ -129,6 +131,7 @@ class listener implements EventSubscriberInterface
 		$this->request = $this->container->get('request');
 		$this->manager = $this->container->get('prefixed.manager');
 		$this->template = $this->container->get('template');
+		$this->topic_type_switched = false;
 	}
 
 	/**
@@ -223,6 +226,18 @@ class listener implements EventSubscriberInterface
 		$topic_row = $event['topic_row'];
 		$topic_row['TOPIC_PREFIX'] = $this->load_prefixes_topic($event, 'row', '', true);
 		$event['topic_row'] = $topic_row;
+		if ($topic_row['S_TOPIC_TYPE_SWITCH'] == 0)
+		{
+			$this->topic_type_switched = true;
+		}
+		if ($this->topic_type_switched == 0)
+		{
+			$this->template->assign_vars(
+				array(
+					'PREFIX_FILTER_TOPIC_ID' => (int) $topic_row['TOPIC_ID'],
+				)
+			);
+		}
 	}
 
 
@@ -328,44 +343,64 @@ class listener implements EventSubscriberInterface
 			$event['sql_ary'] = $sql_ary;
 		}
 
-		$this->template->assign_vars(
-			array(
-				'U_PREFIX_1_NONE' => http_build_query(array('prefix1' => 0, 'prefix2' => $prefix2)),
-				'S_PREFIX_1_NONE' => ($prefix1 == 0 ? 'selected' : ''),
-				'U_PREFIX_1_SPG' => http_build_query(array('prefix1' => 2, 'prefix2' => $prefix2)),
-				'S_PREFIX_1_SPG' => ($prefix1 == 2 ? 'selected' : ''),
-				'U_PREFIX_1_OTH' => http_build_query(array('prefix1' => 3, 'prefix2' => $prefix2)),
-				'S_PREFIX_1_OTH' => ($prefix1 == 3 ? 'selected' : ''),
-				'U_PREFIX_1_ADV' => http_build_query(array('prefix1' => 4, 'prefix2' => $prefix2)),
-				'S_PREFIX_1_ADV' => ($prefix1 == 4 ? 'selected' : ''),
-				'U_PREFIX_1_ACT' => http_build_query(array('prefix1' => 6, 'prefix2' => $prefix2)),
-				'S_PREFIX_1_ACT' => ($prefix1 == 6 ? 'selected' : ''),
-				'U_PREFIX_1_MPG' => http_build_query(array('prefix1' => 7, 'prefix2' => $prefix2)),
-				'S_PREFIX_1_MPG' => ($prefix1 == 7 ? 'selected' : ''),
-				'U_PREFIX_1_SHT' => http_build_query(array('prefix1' => 8, 'prefix2' => $prefix2)),
-				'S_PREFIX_1_SHT' => ($prefix1 == 8 ? 'selected' : ''),
-				'U_PREFIX_1_FTG' => http_build_query(array('prefix1' => 9, 'prefix2' => $prefix2)),
-				'S_PREFIX_1_FTG' => ($prefix1 == 9 ? 'selected' : ''),
-				'U_PREFIX_1_SMG' => http_build_query(array('prefix1' => 10, 'prefix2' => $prefix2)),
-				'S_PREFIX_1_SMG' => ($prefix1 == 10 ? 'selected' : ''),
-				'U_PREFIX_1_CSG' => http_build_query(array('prefix1' => 11, 'prefix2' => $prefix2)),
-				'S_PREFIX_1_CSG' => ($prefix1 == 11 ? 'selected' : ''),
-				'U_PREFIX_1_RAC' => http_build_query(array('prefix1' => 12, 'prefix2' => $prefix2)),
-				'S_PREFIX_1_RAC' => ($prefix1 == 12 ? 'selected' : ''),
-				'U_PREFIX_1_SLG' => http_build_query(array('prefix1' => 13, 'prefix2' => $prefix2)),
-				'S_PREFIX_1_SLG' => ($prefix1 == 13 ? 'selected' : ''),
-				'U_PREFIX_1_RPG' => http_build_query(array('prefix1' => 14, 'prefix2' => $prefix2)),
-				'S_PREFIX_1_RPG' => ($prefix1 == 14 ? 'selected' : ''),
-				'U_PREFIX_1_PZG' => http_build_query(array('prefix1' => 15, 'prefix2' => $prefix2)),
-				'S_PREFIX_1_PZG' => ($prefix1 == 15 ? 'selected' : ''),
-				'U_PREFIX_1_MSG' => http_build_query(array('prefix1' => 16, 'prefix2' => $prefix2)),
-				'S_PREFIX_1_MSG' => ($prefix1 == 16 ? 'selected' : ''),
-				'U_PREFIX_2_NONE' => http_build_query(array('prefix1' => $prefix1, 'prefix2' => 0)),
-				'S_PREFIX_2_NONE' => ($prefix2 == 0 ? 'selected' : ''),
-				'U_PREFIX_2_DOWNLOAD' => http_build_query(array('prefix1' => $prefix1, 'prefix2' => 1)),
-				'S_PREFIX_2_DOWNLOAD' => ($prefix2 == 1 ? 'selected' : ''),
-			)
-		);
+		$forum_data = $event['forum_data'];
+		$forum_id = $forum_data['forum_id'];
+		$all_prefixes = $this->manager->get_prefixes(false);
+
+		$valid_prefix_keys = [];
+		$valid_prefix_values = [];
+		if (false !== $all_prefixes) {
+			foreach ($all_prefixes as $prefix) {
+				if (in_array($forum_id, explode(',', $prefix['forums']))) {
+					$key = explode('_', $prefix['short']);
+					$category = $key[0];
+					$cateIndex = $key[1];
+					$itemIndex = (int)$key[2];
+					if (!empty($category) && !empty($cateIndex) && !empty($itemIndex)) {
+						$valid_prefix_keys[$cateIndex] = $category;
+						$valid_prefix_values[$cateIndex][$itemIndex] = $prefix;
+					}
+				}
+			}
+		}
+
+		if (!empty($valid_prefix_keys)) {
+			$prefix_index = 1;
+			ksort($valid_prefix_keys);
+			foreach ($valid_prefix_keys as $key => $category) {
+				$this->template->assign_vars(
+					array(
+						'U_PREFIX_' . $prefix_index . '_NAME' => $category,
+					)
+				);
+
+				$prefix_key = 'prefix' . $prefix_index;
+				$selected_id = (int) $this->request->variable($prefix_key, 0);
+				$selected_prefixes = array('prefix1' => $prefix1, 'prefix2' => $prefix2, 'prefix3' => $prefix3, 'prefix4' => $prefix4, 'prefix5' => $prefix5);
+				$selected_prefixes[$prefix_key] = 0;
+				$this->template->assign_block_vars('forum_prefix' . $prefix_index, array(
+					'title' => '全部',
+					'link' => http_build_query($selected_prefixes),
+					'class' => $selected_id == 0 ? 'selected' : '',
+				));
+
+				$valid_prefixes = $valid_prefix_values[$key];
+				ksort($valid_prefixes);
+				foreach ($valid_prefixes as $prefix) {
+					$id = $prefix['id'];
+					$title = generate_text_for_display($prefix['title'], $prefix['bbcode_uid'], $prefix['bbcode_bitfield'], OPTION_FLAG_BBCODE);
+					$selected_prefixes = array('prefix1' => $prefix1, 'prefix2' => $prefix2, 'prefix3' => $prefix3, 'prefix4' => $prefix4, 'prefix5' => $prefix5);
+					$selected_prefixes[$prefix_key] = $id;
+
+					$this->template->assign_block_vars('forum_prefix' . $prefix_index, array(
+						'title' => $title,
+						'link' => http_build_query($selected_prefixes),
+						'class' => $selected_id == $id ? 'selected' : '',
+					));
+				}
+				$prefix_index = $prefix_index + 1;
+			}
+		}
 	}
 
 	/**

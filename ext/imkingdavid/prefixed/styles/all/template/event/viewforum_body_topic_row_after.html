@@ -1,0 +1,70 @@
+{% if not PREFIX_FILTER_TOPIC_ID or PREFIX_FILTER_TOPIC_ID == topicrow.TOPIC_ID %}
+    </ul>
+  </div>
+</div>
+<div>
+  <div>
+    <ul>
+      <table class="topic_filter">
+        <!-- IF U_PREFIX_1_NAME -->
+        <tr>
+          <th>{U_PREFIX_1_NAME}:</th>
+          <td>
+            <ul>
+              {% for forum_prefix in forum_prefix1 %}
+              <li><a class="{forum_prefix.class}" href="{U_VIEW_FORUM}&{forum_prefix.link}">{forum_prefix.title}</a></li>
+              {% endfor %}
+            </ul>
+          </td>
+        </tr>
+        <!-- ENDIF -->
+        <!-- IF U_PREFIX_2_NAME -->
+        <tr>
+          <th>{U_PREFIX_2_NAME}:</th>
+          <td>
+            <ul>
+              {% for forum_prefix in forum_prefix2 %}
+              <li><a class="{forum_prefix.class}" href="{U_VIEW_FORUM}&{forum_prefix.link}">{forum_prefix.title}</a></li>
+              {% endfor %}
+            </ul>
+          </td>
+        </tr>
+        <!-- ENDIF -->
+        <!-- IF U_PREFIX_3_NAME -->
+        <tr>
+          <th>{U_PREFIX_3_NAME}:</th>
+          <td>
+            <ul>
+              {% for forum_prefix in forum_prefix3 %}
+              <li><a class="{forum_prefix.class}" href="{U_VIEW_FORUM}&{forum_prefix.link}">{forum_prefix.title}</a></li>
+              {% endfor %}
+            </ul>
+          </td>
+        </tr>
+        <!-- ENDIF -->
+        <!-- IF U_PREFIX_4_NAME -->
+        <tr>
+          <th>{U_PREFIX_4_NAME}:</th>
+          <td>
+            <ul>
+              {% for forum_prefix in forum_prefix4 %}
+              <li><a class="{forum_prefix.class}" href="{U_VIEW_FORUM}&{forum_prefix.link}">{forum_prefix.title}</a></li>
+              {% endfor %}
+            </ul>
+          </td>
+        </tr>
+        <!-- ENDIF -->
+        <!-- IF U_PREFIX_5_NAME -->
+        <tr>
+          <th>{U_PREFIX_5_NAME}:</th>
+          <td>
+            <ul>
+              {% for forum_prefix in forum_prefix5 %}
+              <li><a class="{forum_prefix.class}" href="{U_VIEW_FORUM}&{forum_prefix.link}">{forum_prefix.title}</a></li>
+              {% endfor %}
+            </ul>
+          </td>
+        </tr>
+        <!-- ENDIF -->
+      </table>
+{% endif %}
