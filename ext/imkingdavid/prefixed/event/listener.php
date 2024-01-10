@@ -315,7 +315,7 @@ class listener implements EventSubscriberInterface
 		$prefix4_id = $this->request->variable('prefix4', 0);
 		$prefix5_id = $this->request->variable('prefix5', 0);
 
-		if (empty($prefix) && empty($prefix1) && empty($prefix2) && empty($prefix3) && empty($prefix4) && empty($prefix5))
+		if (empty($prefix_id) && empty($prefix1_id) && empty($prefix2_id) && empty($prefix3_id) && empty($prefix4_id) && empty($prefix5_id))
 		{
 			return;
 		}
@@ -330,7 +330,7 @@ class listener implements EventSubscriberInterface
 		$pagination = $this->container->get('pagination');
 		$base_url = append_sid("{$phpbb_root_path}viewforum.$phpEx", "f=$forum_id&amp;" . http_build_query($selected_prefixes) . ((strlen($this->topics_sort_param)) ? "&amp;$this->topics_sort_param" : ''));
 		$this->template->destroy_block_vars('pagination');
-		$pagination->generate_template_pagination($base_url, 'pagination', 'start', $this->topics_count, $config['topics_per_page'], $this->topics_start);
+		$pagination->generate_template_pagination($base_url, 'pagination', 'start', $this->topics_count < $this->topics_start ? $this->topics_start + 1 : $this->topics_count, $config['topics_per_page'], $this->topics_start);
 
 		$s_display_active = $this->template->retrieve_var('S_DISPLAY_ACTIVE');
 		$this->template->assign_vars(
@@ -348,7 +348,6 @@ class listener implements EventSubscriberInterface
 	 */
 	public function filter_viewforum_by_prefix($event)
 	{
-		$this->start = $event['sql_start'];
 		$prefix_id = $this->request->variable('prefix', 0);
 		$prefix1_id = $this->request->variable('prefix1', 0);
 		$prefix2_id = $this->request->variable('prefix2', 0);
