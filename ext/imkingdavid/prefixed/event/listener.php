@@ -308,12 +308,12 @@ class listener implements EventSubscriberInterface
 	{
 		global $phpbb_root_path, $phpEx, $config;
 
-		$prefix = $this->request->variable('prefix', 0);
-		$prefix1 = $this->request->variable('prefix1', 0);
-		$prefix2 = $this->request->variable('prefix2', 0);
-		$prefix3 = $this->request->variable('prefix3', 0);
-		$prefix4 = $this->request->variable('prefix4', 0);
-		$prefix5 = $this->request->variable('prefix5', 0);
+		$prefix_id = $this->request->variable('prefix', 0);
+		$prefix1_id = $this->request->variable('prefix1', 0);
+		$prefix2_id = $this->request->variable('prefix2', 0);
+		$prefix3_id = $this->request->variable('prefix3', 0);
+		$prefix4_id = $this->request->variable('prefix4', 0);
+		$prefix5_id = $this->request->variable('prefix5', 0);
 
 		if (empty($prefix) && empty($prefix1) && empty($prefix2) && empty($prefix3) && empty($prefix4) && empty($prefix5))
 		{
@@ -325,7 +325,7 @@ class listener implements EventSubscriberInterface
 			return;
 		}
 
-		$selected_prefixes = array('prefix1' => $prefix1, 'prefix2' => $prefix2, 'prefix3' => $prefix3, 'prefix4' => $prefix4, 'prefix5' => $prefix5);
+		$selected_prefixes = array('prefix' => $prefix_id, 'prefix1' => $prefix1_id, 'prefix2' => $prefix2_id, 'prefix3' => $prefix3_id, 'prefix4' => $prefix4_id, 'prefix5' => $prefix5_id);
 		$forum_id = $event['forum_id'];
 		$pagination = $this->container->get('pagination');
 		$base_url = append_sid("{$phpbb_root_path}viewforum.$phpEx", "f=$forum_id&amp;" . http_build_query($selected_prefixes) . ((strlen($this->topics_sort_param)) ? "&amp;$this->topics_sort_param" : ''));
