@@ -67,6 +67,10 @@ class listener implements EventSubscriberInterface
 
 	protected $topic_type_switched;
 
+	protected $topics_count;
+	protected $topics_start;
+	protected $topics_sort_param;
+
 	/**
 	 * We don't want to run the setup() method twice so we keep track of
 	 * whether or not it has been run. This is mainly for the
@@ -92,6 +96,8 @@ class listener implements EventSubscriberInterface
 			'core.posting_modify_template_vars'			=> 'generate_posting_form',
 			'core.mcp_view_forum_modify_topicrow'		=> 'get_topiclist_topic_prefixes',
 			'core.viewforum_get_topic_ids_data'			=> 'filter_viewforum_by_prefix',
+			'core.viewforum_modify_topics_data'			=> 'filter_viewforum_pagination_by_prefix',
+			'core.gen_sort_selects_after'						=> 'filter_viewforum_sort_by_prefix',
 			'core.display_forums_modify_sql'			=> 'modify_forumlist_sql',
 			'core.display_forums_modify_template_vars'	=> 'get_forumlist_topic_prefixes',
 			'core.search_modify_tpl_ary'				=> 'get_searchlist_topic_prefixes', 
@@ -132,6 +138,8 @@ class listener implements EventSubscriberInterface
 		$this->manager = $this->container->get('prefixed.manager');
 		$this->template = $this->container->get('template');
 		$this->topic_type_switched = false;
+		$this->topics_count = -1;
+		$this->topics_start = -1;
 	}
 
 	/**
@@ -282,65 +290,147 @@ class listener implements EventSubscriberInterface
 	}
 
 	/**
-	 * Allow showing only topics with the given prefix in viewforum
+	 * save sort
 	 *
 	 * @var Event $event
 	 */
-	public function filter_viewforum_by_prefix($event)
+	public function filter_viewforum_sort_by_prefix($event)
 	{
+		$this->topics_sort_param = $event['u_sort_param'];
+	}
+
+	/**
+	 * Allow count only topics with the given prefix in viewforum
+	 *
+	 * @var Event $event
+	 */
+	public function filter_viewforum_pagination_by_prefix($event)
+	{
+		global $phpbb_root_path, $phpEx, $config;
+
 		$prefix = $this->request->variable('prefix', 0);
 		$prefix1 = $this->request->variable('prefix1', 0);
 		$prefix2 = $this->request->variable('prefix2', 0);
 		$prefix3 = $this->request->variable('prefix3', 0);
 		$prefix4 = $this->request->variable('prefix4', 0);
 		$prefix5 = $this->request->variable('prefix5', 0);
+
+		if (empty($prefix) && empty($prefix1) && empty($prefix2) && empty($prefix3) && empty($prefix4) && empty($prefix5))
+		{
+			return;
+		}
+
+		if ($this->topics_count < 0 || $this->topics_start < 0)
+		{
+			return;
+		}
+
+		$selected_prefixes = array('prefix1' => $prefix1, 'prefix2' => $prefix2, 'prefix3' => $prefix3, 'prefix4' => $prefix4, 'prefix5' => $prefix5);
+		$forum_id = $event['forum_id'];
+		$pagination = $this->container->get('pagination');
+		$base_url = append_sid("{$phpbb_root_path}viewforum.$phpEx", "f=$forum_id&amp;" . http_build_query($selected_prefixes) . ((strlen($this->topics_sort_param)) ? "&amp;$this->topics_sort_param" : ''));
+		$this->template->destroy_block_vars('pagination');
+		$pagination->generate_template_pagination($base_url, 'pagination', 'start', $this->topics_count, $config['topics_per_page'], $this->topics_start);
+
+		$s_display_active = $this->template->retrieve_var('S_DISPLAY_ACTIVE');
+		$this->template->assign_vars(
+			array(
+				'TOTAL_TOPICS' => ($s_display_active) ? false : $this->user->lang('VIEW_FORUM_TOPICS', (int) $this->topics_count),
+			)
+		);
+
+	}
+
+	/**
+	 * Allow showing only topics with the given prefix in viewforum
+	 *
+	 * @var Event $event
+	 */
+	public function filter_viewforum_by_prefix($event)
+	{
+		$this->start = $event['sql_start'];
+		$prefix_id = $this->request->variable('prefix', 0);
+		$prefix1_id = $this->request->variable('prefix1', 0);
+		$prefix2_id = $this->request->variable('prefix2', 0);
+		$prefix3_id = $this->request->variable('prefix3', 0);
+		$prefix4_id = $this->request->variable('prefix4', 0);
+		$prefix5_id = $this->request->variable('prefix5', 0);
+
+		$forum_id = $event['forum_id'];
+		$sql_where = $event['sql_where'];
+		$sql_approved = $event['sql_approved'];
+		$sql_limit_time = $event['sql_limit_time'];
+		$sql_array = array(
+			'SELECT' => 'COUNT(t.topic_id) AS num_topics',
+			'FROM' => array(
+				TOPICS_TABLE => 't',
+			),
+			'WHERE' => "$sql_where
+					AND t.topic_type IN (" . POST_NORMAL . ', ' . POST_STICKY . ")
+					$sql_approved
+					$sql_limit_time",
+		);
+
 		$sql_ary = $event['sql_ary'];
 		$join_statements = array();
-		if ($prefix) {
+		if ($prefix_id) {
 			array_push($join_statements, [
 				'FROM'  => array(PREFIX_INSTANCES_TABLE => 'pr'),
 				'ON'    => 'pr.topic = t.topic_id',
 			]);
-			$sql_ary['WHERE'] .= 'AND pr.prefix = ' . (int) $prefix . ' ';
+			$sql_ary['WHERE'] .= 'AND pr.prefix = ' . (int) $prefix_id . ' ';
+			$sql_array['WHERE'] .= 'AND pr.prefix = ' . (int) $prefix_id . ' ';
 		}
-		if ($prefix1) {
+		if ($prefix1_id) {
 			array_push($join_statements, [
 				'FROM' => array(PREFIX_INSTANCES_TABLE => 'pr1'),
 				'ON' => 'pr1.topic = t.topic_id',
 			]);
-			$sql_ary['WHERE'] .= 'AND pr1.prefix = ' . (int) $prefix1 . ' ';
+			$sql_ary['WHERE'] .= 'AND pr1.prefix = ' . (int) $prefix1_id . ' ';
+			$sql_array['WHERE'] .= 'AND pr1.prefix = ' . (int) $prefix1_id . ' ';
 		}
-		if ($prefix2) {
+		if ($prefix2_id) {
 			array_push($join_statements, [
 				'FROM' => array(PREFIX_INSTANCES_TABLE => 'pr2'),
 				'ON' => 'pr2.topic = t.topic_id',
 			]);
-			$sql_ary['WHERE'] .= 'AND pr2.prefix = ' . (int) $prefix2 . ' ';
+			$sql_ary['WHERE'] .= 'AND pr2.prefix = ' . (int) $prefix2_id . ' ';
+			$sql_array['WHERE'] .= 'AND pr2.prefix = ' . (int) $prefix2_id . ' ';
 		}
-		if ($prefix3) {
+		if ($prefix3_id) {
 			array_push($join_statements, [
 				'FROM' => array(PREFIX_INSTANCES_TABLE => 'pr3'),
 				'ON' => 'pr3.topic = t.topic_id',
 			]);
-			$sql_ary['WHERE'] .= 'AND pr3.prefix = ' . (int) $prefix3 . ' ';
+			$sql_ary['WHERE'] .= 'AND pr3.prefix = ' . (int) $prefix3_id . ' ';
+			$sql_array['WHERE'] .= 'AND pr3.prefix = ' . (int) $prefix3_id . ' ';
 		}
-		if ($prefix4) {
+		if ($prefix4_id) {
 			array_push($join_statements, [
 				'FROM' => array(PREFIX_INSTANCES_TABLE => 'pr4'),
 				'ON' => 'pr4.topic = t.topic_id',
 			]);
-			$sql_ary['WHERE'] .= 'AND pr4.prefix = ' . (int) $prefix4 . ' ';
+			$sql_ary['WHERE'] .= 'AND pr4.prefix = ' . (int) $prefix4_id . ' ';
+			$sql_array['WHERE'] .= 'AND pr4.prefix = ' . (int) $prefix4_id . ' ';
 		}
-		if ($prefix5) {
+		if ($prefix5_id) {
 			array_push($join_statements, [
 				'FROM' => array(PREFIX_INSTANCES_TABLE => 'pr5'),
 				'ON' => 'pr5.topic = t.topic_id',
 			]);
-			$sql_ary['WHERE'] .= 'AND pr5.prefix = ' . (int) $prefix5 . ' ';
+			$sql_ary['WHERE'] .= 'AND pr5.prefix = ' . (int) $prefix5_id . ' ';
+			$sql_array['WHERE'] .= 'AND pr5.prefix = ' . (int) $prefix5_id . ' ';
 		}
 		if (count($join_statements) > 0) {
 			$sql_ary['LEFT_JOIN'] = $join_statements;
 			$event['sql_ary'] = $sql_ary;
+
+			// query count
+			$sql_array['LEFT_JOIN'] = $join_statements;
+			$result = $this->db->sql_query($this->db->sql_build_query('SELECT', $sql_array));
+			$this->topics_count = (int) $this->db->sql_fetchfield('num_topics');
+			$this->topics_start = $event['sql_start'];
+			$this->db->sql_freeresult($result);
 		}
 
 		$forum_data = $event['forum_data'];
@@ -365,9 +455,12 @@ class listener implements EventSubscriberInterface
 		}
 
 		if (!empty($valid_prefix_keys)) {
+			// topic list
 			$prefix_index = 1;
 			ksort($valid_prefix_keys);
 			foreach ($valid_prefix_keys as $key => $category) {
+				$valid_prefixes = $valid_prefix_values[$key];
+				ksort($valid_prefixes);
 				$this->template->assign_vars(
 					array(
 						'U_PREFIX_' . $prefix_index . '_NAME' => $category,
@@ -375,27 +468,26 @@ class listener implements EventSubscriberInterface
 				);
 
 				$prefix_key = 'prefix' . $prefix_index;
-				$selected_id = (int) $this->request->variable($prefix_key, 0);
-				$selected_prefixes = array('prefix1' => $prefix1, 'prefix2' => $prefix2, 'prefix3' => $prefix3, 'prefix4' => $prefix4, 'prefix5' => $prefix5);
+				$selected_id = $this->request->variable($prefix_key, 0);
+				$selected_prefixes = array('prefix1' => $prefix1_id, 'prefix2' => $prefix2_id, 'prefix3' => $prefix3_id, 'prefix4' => $prefix4_id, 'prefix5' => $prefix5_id);
 				$selected_prefixes[$prefix_key] = 0;
+				$valid_prefix_ids = array_column(array_values($valid_prefixes), 'id');
 				$this->template->assign_block_vars('forum_prefix' . $prefix_index, array(
 					'title' => '全部',
 					'link' => http_build_query($selected_prefixes),
-					'class' => $selected_id == 0 ? 'selected' : '',
+					'class' => $selected_id == 0 && !in_array($prefix_id, $valid_prefix_ids) ? 'selected' : '',
 				));
 
-				$valid_prefixes = $valid_prefix_values[$key];
-				ksort($valid_prefixes);
 				foreach ($valid_prefixes as $prefix) {
 					$id = $prefix['id'];
 					$title = generate_text_for_display($prefix['title'], $prefix['bbcode_uid'], $prefix['bbcode_bitfield'], OPTION_FLAG_BBCODE);
-					$selected_prefixes = array('prefix1' => $prefix1, 'prefix2' => $prefix2, 'prefix3' => $prefix3, 'prefix4' => $prefix4, 'prefix5' => $prefix5);
+					$selected_prefixes = array('prefix1' => $prefix1_id, 'prefix2' => $prefix2_id, 'prefix3' => $prefix3_id, 'prefix4' => $prefix4_id, 'prefix5' => $prefix5_id);
 					$selected_prefixes[$prefix_key] = $id;
 
 					$this->template->assign_block_vars('forum_prefix' . $prefix_index, array(
 						'title' => $title,
 						'link' => http_build_query($selected_prefixes),
-						'class' => $selected_id == $id ? 'selected' : '',
+						'class' => $selected_id == $id || $prefix_id == $id ? 'selected' : '',
 					));
 				}
 				$prefix_index = $prefix_index + 1;
