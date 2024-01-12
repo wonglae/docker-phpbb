@@ -234,11 +234,11 @@ class listener implements EventSubscriberInterface
 		$topic_row = $event['topic_row'];
 		$topic_row['TOPIC_PREFIX'] = $this->load_prefixes_topic($event, 'row', '', true);
 		$event['topic_row'] = $topic_row;
-		if ($topic_row['S_TOPIC_TYPE_SWITCH'] == 0)
+		if (array_key_exists('S_TOPIC_TYPE_SWITCH', $topic_row) && $topic_row['S_TOPIC_TYPE_SWITCH'] == 0)
 		{
 			$this->topic_type_switched = true;
 		}
-		if ($this->topic_type_switched == 0)
+		if ($this->topic_type_switched == false)
 		{
 			$this->template->assign_vars(
 				array(
