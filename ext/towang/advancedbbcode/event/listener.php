@@ -97,6 +97,8 @@ class listener implements EventSubscriberInterface
 		{
 			$this->attachments[$row['post_msg_id']][] = $row;
 		}
+
+    $this->db->sql_freeresult($result);
   }
 
   public function viewforum_modify_topicrow($event)
@@ -245,12 +247,12 @@ class listener implements EventSubscriberInterface
     $watch_topic = $this->template->retrieve_var('U_WATCH_TOPIC');
     $view_topic = $this->template->retrieve_var('U_VIEW_TOPIC');
 
-    $search_results = $this->template->retrieve_block_vars('searchresults', array());
+    $search_matches = $this->template->retrieve_var('SEARCH_MATCHES');
     
     $renderer = $event['renderer']->get_renderer();
     $renderer->setParameters(array(
       'S_IN_POSTING'          => $in_posting,
-      'S_IN_SEARCHING'        => empty($search_results) ? false: true,
+      'S_IN_SEARCHING'        => empty($search_matches) ? false: true,
       'S_USER_POSTS'          => $user_posts,
       'S_USER_RANK_SPECIAL'   => $special_rank, // -1 means no special rank
       'S_TOPIC_REPLIED'       => $topic_replied,
