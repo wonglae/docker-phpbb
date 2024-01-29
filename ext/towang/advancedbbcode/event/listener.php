@@ -241,6 +241,7 @@ class listener implements EventSubscriberInterface
     
     $user_rank_weighting = $this->template->retrieve_var('S_USER_RANK_WEIGHTING');
     $in_posting = $this->template->retrieve_var('S_IN_POSTING') ? true : false;
+    $topic_self = $this->template->retrieve_var('S_TOPIC_SELF') ? true : false;
     $topic_replied = $this->template->retrieve_var('S_TOPIC_REPLIED') ? true : false;
     $topic_replied_today = $this->template->retrieve_var('S_TOPIC_REPLIED_TODAY') ? true : false;
     $forum_id = $this->template->retrieve_var('S_FORUM_ID');
@@ -261,6 +262,7 @@ class listener implements EventSubscriberInterface
       'S_IN_SEARCHING'        => empty($search_matches) ? false: true,
       'S_USER_POSTS'          => $user_posts,
       'S_USER_RANK_SPECIAL'   => $special_rank, // -1 means no special rank
+      'S_TOPIC_SELF'          => $topic_self,
       'S_TOPIC_REPLIED'       => $topic_replied,
       'S_TOPIC_REPLIED_TODAY' => $topic_replied_today,
       'S_FORUM_ID'            => $forum_id,
@@ -302,7 +304,7 @@ class listener implements EventSubscriberInterface
       $this->b_topic_replied_today = false;
 
       // Check if a user has posted
-      $this->check_user_posted_by_topicId($forum_id, $topic_id);
+      $this->check_user_posted_by_topicId($topic_id);
 
       $this->template->assign_vars(array(
         'S_TOPIC_SELF' => $user_id == $topic_data['topic_poster'],
