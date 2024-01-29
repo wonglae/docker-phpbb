@@ -19,5 +19,6 @@ if (empty($lang) || !is_array($lang))
 }
 
 $lang = array_merge($lang, array(
+	'CHECKIN'																		=> '签到',
 	'POSTING_QUOTE_HIDDEN_CONTENT_NOT_ALLOW'		=> '帖子包含隐藏内容。隐藏内容不能被引用。',
 ));

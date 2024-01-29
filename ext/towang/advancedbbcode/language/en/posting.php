@@ -19,5 +19,6 @@ if (empty($lang) || !is_array($lang))
 }
 
 $lang = array_merge($lang, array(
+	'CHECKIN'																		=> 'Check-in',
 	'POSTING_QUOTE_HIDDEN_CONTENT_NOT_ALLOW'		=> 'The post contains hidden content. Hidden content can\'t be quoted.',
 ));

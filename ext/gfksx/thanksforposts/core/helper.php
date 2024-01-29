@@ -565,6 +565,9 @@ class helper
 			$l_poster_receive_count = (isset($this->poster_list_count[$poster_id]['R']) && $this->poster_list_count[$poster_id]['R']) ? $this->language->lang('THANKS', (int) $this->poster_list_count[$poster_id]['R']) : '';
 			$l_poster_give_count = (isset($this->poster_list_count[$poster_id]['G']) && $this->poster_list_count[$poster_id]['G']) ? $this->language->lang('THANKS', (int) $this->poster_list_count[$poster_id]['G']) : '';
 
+			// MOD user checkin count
+			$l_poster_checkin_count = (isset($this->poster_list_count[$poster_id]['C']) && $this->poster_list_count[$poster_id]['C']) ? $this->language->lang('CHECKIN_DAYS', (int) $this->poster_list_count[$poster_id]['C']) : '';
+
 			// Correctly form URLs
 			$u_receive_count_url = $this->controller_helper->route('gfksx_thanksforposts_thankslist_controller_user', ['mode' => 'givens', 'author_id' => $poster_id, 'give' => 'false', 'tslash' => '']);
 			$u_give_count_url = $this->controller_helper->route('gfksx_thanksforposts_thankslist_controller_user', ['mode' => 'givens', 'author_id' => $poster_id, 'give' => 'true', 'tslash' => '']);
@@ -577,6 +580,7 @@ class helper
 				'THANK_TEXT'				=> $this->language->lang('THANK_TEXT_1'),
 				'THANK_TEXT_2'				=> ($this->get_thanks_number($row['post_id']) != 1) ? $this->language->lang('THANK_TEXT_2PL', $this->get_thanks_number((int) $row['post_id'])) : $this->language->lang('THANK_TEXT_2'),
 				'THANKS_FROM'				=> $this->language->lang('THANK_FROM'),
+				'POSTER_CHECKIN_COUNT'		=> $l_poster_checkin_count,
 				'POSTER_RECEIVE_COUNT'		=> $l_poster_receive_count,
 				'POSTER_GIVE_COUNT'			=> $l_poster_give_count,
 				'POSTER_RECEIVE_COUNT_LINK'	=> $u_receive_count_url,
@@ -670,6 +674,7 @@ class helper
 			{
 				$poster_list[] = $row['poster_id'];
 				$this->poster_list_count[$row['poster_id']]['R'] = $this->poster_list_count[$row['poster_id']]['G'] = 0;
+				$this->poster_list_count[$row['poster_id']]['C'] = 0;
 			}
 			$this->db->sql_freeresult($result);
 
@@ -699,6 +704,24 @@ class helper
 				$this->poster_list_count[$row['user_id']]['G'] = $row['user_count'];
 			}
 			$this->db->sql_freeresult($result);
+
+			// MOD: query checkin counts
+			$topic_id = $this->config['towang_advancedbbcode_checkin_post_id'];
+			if (!empty($topic_id))
+			{
+				$sql = 'SELECT COUNT(DISTINCT(DATE(from_unixtime(post_time)))) as count, poster_id
+				FROM ' . POSTS_TABLE . '
+				WHERE topic_id = ' . $topic_id . '
+					AND ' . $this->db->sql_in_set('poster_id', $poster_list) . '
+				GROUP BY poster_id';
+				$result = $this->db->sql_query($sql);
+
+				while ($row = $this->db->sql_fetchrow($result)) {
+					$this->poster_list_count[$row['poster_id']]['C'] = $row['count'];
+				}
+
+				$this->db->sql_freeresult($result);
+			}
 		}
 	}
 
@@ -935,5 +958,36 @@ class helper
 			$this->db->sql_freeresult($result);
 			return $poster_count;
 		}
+	}
+
+	public function get_checkin_count($user_id)
+	{
+		if (isset($this->poster_list_count[$user_id]['C'])) {
+			return $this->poster_list_count[$user_id]['C'] ?? 0;
+		} else {
+			$topic_id = $this->config['towang_advancedbbcode_checkin_post_id'];
+			if (!empty($topic_id)) {
+				$sql = 'SELECT COUNT(DISTINCT(DATE(from_unixtime(post_time)))) as count
+				FROM ' . POSTS_TABLE . '
+				WHERE topic_id = ' . $topic_id . '
+					AND poster_id = ' . $user_id . '
+				GROUP BY poster_id';
+				$result = $this->db->sql_query($sql);
+				$checkin_count = (int) $this->db->sql_fetchfield('count');
+				$this->db->sql_freeresult($result);
+				return $checkin_count;
+			} else {
+				return 0;
+			}
+		}
+	}
+
+	public function get_addtional_rank_value($user_id)
+	{
+		$received_thanks_count = $this->get_received_thanks_count($user_id);
+		$given_thanks_count = $this->get_given_thanks_count($user_id);
+		$checkin_count = $this->get_checkin_count($user_id);
+		// The value is evaluated with rank's min value
+		return $given_thanks_count + $received_thanks_count * 3 + $checkin_count * 10;
 	}
 }

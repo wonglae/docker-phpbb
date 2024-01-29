@@ -49,6 +49,7 @@ class main_module
 
 		if ($this->request->is_set_post('submit'))
 		{
+			$this->config->set('towang_advancedbbcode_checkin_post_id', $this->request->variable('checkin_topic_id', '', true));
 			$this->put_custom_css($this->request->variable('custom_css', '', true));
 
 			// make sure browsers will download the file again and not use the cached version
@@ -58,6 +59,7 @@ class main_module
 		$this->template->assign_vars([
 			'U_ACTION'		=> $this->u_action,
 			'CUSTOM_CSS'	=> $this->get_custom_css(),
+			'CHECKIN_TOPIC_ID' => $this->config['towang_advancedbbcode_checkin_post_id'],
 		]);
 	}
 

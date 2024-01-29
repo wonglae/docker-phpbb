@@ -1,0 +1,7 @@
+{% if S_USER_LOGGED_IN and U_CHECKIN_POST %}
+<li data-last-responsive="true">
+    <a href="{{ U_CHECKIN_POST }}" title="{{ lang('CHECKIN') }}" role="menuitem">
+        <i class="icon fa-calendar-check-o fa-fw" aria-hidden="true"></i><span>{{ lang('CHECKIN') }}</span>
+    </a>
+</li>
+{% endif %}

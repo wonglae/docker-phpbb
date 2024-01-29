@@ -9,6 +9,13 @@
 		<legend>{{ lang('ACP_TOWANG_ADVANCEDBBOCDE_TITLE') }}</legend>
 
 		<dl>
+			<dt><label for="checkin_topic_id">{{ lang('S_CHECKIN_TOPIC_ID') ~ lang('COLON') }}</label><br><span>{{
+					lang('S_CHECKIN_TOPIC_ID_EXPLAIN') }}</span></dt>
+			<dd><input class="text" type="number" id="checkin_topic_id" name="checkin_topic_id" size="4" min="0"
+					value="{{ CHECKIN_TOPIC_ID }}"></dd>
+		</dl>
+
+		<dl>
 			<dt><label for="custom_css">{{ lang('CUSTOM_CSS') ~ lang('COLON') }}</label><br><span>{{ lang('CUSTOM_CSS_EXPLAIN') }}</span></dt>
 			<dd><textarea name="custom_css" id="custom_css" rows="20">{{ CUSTOM_CSS }}</textarea></dd>
 		</dl>

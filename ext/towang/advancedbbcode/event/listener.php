@@ -25,8 +25,8 @@ class listener implements EventSubscriberInterface
   protected $config;
   protected $helper;
 
-  private $b_forceUnhide = false;
   private $b_topic_replied = false;
+  private $b_topic_replied_today = false;
 
   private $hbuid; // Hide Bbcode UID (Unique Identification Digit)
 
@@ -186,12 +186,19 @@ class listener implements EventSubscriberInterface
 
   public function load_language_on_setup($event)
   {
+    global $phpbb_root_path, $phpEx;
     $lang_set_ext = $event['lang_set_ext'];
     $lang_set_ext[] = array(
       'ext_name' => 'towang/advancedbbcode',
       'lang_set' => 'posting',
     );
     $event['lang_set_ext'] = $lang_set_ext;
+
+    $topic_id = $this->config['towang_advancedbbcode_checkin_post_id'];
+    if (!empty($topic_id))
+		{
+			$this->template->assign_var('U_CHECKIN_POST', append_sid("{$phpbb_root_path}viewtopic.$phpEx", 't=' . $topic_id));
+		}
   }
 
   public function verify_allow_user_posting($event)
@@ -232,10 +239,10 @@ class listener implements EventSubscriberInterface
     $user_rank = $this->user->data['user_rank'];
     $special_rank = !empty($ranks['special'][$user_rank]) ? $user_rank : -1;
     
-    $user_received_thanks = $this->template->retrieve_var('S_USER_RECEIVED_THANKS');
-    $user_given_thanks = $this->template->retrieve_var('S_USER_GIVEN_THANKS');
+    $user_rank_weighting = $this->template->retrieve_var('S_USER_RANK_WEIGHTING');
     $in_posting = $this->template->retrieve_var('S_IN_POSTING') ? true : false;
     $topic_replied = $this->template->retrieve_var('S_TOPIC_REPLIED') ? true : false;
+    $topic_replied_today = $this->template->retrieve_var('S_TOPIC_REPLIED_TODAY') ? true : false;
     $forum_id = $this->template->retrieve_var('S_FORUM_ID');
     $topic_id = $this->template->retrieve_var('S_TOPIC_ID');
     $login_action = $this->template->retrieve_var('S_LOGIN_ACTION');
@@ -246,9 +253,8 @@ class listener implements EventSubscriberInterface
     $bookmark_topic = $this->template->retrieve_var('U_BOOKMARK_TOPIC');
     $watch_topic = $this->template->retrieve_var('U_WATCH_TOPIC');
     $view_topic = $this->template->retrieve_var('U_VIEW_TOPIC');
-
     $search_matches = $this->template->retrieve_var('SEARCH_MATCHES');
-    
+
     $renderer = $event['renderer']->get_renderer();
     $renderer->setParameters(array(
       'S_IN_POSTING'          => $in_posting,
@@ -256,6 +262,7 @@ class listener implements EventSubscriberInterface
       'S_USER_POSTS'          => $user_posts,
       'S_USER_RANK_SPECIAL'   => $special_rank, // -1 means no special rank
       'S_TOPIC_REPLIED'       => $topic_replied,
+      'S_TOPIC_REPLIED_TODAY' => $topic_replied_today,
       'S_FORUM_ID'            => $forum_id,
       'S_TOPIC_ID'            => $topic_id,
       'S_LOGIN_ACTION'        => html_entity_decode($login_action),
@@ -268,10 +275,10 @@ class listener implements EventSubscriberInterface
       'U_VIEW_TOPIC'          => html_entity_decode($view_topic),
     ));
 
-    if (isset($user_given_thanks) && isset($user_received_thanks))
+    if (isset($user_rank_weighting))
     {
       $renderer->setParameters(array(
-        'S_USER_RANK_VALUE'   => $user_posts + $user_given_thanks + $user_received_thanks * 3,
+        'S_USER_RANK_VALUE'   => $user_posts + $user_rank_weighting,
       ));
     }
   }
@@ -284,25 +291,23 @@ class listener implements EventSubscriberInterface
   public function check_user_posted_viewtopic($event)
   {
     $user_id = $this->user->data['user_id'];
+    $forum_id = $event['forum_id'];
     $topic_id = $event['topic_id'];
     $topic_data = $event['topic_data'];
     $total_posts = $event['total_posts'];
 
     if ($topic_id > 0 && $total_posts > 0)
     {
-      $this->b_forceUnhide = false;
       $this->b_topic_replied = false;
-      
-      if ($user_id == $topic_data['topic_poster'])
-      {
-        $this->b_forceUnhide = true;
-      }
+      $this->b_topic_replied_today = false;
 
       // Check if a user has posted
-      $this->check_user_posted_by_topicId($topic_id);
-      
+      $this->check_user_posted_by_topicId($forum_id, $topic_id);
+
       $this->template->assign_vars(array(
-        'S_TOPIC_REPLIED' => ($this->b_topic_replied || $this->b_forceUnhide) ? true : false,
+        'S_TOPIC_SELF' => $user_id == $topic_data['topic_poster'],
+        'S_TOPIC_REPLIED' => $this->b_topic_replied,
+        'S_TOPIC_REPLIED_TODAY' => $this->b_topic_replied_today,
       ));
     }
   }
@@ -315,31 +320,28 @@ class listener implements EventSubscriberInterface
   private function check_user_posted_by_topicId($topic_id)
   {
     global $auth;
-
-    $sql = "SELECT forum_id 
-      FROM " . TOPICS_TABLE . "
-      WHERE topic_id = ".$topic_id." ";
-    $result = $this->db->sql_query($sql);
-    $forum_id = $this->db->sql_fetchrow($result);
-    $forum_id = $forum_id['forum_id'];
-    $this->db->sql_freeresult($result);
-
-    if ($auth->acl_get('m_', $forum_id))
-    {
-      // If moderator or admin, skip reply check, auto unhide
-      $this->b_forceUnhide = true;
-    }
-    elseif ($this->user->data['user_id'] != ANONYMOUS)
+    if ($this->user->data['user_id'] != ANONYMOUS)
     {
       // Check if the topic viewer has posted in the topic
-      $sql = "SELECT poster_id, topic_id 
+      $sql = "SELECT DATE(from_unixtime(post_time)) as post_date, from_unixtime(post_time) as post_time
         FROM " . POSTS_TABLE . "
         WHERE topic_id = $topic_id 
-        AND poster_id = " . $this->user->data['user_id'] . "
-        AND post_visibility = " . ITEM_APPROVED;
+          AND poster_id = " . $this->user->data['user_id'] . "
+          AND post_visibility = " . ITEM_APPROVED ."
+        ORDER BY post_time DESC";
 
       $result = $this->db->sql_query_limit($sql, 1, 0);
+      
       $this->b_topic_replied = $this->db->sql_affectedrows($result) ? true : false;
+      if ($this->b_topic_replied == true)
+      {
+        $post_date = $this->db->sql_fetchrow($result)['post_date'];
+
+        if ($post_date == date('Y-m-d'))
+        {
+          $this->b_topic_replied_today = true;
+        }
+      }
       $this->db->sql_freeresult($result);
     }
   }

@@ -20,4 +20,9 @@ if (empty($lang) || !is_array($lang))
 
 $lang = array_merge($lang, array(
 	'ACP_TOWANG_ADVANCEDBBOCDE_TITLE'	=> 'Advanced BBCode',
+	'ACP_TOWANG_ADVANCEDBBOCDE_EXPLAIN' => 'Here you can directly edit CSS file that is loaded on every page. Most users use this to do small edits to the styles without loosing the changes after updating.',
+	'S_CHECKIN_TOPIC_ID' => 'Check-in topic ID',
+	'S_CHECKIN_TOPIC_ID_EXPLAIN' => 'Set check-in topic',
+	'CUSTOM_CSS' => 'Custom CSS',
+	'CUSTOM_CSS_EXPLAIN' => 'Type your CSS here. We will take care that changes are loaded in your user browsers immediately.',
 ));

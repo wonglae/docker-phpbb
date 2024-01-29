@@ -48,6 +48,12 @@ $lang = array_merge($lang, [
 
 	'DISABLE_REMOVE_THANKS'						=> '管理员已禁用删除点赞。',
 
+	'CHECKINS'												=> '签到天数',
+	'CHECKIN_DAYS'										=> [
+		1																=> '%d天',
+		2																=> '%d天',
+	],
+
 	'GIVEN'														=> '已发点赞',
 	'GLOBAL_INCORRECT_THANKS'					=> '您不能为没有指定特定论坛的全局公告表示点赞。',
 	'GRATITUDES'											=> '点赞列表',
