@@ -136,11 +136,9 @@ class listener implements EventSubscriberInterface
 		if (empty($user_data['user_rank']))
 		{
 			$user_id = $user_data['user_id'];
-			$received_thanks_count = $this->helper->get_received_thanks_count($user_id);
-			$given_thanks_count = $this->helper->get_given_thanks_count($user_id);
-			$checkin_count = $this->helper->get_checkin_count($user_id);
+			$user_rank_weighting = $this->helper->get_addtional_rank_value($user_id);
 			// The value is evaluated with rank's min value
-			$event['user_posts'] = $user_posts + $given_thanks_count + $received_thanks_count * 3 + $checkin_count * 10;
+			$event['user_posts'] = $user_posts + $user_rank_weighting;
 		}
 	}
 
@@ -178,6 +176,13 @@ class listener implements EventSubscriberInterface
 		{
 			$this->helper->output_thanks_memberlist($user_id, $ex_fid_ary);
 		}
+
+		$user_posts = $member['user_posts'];
+		$user_rank_weighting = $this->helper->get_addtional_rank_value($user_id);
+		error_log('viewforum_modify_topicrow ' . $user_posts . ' ' . $user_rank_weighting, 0);
+		$this->template->assign_vars([
+			'S_USER_RANK_VALUE' => $user_posts + $user_rank_weighting,
+		]);
 	}
 
 	public function delete_post_thanks($event)
