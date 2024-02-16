@@ -249,6 +249,13 @@
 		<div class="grid_item">
 			<a href="{topicrow.U_VIEW_TOPIC}"><img src="{topicrow.TOPIC_THUMBNAIL_IMG}" /></a>
 			<a href="{topicrow.U_VIEW_TOPIC}" class="topictitle">{topicrow.TOPIC_TITLE}</a>
+			<span class="topicstates">
+				<i class="icon fa-comment fa-fw" aria-hidden="true"></i>{topicrow.REPLIES}&nbsp;
+				<i class="icon fa-thumbs-up fa-fw" aria-hidden="true" ></i>{topicrow.TOPIC_THANKS}&nbsp;
+				<!-- IF topicrow.TOPIC_PREFIX -->
+				<i class="icon fa-tag fa-fw" aria-hidden="true"></i>&nbsp;{topicrow.TOPIC_PREFIX}
+				<!-- ENDIF -->
+			</span>
 		</div>
 	<!-- ENDIF -->
 

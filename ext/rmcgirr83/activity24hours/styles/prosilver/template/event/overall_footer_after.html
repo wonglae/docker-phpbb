@@ -1,0 +1,24 @@
+{% if SCRIPT_NAME == 'index' and not S_IS_BOT %}
+<script>
+$(document).ready(function() {
+  $("#ListTrigger").show();
+});
+var hide = '<i class="fa fa-minus"></i>';
+var show = '<i class="fa fa-plus"></i>';
+
+function showList()
+{
+	$('#day_list').fadeIn('fast', function() {
+		$('#ShowList').replaceWith(' <a href="#" title="{{ lang('HIDE_LIST')|escape('js') }}" id="HideList" onclick="hideList(); return false;">'+hide+'</a>');
+	});
+};
+
+function hideList()
+{
+	$('#day_list').fadeOut('fast', function() {
+		$('#HideList').replaceWith(' <a href="#" title="{{ lang('SHOW_LIST')|escape('js') }}" id="ShowList" onclick="showList(); return false;">'+show+'</a>');
+	});
+
+}
+</script>
+{% endif %}

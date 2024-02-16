@@ -1,0 +1,16 @@
+services:
+    rmcgirr83.activity24hours.listener:
+        class: rmcgirr83\activity24hours\event\listener
+        arguments:
+            - '@auth'
+            - '@cache'
+            - '@config'
+            - '@dbal.conn'
+            - '@dispatcher'
+            - '@language'
+            - '@template'
+            - '@user'
+            - '@?rmcgirr83.hidebots.listener'
+            - '@?senky.relativedates.listener'
+        tags:
+            - { name: event.listener }

@@ -729,6 +729,7 @@ class helper
 	{
 		return [
 			'TOPIC_REPUT'				=> (isset($topic_thanks[$topic_id])) ? round((int) $topic_thanks[$topic_id] / ($max_topic_thanks / 100), (int) $this->config['thanks_number_digits']) . '%' : '',
+			'TOPIC_THANKS'			=> (isset($topic_thanks[$topic_id])) ? $topic_thanks[$topic_id] : 0,
 			'S_THANKS_TOPIC_REPUT_VIEW' => (bool) $this->config['thanks_topic_reput_view'],
 			'S_THANKS_REPUT_GRAPHIC' 	=> (bool) $this->config['thanks_reput_graphic'],
 			'THANKS_REPUT_HEIGHT'		=> $this->config['thanks_reput_height'] ?: false,
