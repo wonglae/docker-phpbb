@@ -416,11 +416,7 @@ class driver
 			return $posted;
 		}
 
-		// $new_latest = array(
-		// 	'link' => $this->prop_to_string($items[0]['link']),
-		// 	'pubDate' => $this->prop_to_string($items[0]['pubDate']),
-		// 	'guid' => empty($items[0]['guid']) ? '' : $items[0]['guid'],
-		// );
+
 		$new_latest = $this->current_state[$source_id]['latest'];
 
 		$to_post = array();
@@ -434,19 +430,20 @@ class driver
 			}
 			else
 			{
-				if (!empty($item['pubDate']) && (strtotime($item['pubDate']) >= strtotime('-2 days')))
+				if (!empty($item['pubDate']) && (empty($new_latest['pubDate']) || strtotime($item['pubDate']) >= strtotime($new_latest['pubDate'])))
 				{
 					$to_post[] = $item;
-					if (strtotime($item['pubDate']) >= strtotime($new_latest['pubDate']))
-					{
-						$new_latest = $item;
-					}
 				}
 			}
 		}
 		if (!empty($to_post))
 		{
-            $this->switch_user($this->current_state[$source_id]['user_id']);
+			$new_latest = array(
+				'link' => $this->prop_to_string($items[0]['link']),
+				'pubDate' => $this->prop_to_string($items[0]['pubDate']),
+				'guid' => empty($items[0]['guid']) ? '' : $items[0]['guid'],
+			);
+			$this->switch_user($this->current_state[$source_id]['user_id']);
             
 			// Reverse array to make sure that the latest item is also the newest
 			$to_post = array_reverse($to_post);
