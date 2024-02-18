@@ -6,3 +6,5 @@ services:
             - '@config'
         tags:
             - { name: event.listener }
+    vlad.image_convert.pngconvert:
+        class: vlad\image_convert\core\pngconvert

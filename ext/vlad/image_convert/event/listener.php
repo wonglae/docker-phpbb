@@ -1,31 +1,31 @@
 <?php
 /**
- *
- * @package phpBB Extension - Image convert
- * @copyright (c) 2017 Vlad
- * @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
- *
- */
+*
+* @package phpBB Extension - Image convert
+* @copyright (c) 2017 Vlad
+* @license http://opensource.org/licenses/gpl-2.0.php GNU General Public License v2
+*
+*/
 namespace vlad\image_convert\event;
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 /**
- * Event listener
- */
+* Event listener
+*/
 class listener implements EventSubscriberInterface
 {
-	/**
-	 * Assign functions defined in this class to event listeners in the core
-	 *
-	 * @return array
-	 * @static
-	 * @access public
-	 */
+/**
+* Assign functions defined in this class to event listeners in the core
+*
+* @return array
+* @static
+* @access public
+*/
 	static public function getSubscribedEvents()
 	{
 		return array(
-			'core.modify_uploaded_file' => array('upload_image_convert', 1),
+			'core.modify_uploaded_file'			=> array ('upload_image_convert', 1),
 		);
 	}
 
@@ -36,12 +36,13 @@ class listener implements EventSubscriberInterface
 	protected $phpbb_root_path;
 
 	/**
-	 * Constructor
-	 */
+	* Constructor
+	*/
 	public function __construct(
 		$phpbb_root_path,
 		\phpbb\config\config $config
-	) {
+                )
+	{
 		$this->phpbb_root_path = $phpbb_root_path;
 		$this->config = $config;
 	}
@@ -51,23 +52,54 @@ class listener implements EventSubscriberInterface
 		$is_image = $event['is_image'];
 		$filedata = $event['filedata'];
 		$destination_file = $this->phpbb_root_path . $this->config['upload_path'] . '/' . $filedata['physical_filename'];
-		if ($is_image) {
-			if (function_exists('exif_imagetype') && ($filedata['extension'] == 'png')) {
-				$source = imagecreatefrompng($destination_file);
-				$image = imagecreatetruecolor(imagesx($source), imagesy($source));
-				$white = imagecolorallocate($image, 255, 255, 255);
-				imagefill($image, 0, 0, $white);
-				imagecopy($image, $source, 0, 0, 0, 0, imagesx($image), imagesy($image));
+		if ($is_image)
+		{
+			// Modify to webp by Siava (begin)
+			if (function_exists('exif_imagetype') && ($filedata['extension'] == 'jpg'))
+			{
+				$image = imagecreatefromjpeg($destination_file);
 				unlink($destination_file);
-				imagejpeg($image, $destination_file, 85);
+				imagewebp($image, $destination_file, 100);
 				imagedestroy($image);
-				imagedestroy($source);
 				$namefile = substr($filedata['real_filename'], 0, -3);
-				$filedata['real_filename'] = $namefile . 'jpg';
-				$filedata['extension'] = 'jpg';
-				$filedata['mimetype'] = 'image/jpeg';
+				$filedata['real_filename'] = $namefile.'webp';
+				$filedata['extension'] = 'webp';
+				$filedata['mimetype'] = 'image/webp';
 				$event['filedata'] = $filedata;
 			}
+			if (function_exists('exif_imagetype') && ($filedata['extension'] == 'png'))
+			{
+				$image = imagecreatefrompng($destination_file);
+				@imagepalettetotruecolor($image);
+				@imagealphablending($image, true);
+				@imagesavealpha($image, true);
+				unlink($destination_file);
+				imagewebp($image, $destination_file, 100);
+				imagedestroy($image);
+				$namefile = substr($filedata['real_filename'], 0, -3);
+				$filedata['real_filename'] = $namefile.'webp';
+				$filedata['extension'] = 'webp';
+				$filedata['mimetype'] = 'image/webp';
+				$event['filedata'] = $filedata;
+			}
+/*			
+			if (function_exists('exif_imagetype') && ($filedata['extension'] == 'gif'))
+			{
+				$image = imagecreatefromgif($destination_file);
+				@imagepalettetotruecolor($image);
+				@imagealphablending($image, true);
+				@imagesavealpha($image, true);
+				unlink($destination_file);
+				imagewebp($image, $destination_file, 100);
+				imagedestroy($image);
+				$namefile = substr($filedata['real_filename'], 0, -3);
+				$filedata['real_filename'] = $namefile.'webp';
+				$filedata['extension'] = 'webp';
+				$filedata['mimetype'] = 'image/webp';
+				$event['filedata'] = $filedata;
+			}
+			// Modify to webp by Siava (end)
+*/
 		}
 	}
 }
