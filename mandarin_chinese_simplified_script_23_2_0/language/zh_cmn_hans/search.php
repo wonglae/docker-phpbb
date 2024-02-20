@@ -110,7 +110,7 @@ $lang = array_merge($lang, array(
 	'SORT_DESCENDING'			=> '降序',
 	'SORT_FORUM'				=> '版面',
 	'SORT_POST_SUBJECT'			=> '帖子标题',
-	'SORT_TIME'					=> '发表时间',
+	'SORT_TIME'					=> '最新文章时间',
 	'SPHINX_SEARCH_FAILED'		=> '搜索失败： %s',
 	'SPHINX_SEARCH_FAILED_LOG'	=> '对不起，搜索无法执行，更多有关信息已被记载于错误日志。',
 
