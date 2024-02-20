@@ -12,23 +12,31 @@ class pngconvert
 {
 	public function pngconvert($destination_file, $filedata)
     {
-        if (function_exists('exif_imagetype') && ($filedata['extension'] == 'png'))
-        {
-		    $source = imagecreatefrompng($destination_file);
-            $image = imagecreatetruecolor(imagesx($source), imagesy($source));
-            $white = imagecolorallocate($image, 255, 255, 255);
-            imagefill($image, 0, 0, $white);
-            imagecopy($image, $source, 0, 0, 0, 0, imagesx($image), imagesy($image));
+        if (function_exists('exif_imagetype') && ($filedata['extension'] == 'jpg')) {
+            $image = imagecreatefromjpeg($destination_file);
             unlink($destination_file);
-            imagejpeg($image, $destination_file, 100);
+            imagewebp($image, $destination_file, 100);
             imagedestroy($image);
-            imagedestroy($source);
             $namefile = substr($filedata['real_filename'], 0, -3);
-            $filedata['real_filename'] = $namefile.'jpg';
-            $filedata['extension'] = 'jpg';
-            $filedata['mimetype'] = 'image/jpeg';
+            $filedata['real_filename'] = $namefile . 'webp';
+            $filedata['extension'] = 'webp';
+            $filedata['mimetype'] = 'image/webp';
             return $filedata;
-	    }
+        }
+        if (function_exists('exif_imagetype') && ($filedata['extension'] == 'png')) {
+            $image = imagecreatefrompng($destination_file);
+            @imagepalettetotruecolor($image);
+            @imagealphablending($image, true);
+            @imagesavealpha($image, true);
+            unlink($destination_file);
+            imagewebp($image, $destination_file, 100);
+            imagedestroy($image);
+            $namefile = substr($filedata['real_filename'], 0, -3);
+            $filedata['real_filename'] = $namefile . 'webp';
+            $filedata['extension'] = 'webp';
+            $filedata['mimetype'] = 'image/webp';
+            return $filedata;
+        }
         return $filedata;
     }
 }
