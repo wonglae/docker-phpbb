@@ -223,7 +223,8 @@ class otp extends abstract_module
 		$secret = $this->otp->generateSecret();
 		$QR = $this->otp_helper->generateKeyURI('totp', $secret, $this->user->data['username'], generate_board_url(), 0, 'sha1');
 		$this->template->assign_vars(array(
-			'TFA_QR_CODE'				=> 'https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl=' . $QR,
+//			'TFA_QR_CODE'				=> 'https://chart.googleapis.com/chart?chs=200x200&chld=M|0&cht=qr&chl=' . $QR,
+			'TFA_QR_CODE'				=> 'https://api.qrserver.com/v1/create-qr-code/?data=' . $QR . '&amp;size=200x200"',
 			'TFA_SECRET'				=> $secret,
 			'L_TFA_ADD_OTP_KEY_EXPLAIN'	=> $this->user->lang('TFA_ADD_OTP_KEY_EXPLAIN', $secret),
 			'S_HIDDEN_FIELDS_MODULE'	=> build_hidden_fields(array(
