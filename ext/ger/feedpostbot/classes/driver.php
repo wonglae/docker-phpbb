@@ -799,9 +799,10 @@ class driver
 			"/\<p(.*?)\>(.*?)\<\/p\>/is" => "\n$2\n",
 			"/[\s]*\<br(.*?)\>[\s]*/is" => "\n",
 			"/\<strong(.*?)\>(.*?)\<\/strong\>/is" => "[b]$2[/b]",
-            '/<a(.+?)href=["\']?([^"\'>]+)["\']?(.*?)>(.*?)\<\/a\>/is' => "[url=$2]$4[/url]",
+			'/<a(.+?)href=["\']?([^"\'>]+)["\']?(.*?)>(.*?)\<\/a\>/is' => "[url=$2]$4[/url]",
 			'/\<iframe (.*?)src=["\']?([^"\'>]+)["\']?(.*?)<\/iframe\>/is' => "\n$2\n",
 			'/(https:\/\/player.bilibili.com\/(.*))&autoplay=0/i' => "[iframe w=800 h=450]$1&autoplay=1[/iframe]",
+			'/(https:\/\/www.bilibili.com\/(.*))&autoplay=0/i' => "[iframe w=800 h=450]$1&autoplay=1[/iframe]",
 			'/\n{3,}/s' => "\n\n",
 		);
 
