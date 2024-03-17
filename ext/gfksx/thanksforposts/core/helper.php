@@ -983,12 +983,13 @@ class helper
 		}
 	}
 
-	public function get_addtional_rank_value($user_id)
+	public function get_addtional_rank_value($user_id, $user_warning)
 	{
+		error_log('get_addtional_rank_value ' . $user_warning, 0);
 		$received_thanks_count = $this->get_received_thanks_count($user_id);
 		$given_thanks_count = $this->get_given_thanks_count($user_id);
 		$checkin_count = $this->get_checkin_count($user_id);
 		// The value is evaluated with rank's min value
-		return $given_thanks_count + $received_thanks_count * 3 + $checkin_count * 10;
+		return $given_thanks_count + $received_thanks_count * 3 + $checkin_count * 10 - $user_warning * 100;
 	}
 }

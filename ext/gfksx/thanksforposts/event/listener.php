@@ -133,10 +133,11 @@ class listener implements EventSubscriberInterface
 	{
 		$user_data = $event['user_data'];
 		$user_posts = $event['user_posts'];
+		$user_warning = $user_data['user_warnings'];
 		if (empty($user_data['user_rank']))
 		{
 			$user_id = $user_data['user_id'];
-			$user_rank_weighting = $this->helper->get_addtional_rank_value($user_id);
+			$user_rank_weighting = $this->helper->get_addtional_rank_value($user_id, $user_warning);
 			// The value is evaluated with rank's min value
 			$event['user_posts'] = $user_posts + $user_rank_weighting;
 		}
@@ -178,7 +179,8 @@ class listener implements EventSubscriberInterface
 		}
 
 		$user_posts = $member['user_posts'];
-		$user_rank_weighting = $this->helper->get_addtional_rank_value($user_id);
+		$user_warning = $member['user_warnings'];
+		$user_rank_weighting = $this->helper->get_addtional_rank_value($user_id, $user_warning);
 		error_log('viewforum_modify_topicrow ' . $user_posts . ' ' . $user_rank_weighting, 0);
 		$this->template->assign_vars([
 			'S_USER_RANK_VALUE' => $user_posts + $user_rank_weighting,
@@ -241,10 +243,11 @@ class listener implements EventSubscriberInterface
 
 		$user_rank = $this->user->data['user_rank'];
 		$user_id = $this->user->data['user_id'];
+		$user_warning = $this->user->data['user_warnings'];
 
 		if (empty($user_rank))
 		{
-			$user_rank_weighting = $this->helper->get_addtional_rank_value($user_id);
+			$user_rank_weighting = $this->helper->get_addtional_rank_value($user_id, $user_warning);
 			$this->template->assign_vars(array(
 				'S_USER_RANK_WEIGHTING' => $user_rank_weighting,
 			));
