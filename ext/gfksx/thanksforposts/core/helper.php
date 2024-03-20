@@ -209,6 +209,14 @@ class helper
 		{
 			if ($row['poster_id'] != $user_id && $row['poster_id'] == $to_id && !$this->already_thanked($post_id, $user_id) && ($this->auth->acl_get('f_thanks', $row['forum_id']) || (!$row['forum_id'] && $this->config['thanks_global_post'])) && $from_id == $user_id)
 			{
+				$current_time = time();
+				$last_post_time = $this->user->data['user_lastpost_time'];
+				if ($last_post_time && ($current_time - $last_post_time) < intval($this->config['flood_interval'])) {
+					trigger_error($this->language->lang('FLOOD_ERROR') . '<br /><br />' . $this->language->lang('RETURN_POST', '<a href="' . append_sid("{$this->phpbb_root_path}viewtopic.$this->php_ext", 'f=' . $forum_id . '&amp;p=' . $post_id . '#p' . $post_id) . '">', '</a>'));
+				}
+
+				$this->db->sql_transaction('begin');
+
 				$thanks_data = [
 					'user_id'		=> (int) $this->user->data['user_id'],
 					'post_id'		=> $post_id,
@@ -228,6 +236,14 @@ class helper
 				]);
 
 				$this->add_notification($thanks_data);
+
+				// Update bumper's time of the last posting to prevent flood
+				$sql = 'UPDATE ' . USERS_TABLE . "
+					SET user_lastpost_time = $current_time
+					WHERE user_id = " . $this->user->data['user_id'];
+				$this->db->sql_query($sql);
+
+				$this->db->sql_transaction('commit');
 
 				if (!empty($redirect_url))
 				{

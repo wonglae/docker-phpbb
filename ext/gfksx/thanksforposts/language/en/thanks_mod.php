@@ -121,4 +121,5 @@ $lang = array_merge($lang, [
 	'TOPLIST'					=> 'Posts toplist',
 	'TOOLTIP_THANKS_REPLY' => 'Say Thanks to the author of the post and post a reply',
 	'BUTTON_THANKS_REPLY' => 'Thanks & Reply',
+	'FLOOD_ERROR' => 'You cannot make another thanks so soon after your last.',
 ]);

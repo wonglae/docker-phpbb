@@ -121,4 +121,5 @@ $lang = array_merge($lang, [
 	'TOPLIST'													=> '帖子排行榜',
 	'TOOLTIP_THANKS_REPLY' 						=> '点赞作者并且回复帖子',
 	'BUTTON_THANKS_REPLY'							=> '点赞并回复',
+	'FLOOD_ERROR' 										=> '您不能在这么短的时间内连续点赞。',
 ]);
