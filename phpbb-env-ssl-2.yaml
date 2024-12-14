@@ -1,11 +1,21 @@
-apiVersion: 2019-12-01
+apiVersion: '2021-10-01'
 location: westus
-name: phpbb_container_2
+name: phpbb_container
+identity: 
+  type: UserAssigned
+  userAssignedIdentities: {
+    '/subscriptions/570a1e43-d63b-4dee-8549-4dfecb870e90/resourcegroups/towang-forum/providers/Microsoft.ManagedIdentity/userAssignedIdentities/phpbb_id': {}
+    }
 properties:
+  osType: Linux
+  imageRegistryCredentials:
+  - server: phpbb.azurecr.io
+    identity: '/subscriptions/570a1e43-d63b-4dee-8549-4dfecb870e90/resourcegroups/towang-forum/providers/Microsoft.ManagedIdentity/userAssignedIdentities/phpbb_id'
+  restartPolicy: OnFailure
   containers:
     - name: reverse-proxy
       properties:
-        image: caddy:2.7
+        image: phpbb.azurecr.io/caddy:2.7
         ports:
           - protocol: TCP
             port: 80
@@ -14,10 +24,10 @@ properties:
         resources:
           requests:
             memoryInGB: 1.0
-            cpu: 1.0
+            cpu: 0.5
           limits:
             memoryInGB: 1.0
-            cpu: 1.0
+            cpu: 0.5
         volumeMounts:
           - name: proxy-caddyfile
             mountPath: /etc/caddy
@@ -40,13 +50,13 @@ properties:
             value: 'towang'
           - name: 'PHPBB_DB_PASSWD'
             secureValue: '...'
-        image: wonglae/phpbb:latest
+        image: phpbb.azurecr.io/wonglae/phpbb:latest
         ports:
           - protocol: TCP
             port: 8080
         resources:
           requests:
-            cpu: 1.0
+            cpu: 0.5
             memoryInGB: 2
         volumeMounts:
           - mountPath: /phpbb/www/aci/phpbb-upload/
@@ -60,7 +70,7 @@ properties:
         port: 80
       - protocol: TCP
         port: 443
-    dnsNameLabel: www-wowang-net
+    dnsNameLabel: wowang-net
   volumes:
     - name: proxy-caddyfile
       azureFile: 
@@ -87,7 +97,5 @@ properties:
         sharename: phpbb-upload
         storageAccountName: towangdatawestus
         storageAccountKey: ...
-  osType: Linux
-  restartPolicy: OnFailure
 tags: null
 type: Microsoft.ContainerInstance/containerGroups
