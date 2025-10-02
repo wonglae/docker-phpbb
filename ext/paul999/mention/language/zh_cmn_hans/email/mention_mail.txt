@@ -1,0 +1,10 @@
+主题：有人@了您
+
+您好，
+
+"{AUTHOR_NAME}"在"{SITENAME}"的"{TOPIC_TITLE}"中@了您。
+
+要查看相关帖子，请点击此链接：
+{U_LINK_TO_TOPIC}
+
+{EMAIL_SIG}
