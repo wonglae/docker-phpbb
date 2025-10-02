@@ -120,9 +120,21 @@ class main_listener implements EventSubscriberInterface
 	public function configure_bbcode($event)
 	{
 		$configurator = $event['configurator'];
+		
+		// Combined mention BBCode with conditional logic
 		$configurator->BBCodes->addCustom(
 			'[smention u={NUMBER?} g={NUMBER?}]{TEXT}[/smention]',
-			'<em class="mention">@{TEXT}</em>'
+			'<xsl:choose>
+				<xsl:when test="@u">
+					<a href="/memberlist.php?mode=viewprofile&amp;u={@u}" class="mention">@{TEXT}</a>
+				</xsl:when>
+				<xsl:when test="@g">
+					<a href="/memberlist.php?mode=group&amp;g={@g}" class="mention">@{TEXT}</a>
+				</xsl:when>
+				<xsl:otherwise>
+					<em class="mention">@{TEXT}</em>
+				</xsl:otherwise>
+			</xsl:choose>'
 		);
 	}
 
