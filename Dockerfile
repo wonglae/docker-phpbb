@@ -1,4 +1,4 @@
-FROM selim13/phpbb:3.3.9
+FROM wonglae/phpbb:3.3.15
 
 LABEL maintainer="tony.w@outlook.com"
 
