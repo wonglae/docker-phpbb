@@ -1,11 +1,8 @@
-FROM wonglae/phpbb:3.3.15
+FROM wonglae/phpbb:3.3.15-caddy
 
 LABEL maintainer="tony.w@outlook.com"
 
-RUN apk add php81-simplexml php81-exif
-
-### Apache overrides
-COPY apache2/httpd.conf /etc/apache2/
+RUN apk add php84-simplexml php84-exif
 
 ### Styles
 COPY styles/ /phpbb/www/styles/
@@ -15,6 +12,9 @@ COPY ext/ /phpbb/www/ext/
 
 ### adsense
 COPY ads.txt /phpbb/www/
+
+### Caddyfile
+COPY Caddyfile /etc/caddy/Caddyfile
 
 # WORKDIR /tmp
 
