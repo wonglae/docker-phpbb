@@ -96,7 +96,9 @@ ENV PHPBB_INSTALL= \
 # VOLUME /phpbb/www/images/avatars/upload
 
 COPY start.sh /usr/local/bin/
-CMD ["start.sh"]
+RUN dos2unix /usr/local/bin/start.sh 2>/dev/null || sed -i 's/\r$//' /usr/local/bin/start.sh && \
+    chmod +x /usr/local/bin/start.sh
+CMD ["/usr/local/bin/start.sh"]
 
 # Configure a healthcheck to validate that everything is up and running
 HEALTHCHECK --timeout=10s CMD curl --silent --fail http://127.0.0.1:9080/fpm-ping
