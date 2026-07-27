@@ -1,9 +1,9 @@
 {
 	"name": "stevotvr/groupsub",
 	"type": "phpbb-extension",
-	"description": "An extension to allow members to access usergroups via paid subscription",
+	"description": "An extension to grant permanent usergroup access through Stripe Checkout",
 	"homepage": "https://github.com/stevotvr/phpbb-groupsub",
-	"version": "1.2.0",
+	"version": "1.3.0",
 	"license": "GPL-2.0-only",
 	"authors": [
 		{
@@ -14,16 +14,16 @@
 		}
 	],
 	"require": {
-		"php": ">=5.4",
+		"php": ">=7.4",
 		"composer/installers": "~1.0"
 	},
 	"require-dev": {
 		"phing/phing": "2.*"
 	},
 	"extra": {
-		"display-name": "Group Subscription (PayPal)",
+		"display-name": "Group Subscription (Stripe)",
 		"soft-require": {
-			"phpbb/phpbb": ">=3.2.0"
+			"phpbb/phpbb": ">=3.3.0"
 		}
 	}
 }

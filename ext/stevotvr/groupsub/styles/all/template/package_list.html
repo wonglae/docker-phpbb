@@ -76,8 +76,13 @@
 					<p{% if p.S_WARNING %} style="color: #f00"{% endif %}>{% if p.EXPIRES %}{{ lang('GROUPSUB_SUBSCRIBED_UNTIL', p.EXPIRES) }}{% else %}{{ lang('GROUPSUB_SUBSCRIBED') }}{% endif %}</p>
 					<!-- {% if p.EXPIRES %}<input class="button1" type="submit" name="submit" value="{{ lang('GROUPSUB_RENEW') }}">{% endif %} -->
 	{% else %}
-					<!-- <input class="button1" type="submit" name="submit" value="{{ lang('GROUPSUB_SUBSCRIBE') }}"> -->
+		{% if p.S_CAN_BUY %}
+					<input class="button1" type="submit" name="checkout" value="{{ lang('GROUPSUB_BUY_WITH_STRIPE') }}">
+		{% else %}
+					<p style="color: #b00">{{ lang('GROUPSUB_PLAN_INVALID') }}</p>
+		{% endif %}
 	{% endif %}
+					{{ S_FORM_TOKEN }}
 				</fieldset>
 			</form>
 

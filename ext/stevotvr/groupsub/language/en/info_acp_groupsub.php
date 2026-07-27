@@ -47,4 +47,7 @@ $lang = array_merge($lang, array(
 	'ACP_USER_GROUPSUB'	=> 'Subscriptions',
 
 	'LOG_GROUPSUB_TRANS_NO_TERM'	=> 'process_transaction: failed to get term for term_id=%d',
+	'LOG_GROUPSUB_STRIPE_REVOKED'	=> '<strong>Revoked Stripe VIP payment</strong><br>Payment intent: %1$s<br>Reason: %2$s',
+	'LOG_GROUPSUB_STRIPE_WEBHOOK_ERROR' => '<strong>Stripe webhook failed</strong><br>Event: %1$s (%2$s)<br>Error: %3$s',
+	'LOG_GROUPSUB_STRIPE_CHECKOUT_ERROR' => '<strong>Stripe Checkout creation failed</strong><br>Term: %1$d<br>Error: %2$s',
 ));

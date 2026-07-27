@@ -11,18 +11,18 @@
 
 <form id="settings" method="post" action="{{ U_ACTION }}">
 	<fieldset>
-		<legend>{{ lang('ACP_GROUPSUB_SETTINGS_PAYPAL') }}</legend>
+		<legend>{{ lang('ACP_GROUPSUB_SETTINGS_STRIPE') }}</legend>
 		<dl>
-			<dt><label for="pp_sandbox">{{ lang('ACP_GROUPSUB_PP_SANDBOX') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_GROUPSUB_PP_SANDBOX_EXPLAIN') }}</span></dt>
-			<dd><label><input type="radio" id="pp_sandbox" name="pp_sandbox" value="1"{% if PP_SANDBOX %} checked{% endif %}> {{ lang('YES') }}</label><label><input type="radio" name="pp_sandbox" value="0"{% if not PP_SANDBOX %} checked{% endif %}> {{ lang('NO') }}</label></dd>
+			<dt><label for="active">{{ lang('ACP_GROUPSUB_ACTIVE') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_GROUPSUB_ACTIVE_EXPLAIN') }}</span></dt>
+			<dd><label><input type="radio" id="active" name="active" value="1"{% if ACTIVE %} checked{% endif %}> {{ lang('YES') }}</label><label><input type="radio" name="active" value="0"{% if not ACTIVE %} checked{% endif %}> {{ lang('NO') }}</label></dd>
 		</dl>
 		<dl>
-			<dt><label for="pp_sb_business">{{ lang('ACP_GROUPSUB_PP_SB_BUSINESS') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_GROUPSUB_PP_SB_BUSINESS_EXPLAIN') }}</span></dt>
-			<dd><input class="text medium" type="text" id="pp_sb_business" name="pp_sb_business" value="{{ PP_SB_BUSINESS }}"></dd>
+			<dt>{{ lang('ACP_GROUPSUB_STRIPE_SECRETS') ~ lang('COLON') }}<br><span>{{ lang('ACP_GROUPSUB_STRIPE_SECRETS_EXPLAIN') }}</span></dt>
+			<dd>{% if S_STRIPE_CONFIGURED %}<strong style="color: #228822">{{ lang('ACP_GROUPSUB_STRIPE_CONFIGURED') }}</strong>{% else %}<strong style="color: #cc0000">{{ lang('ACP_GROUPSUB_STRIPE_NOT_CONFIGURED') }}</strong>{% endif %}</dd>
 		</dl>
 		<dl>
-			<dt><label for="pp_business">{{ lang('ACP_GROUPSUB_PP_BUSINESS') ~ lang('COLON') }}</label><br><span>{{ lang('ACP_GROUPSUB_PP_BUSINESS_EXPLAIN') }}</span></dt>
-			<dd><input class="text medium" type="text" id="pp_business" name="pp_business" value="{{ PP_BUSINESS }}"></dd>
+			<dt>{{ lang('ACP_GROUPSUB_STRIPE_MODE') ~ lang('COLON') }}</dt>
+			<dd>{% if not S_STRIPE_CONFIGURED %}&mdash;{% elseif S_STRIPE_TEST_MODE %}{{ lang('ACP_GROUPSUB_STRIPE_TEST') }}{% else %}{{ lang('ACP_GROUPSUB_STRIPE_LIVE') }}{% endif %}</dd>
 		</dl>
 	</fieldset>
 	<fieldset>

@@ -47,4 +47,7 @@ $lang = array_merge($lang, array(
 	'ACP_USER_GROUPSUB'						=> '订阅',
 
 	'LOG_GROUPSUB_TRANS_NO_TERM'	=> 'process_transaction: 无法获取 term_id=%d 的条款。',
+	'LOG_GROUPSUB_STRIPE_REVOKED'	=> '<strong>已撤销 Stripe VIP 付款</strong><br>付款意图：%1$s<br>原因：%2$s',
+	'LOG_GROUPSUB_STRIPE_WEBHOOK_ERROR' => '<strong>Stripe Webhook 处理失败</strong><br>事件：%1$s（%2$s）<br>错误：%3$s',
+	'LOG_GROUPSUB_STRIPE_CHECKOUT_ERROR' => '<strong>Stripe 结账创建失败</strong><br>期限：%1$d<br>错误：%2$s',
 ));

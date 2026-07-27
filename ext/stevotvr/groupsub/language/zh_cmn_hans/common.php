@@ -51,14 +51,16 @@ $lang = array_merge($lang, array(
 	'GROUPSUB_SUBSCRIBED'						=> '您已经永久订阅',
 	'GROUPSUB_SUBSCRIBED_UNTIL'			=> '您已订阅至 %s',
 	'GROUPSUB_CONFIRM'							=> '确认订阅 %s',
+	'GROUPSUB_BUY_WITH_STRIPE'				=> '购买终身 VIP',
+	'GROUPSUB_ALREADY_SUBSCRIBED'			=> '您已经拥有此终身会员资格。',
+	'GROUPSUB_PLAN_INVALID'					=> 'VIP 套餐必须设置为人民币 100 元、无限期。',
+	'GROUPSUB_STRIPE_NOT_CONFIGURED'		=> 'Stripe 尚未配置，付款功能暂时不可用。',
+	'GROUPSUB_STRIPE_UNAVAILABLE'			=> 'Stripe 结账暂时不可用，请稍后重试。',
 
 	'GROUPSUB_RETURN_TITLE'					=> '谢谢',
 	'GROUPSUB_RETURN'								=> '已订阅',
 	'GROUPSUB_RETURN_UNLIMITED'			=> '<strong>无限期</strong>',
 	'GROUPSUB_RETURN_MESSAGE'				=> '您已经订阅了<strong>%1$s</strong>，为期%2$s。请等待几分钟，以便处理您的付款并激活您的订阅。',
-
-	'GROUPSUB_PP_LOCALE'						=> 'en_US',
-	'GROUPSUB_PP_BUY_NOW'						=> '立即购买',
 
 	'GROUPSUB_DECIMAL_SEPARATOR'		=> '.',
 	'GROUPSUB_THOUSANDS_SEPARATOR'	=> ',',

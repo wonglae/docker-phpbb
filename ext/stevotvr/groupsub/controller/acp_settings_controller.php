@@ -11,6 +11,7 @@
 namespace stevotvr\groupsub\controller;
 
 use phpbb\config\db_text;
+use stevotvr\groupsub\stripe\client_interface;
 
 /**
  * Group Subscription settings ACP controller.
@@ -22,14 +23,18 @@ class acp_settings_controller extends acp_base_controller implements acp_setting
 	 */
 	protected $config_text;
 
+	/** @var \stevotvr\groupsub\stripe\client_interface */
+	protected $stripe;
+
 	/**
 	 * Set up the controller.
 	 *
 	 * @param \phpbb\config\db_text $config_text
 	 */
-	public function setup(db_text $config_text)
+	public function setup(db_text $config_text, client_interface $stripe)
 	{
 		$this->config_text = $config_text;
+		$this->stripe = $stripe;
 	}
 
 	/**
@@ -61,9 +66,7 @@ class acp_settings_controller extends acp_base_controller implements acp_setting
 			}
 
 			$data = array(
-				'pp_sandbox'		=> $this->request->variable('pp_sandbox', true),
-				'pp_sb_business'	=> $this->request->variable('pp_sb_business', ''),
-				'pp_business'		=> $this->request->variable('pp_business', ''),
+				'active'			=> $this->request->variable('active', false),
 				'notify_admins'		=> $this->request->variable('notify_admins', false),
 				'collapse_terms'	=> max(2, $this->request->variable('collapse_terms', 0)),
 				'currency'			=> $this->request->variable('currency', ''),
@@ -101,6 +104,10 @@ class acp_settings_controller extends acp_base_controller implements acp_setting
 			{
 				$errors[] = 'ACP_GROUPSUB_ERROR_CURRENCY';
 			}
+			if ($data['active'] && !$this->stripe->is_configured())
+			{
+				$errors[] = 'ACP_GROUPSUB_ERROR_STRIPE_CONFIG';
+			}
 
 			if (!count($errors))
 			{
@@ -108,8 +115,6 @@ class acp_settings_controller extends acp_base_controller implements acp_setting
 				{
 					$this->config->set('stevotvr_groupsub_' . $key, $value);
 				}
-
-				$this->config->set('stevotvr_groupsub_active', !$data['pp_sandbox'] && $data['pp_business']);
 
 				trigger_error($this->language->lang('ACP_GROUPSUB_SETTINGS_SAVED') . adm_back_link($this->u_action));
 			}
@@ -135,9 +140,9 @@ class acp_settings_controller extends acp_base_controller implements acp_setting
 			'S_FOOTER_SMILIES_CHECKED'		=> $footer_options & OPTION_FLAG_SMILIES,
 			'S_FOOTER_MAGIC_URL_CHECKED'	=> $footer_options & OPTION_FLAG_LINKS,
 
-			'PP_SANDBOX'		=> $this->config['stevotvr_groupsub_pp_sandbox'],
-			'PP_SB_BUSINESS'	=> $this->config['stevotvr_groupsub_pp_sb_business'],
-			'PP_BUSINESS'		=> $this->config['stevotvr_groupsub_pp_business'],
+			'ACTIVE'			=> (bool) $this->config['stevotvr_groupsub_active'],
+			'S_STRIPE_CONFIGURED' => $this->stripe->is_configured(),
+			'S_STRIPE_TEST_MODE' => $this->stripe->is_test_mode(),
 			'CURRENCY'			=> $this->config['stevotvr_groupsub_currency'],
 			'NOTIFY_ADMINS'		=> $this->config['stevotvr_groupsub_notify_admins'],
 			'HEADER'			=> $header['text'],

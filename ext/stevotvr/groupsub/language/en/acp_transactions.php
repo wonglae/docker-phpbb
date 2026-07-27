@@ -42,6 +42,7 @@ $lang = array_merge($lang, array(
 
 	'ACP_GROUPSUB_TRANS_ID'		=> 'ID',
 	'ACP_GROUPSUB_TRANS_TYPE'	=> 'Type',
+	'ACP_GROUPSUB_TRANS_STATUS'	=> 'Status',
 	'ACP_GROUPSUB_AMOUNT'		=> 'Amount',
 	'ACP_GROUPSUB_TIME'			=> 'Time',
 	'ACP_GROUPSUB_LIVE'			=> 'Live',

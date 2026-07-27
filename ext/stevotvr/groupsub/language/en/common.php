@@ -51,14 +51,16 @@ $lang = array_merge($lang, array(
 	'GROUPSUB_SUBSCRIBED'		=> 'You are subscribed forever',
 	'GROUPSUB_SUBSCRIBED_UNTIL'	=> 'You are subscribed until %s',
 	'GROUPSUB_CONFIRM'			=> 'Confirm subscription to %s',
+	'GROUPSUB_BUY_WITH_STRIPE'	=> 'Buy lifetime VIP',
+	'GROUPSUB_ALREADY_SUBSCRIBED'	=> 'You already have this lifetime membership.',
+	'GROUPSUB_PLAN_INVALID'		=> 'The VIP plan must be configured as CNY 100 with unlimited duration.',
+	'GROUPSUB_STRIPE_NOT_CONFIGURED' => 'Payments are temporarily unavailable because Stripe is not configured.',
+	'GROUPSUB_STRIPE_UNAVAILABLE'	=> 'Stripe Checkout is temporarily unavailable. Please try again later.',
 
 	'GROUPSUB_RETURN_TITLE'		=> 'Thank You',
 	'GROUPSUB_RETURN'			=> 'Subscribed',
 	'GROUPSUB_RETURN_UNLIMITED'	=> '<strong>unlimited</strong> time',
 	'GROUPSUB_RETURN_MESSAGE'	=> 'You have subscribed to <strong>%1$s</strong> for %2$s. Please allow a few minutes for your payment to be processed and your subscription to be activated.',
-
-	'GROUPSUB_PP_LOCALE'	=> 'en_US',
-	'GROUPSUB_PP_BUY_NOW'	=> 'Buy Now',
 
 	'GROUPSUB_DECIMAL_SEPARATOR'	=> '.',
 	'GROUPSUB_THOUSANDS_SEPARATOR'	=> ',',

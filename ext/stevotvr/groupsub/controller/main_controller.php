@@ -16,6 +16,7 @@ use phpbb\config\db_text;
 use phpbb\controller\helper;
 use phpbb\exception\http_exception;
 use phpbb\language\language;
+use phpbb\log\log_interface;
 use phpbb\request\request_interface;
 use phpbb\template\template;
 use phpbb\user;
@@ -23,6 +24,8 @@ use stevotvr\groupsub\operator\currency_interface;
 use stevotvr\groupsub\operator\package_interface;
 use stevotvr\groupsub\operator\subscription_interface;
 use stevotvr\groupsub\operator\unit_helper_interface;
+use stevotvr\groupsub\stripe\client_interface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
@@ -90,6 +93,12 @@ class main_controller
 	 */
 	protected $user;
 
+	/** @var \stevotvr\groupsub\stripe\client_interface */
+	protected $stripe;
+
+	/** @var \phpbb\log\log_interface */
+	protected $log;
+
 	/**
 	 * The root phpBB path.
 	 *
@@ -117,7 +126,7 @@ class main_controller
 	 * @param \stevotvr\groupsub\operator\unit_helper_interface  $unit_helper
 	 * @param \phpbb\user                                        $user
 	 */
-	public function __construct(auth $auth, config $config, db_text $config_text, currency_interface $currency, helper $helper, language $language, package_interface $pkg_operator, request_interface $request, subscription_interface $sub_operator, template $template, unit_helper_interface $unit_helper, user $user)
+	public function __construct(auth $auth, config $config, db_text $config_text, currency_interface $currency, helper $helper, language $language, package_interface $pkg_operator, request_interface $request, subscription_interface $sub_operator, template $template, unit_helper_interface $unit_helper, user $user, client_interface $stripe, log_interface $log)
 	{
 		$this->auth = $auth;
 		$this->config = $config;
@@ -131,6 +140,8 @@ class main_controller
 		$this->template = $template;
 		$this->unit_helper = $unit_helper;
 		$this->user = $user;
+		$this->stripe = $stripe;
+		$this->log = $log;
 	}
 
 	/**
@@ -165,6 +176,8 @@ class main_controller
 			redirect(append_sid($this->root_path . 'ucp.' . $this->php_ext, 'mode=login&amp;redirect=' . $u_redirect));
 		}
 
+		add_form_key('stevotvr_groupsub_checkout');
+
 		$this->template->assign_vars(array(
 			'U_ACTION'	=> $this->helper->route('stevotvr_groupsub_main', array('name' => $name)),
 		));
@@ -184,11 +197,16 @@ class main_controller
 			'FOOTER'	=> $footer,
 		));
 
-		// $term_id = $this->request->variable('term_id', 0);
-		// if ($term_id)
-		// {
-		// 	return $this->select_term($term_id);
-		// }
+		$term_id = $this->request->variable('term_id', 0);
+		if ($term_id && $this->request->is_set_post('checkout'))
+		{
+			if (!check_form_key('stevotvr_groupsub_checkout'))
+			{
+				throw new http_exception(400, 'FORM_INVALID');
+			}
+
+			return $this->start_checkout($term_id);
+		}
 
 		return $this->list_packages($name);
 	}
@@ -216,10 +234,17 @@ class main_controller
 
 		foreach ($packages as $package)
 		{
+			$can_buy = false;
+			foreach ($package['terms'] as $term)
+			{
+				$can_buy = $can_buy || $this->is_vip_term($term);
+			}
+
 			$vars = array(
 				'ID'	=> $package['package']->get_id(),
 				'NAME'	=> $package['package']->get_name(),
 				'DESC'	=> $package['package']->get_desc_for_display(),
+				'S_CAN_BUY' => $can_buy,
 			);
 
 			if (isset($subscriptions[$package['package']->get_id()]))
@@ -250,50 +275,104 @@ class main_controller
 	}
 
 	/**
-	 * Show the details of a package term.
+	 * Create a Stripe-hosted Checkout Session for the permanent VIP term.
 	 *
 	 * @param int $term_id The term ID
 	 *
 	 * @return \Symfony\Component\HttpFoundation\Response A Symfony Response object
 	 */
-	protected function select_term($term_id)
+	protected function start_checkout($term_id)
 	{
-		$sandbox = $this->config['stevotvr_groupsub_pp_sandbox'];
-		$business = $this->config[$sandbox ? 'stevotvr_groupsub_pp_sb_business' : 'stevotvr_groupsub_pp_business'];
-
 		$term = $this->pkg_operator->get_package_term($term_id);
 		if (!$term)
 		{
 			throw new http_exception(404, 'PAGE_NOT_FOUND');
 		}
 
-		$price = $term['term']->get_price();
-		$currency = $term['term']->get_currency();
+		if (!$this->is_vip_term($term['term']))
+		{
+			throw new http_exception(400, 'GROUPSUB_PLAN_INVALID');
+		}
 
-		$u_ipn = $this->helper->route('stevotvr_groupsub_ipn', array(), true, false, UrlGeneratorInterface::ABSOLUTE_URL);
-		$return_params = array('term_id' => $term['term']->get_id());
-		$u_return = $this->helper->route('stevotvr_groupsub_return', $return_params, true, false, UrlGeneratorInterface::ABSOLUTE_URL);
-		$u_main = $this->helper->route('stevotvr_groupsub_main', array(), true, false, UrlGeneratorInterface::ABSOLUTE_URL);
+		$subscriptions = $this->sub_operator->get_user_subscriptions($this->user->data['user_id']);
+		if (isset($subscriptions[$term['package']->get_id()]))
+		{
+			throw new http_exception(409, 'GROUPSUB_ALREADY_SUBSCRIBED');
+		}
 
-		$this->template->assign_vars(array(
-			'S_PP_SANDBOX'	=> $sandbox,
+		if (!$this->stripe->is_configured())
+		{
+			throw new http_exception(503, 'GROUPSUB_STRIPE_NOT_CONFIGURED');
+		}
 
-			'USER_ID'		=> $this->user->data['user_id'],
-			'PP_BUSINESS'	=> $business,
+		$return_url = $this->helper->route('stevotvr_groupsub_return', array('term_id' => $term_id), true, false, UrlGeneratorInterface::ABSOLUTE_URL);
+		$return_url .= (strpos($return_url, '?') === false ? '?' : '&') . 'session_id={CHECKOUT_SESSION_ID}';
+		$cancel_url = $this->helper->route('stevotvr_groupsub_main', array(), true, false, UrlGeneratorInterface::ABSOLUTE_URL);
 
-			'PKG_NAME'				=> $term['package']->get_name(),
-			'PKG_DESC'				=> $term['package']->get_desc_for_display(),
-			'TERM_ID'				=> $term['term']->get_id(),
-			'TERM_PRICE'			=> $this->currency->format_value($currency, $price, false, false),
-			'TERM_CURRENCY'			=> $currency,
-			'TERM_DISPLAY_PRICE'	=> $this->currency->format_price($currency, $price),
-			'TERM_LENGTH'			=> $term['term']->get_length() ? $this->unit_helper->get_formatted_timespan($term['term']->get_length()) : 0,
+		$user_id = (int) $this->user->data['user_id'];
+		$metadata = array(
+			'phpbb_user_id' => (string) $user_id,
+			'groupsub_term_id' => (string) $term_id,
+		);
+		$product_data = array(
+			'name' => $term['package']->get_name(),
+			'description' => 'Lifetime VIP membership',
+		);
+		$tax_code = getenv('STRIPE_TAX_CODE');
+		if ($tax_code !== false && preg_match('/^txcd_\d+$/', trim($tax_code)))
+		{
+			$product_data['tax_code'] = trim($tax_code);
+		}
 
-			'U_NOTIFY'			=> $u_ipn,
-			'U_RETURN'			=> $u_return,
-			'U_CANCEL_RETURN'	=> $u_main,
-		));
+		$params = array(
+			'mode' => 'payment',
+			'client_reference_id' => (string) $user_id,
+			'customer_email' => $this->user->data['user_email'],
+			'customer_creation' => 'always',
+			'success_url' => $return_url,
+			'cancel_url' => $cancel_url,
+			'automatic_tax' => array('enabled' => 'true'),
+			'billing_address_collection' => 'auto',
+			'metadata' => $metadata,
+			'payment_intent_data' => array(
+				'description' => $term['package']->get_name() . ' - lifetime access',
+				'receipt_email' => $this->user->data['user_email'],
+				'metadata' => $metadata,
+			),
+			'line_items' => array(array(
+				'quantity' => 1,
+				'price_data' => array(
+					'currency' => 'cny',
+					'unit_amount' => 10000,
+					'tax_behavior' => 'inclusive',
+					'product_data' => $product_data,
+				),
+			)),
+		);
 
-		return $this->helper->render('@stevotvr_groupsub/select_term.html', $term['package']->get_name());
+		try
+		{
+			$session = $this->stripe->create_checkout_session($params);
+		}
+		catch (\RuntimeException $e)
+		{
+			$this->log->add('critical', $user_id, $this->user->data['user_ip'], 'LOG_GROUPSUB_STRIPE_CHECKOUT_ERROR', false, array($term_id, $e->getMessage()));
+			throw new http_exception(503, 'GROUPSUB_STRIPE_UNAVAILABLE');
+		}
+
+		return new RedirectResponse($session['url'], 303);
+	}
+
+	/**
+	 * This installation intentionally sells exactly one CNY 100 permanent term.
+	 *
+	 * @param \stevotvr\groupsub\entity\term_interface $term
+	 * @return bool
+	 */
+	protected function is_vip_term($term)
+	{
+		return $term->get_currency() === 'CNY'
+			&& $term->get_price() === 10000
+			&& $term->get_length() === 0;
 	}
 }

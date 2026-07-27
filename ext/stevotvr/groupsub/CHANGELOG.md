@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.3.0
+
+- Replace PayPal Checkout/IPN with Stripe-hosted Checkout and signed webhooks
+- Add one-time CNY 100 tax-inclusive lifetime VIP fulfillment
+- Revoke the associated VIP entitlement after a full refund or dispute
+- Read Stripe credentials only from protected environment variables
+- Preserve existing subscriptions, transactions, and group memberships during migration
+
 ## 1.2.0 (12/26/20)
 
 * No changes

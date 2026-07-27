@@ -43,5 +43,5 @@ $lang = array_merge($lang, array(
 	'ACL_A_GROUPSUB_PACKAGES'						=> '可以创建或更改订阅套餐',
 	'ACL_A_GROUPSUB_SUBSCRIPTIONS'			=> '可以查看用户的订阅',
 	'ACL_A_GROUPSUB_SUBSCRIPTIONS_EDIT'	=> '可以更改或取消用户的订阅',
-	'ACL_A_GROUPSUB_TRANSACTIONS'				=> '可以查看 PayPal 交易',
+	'ACL_A_GROUPSUB_TRANSACTIONS'				=> '可以查看 Stripe 交易',
 ));

@@ -43,5 +43,5 @@ $lang = array_merge($lang, array(
 	'ACL_A_GROUPSUB_PACKAGES'			=> 'Can create or alter subscription packages',
 	'ACL_A_GROUPSUB_SUBSCRIPTIONS'		=> 'Can view users’ subscriptions',
 	'ACL_A_GROUPSUB_SUBSCRIPTIONS_EDIT'	=> 'Can alter or cancel users’ subscriptions',
-	'ACL_A_GROUPSUB_TRANSACTIONS'		=> 'Can view PayPal transactions',
+	'ACL_A_GROUPSUB_TRANSACTIONS'		=> 'Can view Stripe transactions',
 ));

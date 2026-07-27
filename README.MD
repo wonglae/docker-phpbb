@@ -1,6 +1,30 @@
 # phpBB3 docker image
 
+## Stripe VIP payments
+
+The bundled `stevotvr/groupsub` extension has been adapted for a one-time CNY 100 lifetime VIP purchase through Stripe Checkout. See [the Stripe integration guide](ext/stevotvr/groupsub/STRIPE.md) for required secrets, webhook events, Stripe Dashboard settings, and rollout checks.
+
 Lightweight, Alpine based [phpBB](https://www.phpbb.com/) docker image.
+
+## Build the image
+
+Run the build from the repository root. The image name and tag below match the
+image used by `phpbb-env-ssl-2.yaml`:
+
+```console
+docker build --pull -t phpbb.azurecr.io/wonglae/phpbb:3.3.15-caddy .
+```
+
+To publish the image to Azure Container Registry, sign in and push the same
+tag:
+
+```console
+az acr login --name phpbb
+docker push phpbb.azurecr.io/wonglae/phpbb:3.3.15-caddy
+```
+
+The build requires Docker with access to pull the base image declared in the
+`Dockerfile`.
 
 # Supported tags and respective `Dockerfile` links
 

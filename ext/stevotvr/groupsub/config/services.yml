@@ -105,6 +105,7 @@ services:
             - method: setup
               arguments:
                 - '@config_text'
+                - '@stevotvr.groupsub.stripe.client'
 
     stevotvr.groupsub.controller.acp.package:
         class: stevotvr\groupsub\controller\acp_pkgs_controller
@@ -150,13 +151,13 @@ services:
                 - '%core.php_ext%'
                 - '%core.adm_relative_path%'
 
-    stevotvr.groupsub.controller.ipn:
-        class: stevotvr\groupsub\controller\ipn_controller
+    stevotvr.groupsub.controller.stripe_webhook:
+        class: stevotvr\groupsub\controller\stripe_webhook_controller
         arguments:
-            - '@config'
-            - '@stevotvr.groupsub.operator.http_helper'
             - '@request'
+            - '@stevotvr.groupsub.stripe.client'
             - '@stevotvr.groupsub.operator.transaction'
+            - '@log'
 
     stevotvr.groupsub.controller.main:
         class: stevotvr\groupsub\controller\main_controller
@@ -173,6 +174,8 @@ services:
             - '@template'
             - '@stevotvr.groupsub.operator.unit_helper'
             - '@user'
+            - '@stevotvr.groupsub.stripe.client'
+            - '@log'
         calls:
             - method: set_path_info
               arguments:
@@ -277,8 +280,8 @@ services:
                 - '@dispatcher'
                 - '@stevotvr.groupsub.operator.subscription'
                 - '%stevotvr.groupsub.tables.trans%'
+                - '%stevotvr.groupsub.tables.stripe_events%'
                 - '%tables.users%'
 
-    stevotvr.groupsub.operator.http_helper:
-        class: stevotvr\groupsub\operator\http_helper
-        parent: stevotvr.groupsub.operator
+    stevotvr.groupsub.stripe.client:
+        class: stevotvr\groupsub\stripe\client
