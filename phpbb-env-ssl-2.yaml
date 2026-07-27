@@ -28,7 +28,7 @@ properties:
             value: 'towang'
           - name: 'PHPBB_DB_PASSWD'
             secureValue: '...'
-        image: phpbb.azurecr.io/wonglae/phpbb:3.3.15-caddy
+        image: phpbb.azurecr.io/wonglae/phpbb:3.3.17-caddy
         ports:
           - protocol: TCP
             port: 443

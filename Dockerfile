@@ -1,4 +1,4 @@
-FROM wonglae/phpbb:3.3.15-caddy
+FROM wonglae/phpbb:3.3.17-caddy
 
 LABEL maintainer="tony.w@outlook.com"
 
