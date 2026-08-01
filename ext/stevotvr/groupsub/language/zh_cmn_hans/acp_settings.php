@@ -44,7 +44,11 @@ $lang = array_merge($lang, array(
 	'ACP_GROUPSUB_ACTIVE'					=> '启用付款',
 	'ACP_GROUPSUB_ACTIVE_EXPLAIN'			=> '显示会员套餐，并允许会员进入 Stripe 结账页面。',
 	'ACP_GROUPSUB_STRIPE_SECRETS'			=> '服务器凭据',
-	'ACP_GROUPSUB_STRIPE_SECRETS_EXPLAIN'	=> 'STRIPE_SECRET_KEY 和 STRIPE_WEBHOOK_SECRET 从受保护的环境变量中读取，不会存储在 phpBB 中。',
+	'ACP_GROUPSUB_STRIPE_SECRETS_EXPLAIN'	=> '在此输入的密钥将存储在 phpBB 数据库中。仅当数据库中没有保存值时才使用环境变量。',
+	'ACP_GROUPSUB_STRIPE_SECRET_KEY'		=> 'Stripe 密钥',
+	'ACP_GROUPSUB_STRIPE_WEBHOOK_SECRET'	=> 'Stripe Webhook 签名密钥',
+	'ACP_GROUPSUB_STRIPE_SECRET_SAVED'		=> '已保存。留空可保持当前值不变。',
+	'ACP_GROUPSUB_STRIPE_SECRET_NOT_SAVED'	=> '尚未保存，请输入密钥进行配置。',
 	'ACP_GROUPSUB_STRIPE_CONFIGURED'		=> '两个 Stripe 密钥均已配置。',
 	'ACP_GROUPSUB_STRIPE_NOT_CONFIGURED'	=> 'Stripe 密钥缺失或格式不正确。',
 	'ACP_GROUPSUB_STRIPE_MODE'				=> 'API 模式',
@@ -68,5 +72,7 @@ $lang = array_merge($lang, array(
 	'ACP_GROUPSUB_GRACE_EXPLAIN'			=> '订阅结束后多少天才从组中删除用户。',
 
 	'ACP_GROUPSUB_ERROR_CURRENCY'	=> '您必须选择有效货币。',
-	'ACP_GROUPSUB_ERROR_STRIPE_CONFIG' => '配置两个 Stripe 环境密钥后才能启用付款。',
+	'ACP_GROUPSUB_ERROR_STRIPE_SECRET_KEY' => 'Stripe 密钥必须以 sk_test_、sk_live_、rk_test_ 或 rk_live_ 开头。',
+	'ACP_GROUPSUB_ERROR_STRIPE_WEBHOOK_SECRET' => 'Stripe Webhook 签名密钥必须以 whsec_ 开头。',
+	'ACP_GROUPSUB_ERROR_STRIPE_CONFIG' => '配置两个 Stripe 密钥后才能启用付款。',
 ));

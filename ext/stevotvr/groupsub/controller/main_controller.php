@@ -237,7 +237,7 @@ class main_controller
 			$can_buy = false;
 			foreach ($package['terms'] as $term)
 			{
-				$can_buy = $can_buy || $this->is_vip_term($term);
+				$can_buy = $can_buy || $this->is_checkout_term($term);
 			}
 
 			$vars = array(
@@ -275,7 +275,7 @@ class main_controller
 	}
 
 	/**
-	 * Create a Stripe-hosted Checkout Session for the permanent VIP term.
+	 * Create a Stripe-hosted Checkout Session for a configured package term.
 	 *
 	 * @param int $term_id The term ID
 	 *
@@ -289,7 +289,7 @@ class main_controller
 			throw new http_exception(404, 'PAGE_NOT_FOUND');
 		}
 
-		if (!$this->is_vip_term($term['term']))
+		if (!$this->is_checkout_term($term['term']))
 		{
 			throw new http_exception(400, 'GROUPSUB_PLAN_INVALID');
 		}
@@ -305,18 +305,21 @@ class main_controller
 			throw new http_exception(503, 'GROUPSUB_STRIPE_NOT_CONFIGURED');
 		}
 
+		$payment_reference = 'TXN-' . gmdate('Ymd') . '-' . strtoupper(bin2hex(random_bytes(4)));
 		$return_url = $this->helper->route('stevotvr_groupsub_return', array('term_id' => $term_id), true, false, UrlGeneratorInterface::ABSOLUTE_URL);
-		$return_url .= (strpos($return_url, '?') === false ? '?' : '&') . 'session_id={CHECKOUT_SESSION_ID}';
+		$return_url .= (strpos($return_url, '?') === false ? '?' : '&')
+			. 'reference=' . rawurlencode($payment_reference) . '&session_id={CHECKOUT_SESSION_ID}';
 		$cancel_url = $this->helper->route('stevotvr_groupsub_main', array(), true, false, UrlGeneratorInterface::ABSOLUTE_URL);
 
 		$user_id = (int) $this->user->data['user_id'];
 		$metadata = array(
 			'phpbb_user_id' => (string) $user_id,
 			'groupsub_term_id' => (string) $term_id,
+			'groupsub_reference' => $payment_reference,
 		);
 		$product_data = array(
 			'name' => $term['package']->get_name(),
-			'description' => 'Lifetime VIP membership',
+			'description' => 'Forum membership access',
 		);
 		$tax_code = getenv('STRIPE_TAX_CODE');
 		if ($tax_code !== false && preg_match('/^txcd_\d+$/', trim($tax_code)))
@@ -335,15 +338,15 @@ class main_controller
 			'billing_address_collection' => 'auto',
 			'metadata' => $metadata,
 			'payment_intent_data' => array(
-				'description' => $term['package']->get_name() . ' - lifetime access',
+				'description' => $term['package']->get_name() . ' - membership access',
 				'receipt_email' => $this->user->data['user_email'],
 				'metadata' => $metadata,
 			),
 			'line_items' => array(array(
 				'quantity' => 1,
 				'price_data' => array(
-					'currency' => 'cny',
-					'unit_amount' => 10000,
+					'currency' => strtolower($term['term']->get_currency()),
+					'unit_amount' => $term['term']->get_price(),
 					'tax_behavior' => 'inclusive',
 					'product_data' => $product_data,
 				),
@@ -364,15 +367,14 @@ class main_controller
 	}
 
 	/**
-	 * This installation intentionally sells exactly one CNY 100 permanent term.
+	 * A Checkout term must use a supported currency and have a positive price.
 	 *
 	 * @param \stevotvr\groupsub\entity\term_interface $term
 	 * @return bool
 	 */
-	protected function is_vip_term($term)
+	protected function is_checkout_term($term)
 	{
-		return $term->get_currency() === 'CNY'
-			&& $term->get_price() === 10000
-			&& $term->get_length() === 0;
+		return $this->currency->is_valid($term->get_currency())
+			&& $term->get_price() > 0;
 	}
 }

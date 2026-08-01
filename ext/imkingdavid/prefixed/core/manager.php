@@ -199,7 +199,7 @@ class manager
 	{
 		if ($refresh || empty($this->prefix_instances))
 		{
-			$this->load_prefix_instaces($refresh);
+			$this->load_prefix_instances($refresh);
 		}
 
 		return $this->prefix_instances;

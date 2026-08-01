@@ -48,7 +48,7 @@ class stripe_webhook_controller
 		{
 			$accepted = $this->transactions->process_stripe_event($event);
 		}
-		catch (\Exception $e)
+		catch (\Throwable $e)
 		{
 			$this->log->add('critical', ANONYMOUS, false, 'LOG_GROUPSUB_STRIPE_WEBHOOK_ERROR', false, array($event['id'], $event['type'], $e->getMessage()));
 			return new Response('', 500);

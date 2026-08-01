@@ -5,55 +5,37 @@
 	}
 }
 
-wowang.net {
-    rate_limit {
-        zone dynamic {
-            key    {client_ip}
-            events 100
-            window 5s
-            jitter 0.1
-        }
-        log_key
-    }
-        
-    reverse_proxy localhost:8080
-}
+{$PHPBB_SITE_ADDRESS:http://localhost:8080} {
+	rate_limit {
+		zone dynamic {
+			key {client_ip}
+			events 100
+			window 5s
+			jitter 0.1
+		}
+		log_key
+	}
 
-www.wowang.net {
-    rate_limit {
-        zone dynamic {
-            key    {client_ip}
-            events 100
-            window 5s
-            jitter 0.1
-        }
-        log_key
-    }
-    
-    reverse_proxy localhost:8080
-}
+	root * /phpbb/www
 
-:8080 {
-    root * /phpbb/www
+	php_fastcgi unix//run/php-fpm.sock {
+		trusted_proxies private_ranges
+		env REMOTE_ADDR {client_ip}
+	}
 
-    php_fastcgi unix//run/php-fpm.sock {
-        trusted_proxies private_ranges
-        env REMOTE_ADDR {client_ip}
-    }
+	file_server
 
-    file_server
-
-    log stdout
+	log stdout
 }
 
 :9080 {
-    root * /var/www/html/public
+	root * /var/www/html/public
 
-    php_fastcgi unix//run/php-fpm.sock {
-        trusted_proxies private_ranges
-    }
+	php_fastcgi unix//run/php-fpm.sock {
+		trusted_proxies private_ranges
+	}
 
-    file_server
+	file_server
 
-    log stdout
+	log stdout
 }

@@ -119,6 +119,7 @@ class acp_trans_controller extends acp_base_controller implements acp_trans_inte
 		{
 			$this->template->assign_block_vars('transaction', array(
 				'ID'		=> $transaction['trans_id'],
+				'REFERENCE'	=> $transaction['trans_reference'],
 				'TEST'		=> (bool) $transaction['trans_test'],
 				'STATUS'	=> $transaction['trans_status'],
 				'AMOUNT'	=> $this->currency->format_price($transaction['trans_currency'], $transaction['trans_amount']),

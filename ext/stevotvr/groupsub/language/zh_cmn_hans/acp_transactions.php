@@ -41,6 +41,7 @@ $lang = array_merge($lang, array(
 	'ACP_GROUPSUB_NO_TRANS'	=> '无交易',
 
 	'ACP_GROUPSUB_TRANS_ID'		=> 'ID',
+	'ACP_GROUPSUB_TRANS_REFERENCE'	=> '付款参考编号',
 	'ACP_GROUPSUB_TRANS_TYPE'	=> '类型',
 	'ACP_GROUPSUB_TRANS_STATUS'	=> '状态',
 	'ACP_GROUPSUB_AMOUNT'		=> '金额',

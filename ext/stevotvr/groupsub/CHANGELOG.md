@@ -3,6 +3,7 @@
 ## 1.3.0
 
 - Replace PayPal Checkout/IPN with Stripe-hosted Checkout and signed webhooks
+- Support multiple one-time package terms with dynamic prices, currencies, and durations
 - Add one-time CNY 100 tax-inclusive lifetime VIP fulfillment
 - Revoke the associated VIP entitlement after a full refund or dispute
 - Read Stripe credentials only from protected environment variables

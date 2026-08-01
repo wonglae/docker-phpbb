@@ -16,6 +16,8 @@ properties:
     - name: phpbb
       properties:
         environmentVariables:
+          - name: 'PHPBB_SITE_ADDRESS'
+            value: 'wowang.net, www.wowang.net'
           - name: 'PHPBB_DB_DRIVER'
             value: 'mysqli'
           - name: 'PHPBB_DB_HOST'
@@ -28,7 +30,7 @@ properties:
             value: 'towang'
           - name: 'PHPBB_DB_PASSWD'
             secureValue: '...'
-        image: phpbb.azurecr.io/wonglae/phpbb:3.3.17-caddy
+        image: phpbb.azurecr.io/wonglae/phpbb:3.3.17
         ports:
           - protocol: TCP
             port: 443

@@ -41,6 +41,7 @@ $lang = array_merge($lang, array(
 	'ACP_GROUPSUB_NO_TRANS'	=> 'No transactions',
 
 	'ACP_GROUPSUB_TRANS_ID'		=> 'ID',
+	'ACP_GROUPSUB_TRANS_REFERENCE'	=> 'Payment reference',
 	'ACP_GROUPSUB_TRANS_TYPE'	=> 'Type',
 	'ACP_GROUPSUB_TRANS_STATUS'	=> 'Status',
 	'ACP_GROUPSUB_AMOUNT'		=> 'Amount',

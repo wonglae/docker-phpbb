@@ -7,7 +7,8 @@
 <table class="table1 zebra-table responsive">
 	<thead>
 		<tr>
-			<th width="16%">{{ lang('ACP_GROUPSUB_TRANS_ID') }}</th>
+			<th width="15%">{{ lang('ACP_GROUPSUB_TRANS_ID') }}</th>
+			<th width="15%">{{ lang('ACP_GROUPSUB_TRANS_REFERENCE') }}</th>
 			<th width="16%">{{ lang('ACP_GROUPSUB_TRANS_TYPE') }}</th>
 			<th width="12%">{{ lang('ACP_GROUPSUB_TRANS_STATUS') }}</th>
 			<th width="16%">{{ lang('ACP_GROUPSUB_AMOUNT') }}</th>
@@ -20,6 +21,7 @@
 {% for t in transaction %}
 		<tr>
 			<td>{{ t.ID }}</td>
+			<td>{{ t.REFERENCE ?: '-' }}</td>
 			<td>{% if t.TEST %}{{ lang('ACP_GROUPSUB_SB') }}{% else %}{{ lang('ACP_GROUPSUB_LIVE') }}{% endif %}</td>
 			<td>{{ t.STATUS }}</td>
 			<td>{{ t.AMOUNT }}</td>
@@ -29,7 +31,7 @@
 		</tr>
 {% else %}
 		<tr>
-			<td colspan="7" style="text-align: center;">{{ lang('ACP_GROUPSUB_NO_TRANS') }}</td>
+			<td colspan="8" style="text-align: center;">{{ lang('ACP_GROUPSUB_NO_TRANS') }}</td>
 		</tr>
 {% endfor %}
 	</tbody>

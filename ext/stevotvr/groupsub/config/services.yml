@@ -285,3 +285,5 @@ services:
 
     stevotvr.groupsub.stripe.client:
         class: stevotvr\groupsub\stripe\client
+        arguments:
+            - '@config_text'

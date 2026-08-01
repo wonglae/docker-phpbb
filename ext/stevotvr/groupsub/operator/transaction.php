@@ -119,8 +119,10 @@ class transaction extends operator implements transaction_interface
 		$metadata = isset($session['metadata']) && is_array($session['metadata']) ? $session['metadata'] : array();
 		$user_id = isset($metadata['phpbb_user_id']) ? (int) $metadata['phpbb_user_id'] : 0;
 		$term_id = isset($metadata['groupsub_term_id']) ? (int) $metadata['groupsub_term_id'] : 0;
+		$reference = isset($metadata['groupsub_reference']) ? strtoupper(trim((string) $metadata['groupsub_reference'])) : '';
 		if ($user_id <= ANONYMOUS || $term_id <= 0
-			|| (isset($session['client_reference_id']) && (int) $session['client_reference_id'] !== $user_id))
+			|| (isset($session['client_reference_id']) && (int) $session['client_reference_id'] !== $user_id)
+			|| ($reference !== '' && !preg_match('/^(?:TXN|GS|VIP)-[0-9]{8}-[A-F0-9]{8}$/', $reference)))
 		{
 			return false;
 		}
@@ -135,7 +137,7 @@ class transaction extends operator implements transaction_interface
 		}
 
 		$term = $this->container->get('stevotvr.groupsub.entity.term')->load($term_id);
-		if (!$term || $term->get_currency() !== 'CNY' || $term->get_price() !== 10000 || $term->get_length() !== 0)
+		if (!$term || !$this->currency->is_valid($term->get_currency()) || $term->get_price() <= 0)
 		{
 			$this->log->add('critical', ANONYMOUS, false, 'LOG_GROUPSUB_TRANS_NO_TERM', false, array($term_id));
 			return false;
@@ -143,14 +145,14 @@ class transaction extends operator implements transaction_interface
 
 		$currency = isset($session['currency']) ? strtoupper($session['currency']) : '';
 		$amount = isset($session['amount_total']) ? (int) $session['amount_total'] : -1;
-		if ($currency !== 'CNY' || $amount !== 10000)
+		if ($currency !== $term->get_currency() || $amount !== $term->get_price())
 		{
 			return false;
 		}
 
 		$sub_id = $this->sub_operator->create_subscription($term, $user_id);
 		$customer = isset($session['customer']) && is_string($session['customer']) ? $session['customer'] : '';
-		$this->insert_transaction($payment_intent, $session_id, $customer, !$livemode, $amount, $currency, $user_id, $sub_id, $term_id);
+		$this->insert_transaction($payment_intent, $session_id, $reference, $customer, !$livemode, $amount, $currency, $user_id, $sub_id, $term_id);
 
 		return true;
 	}
@@ -192,11 +194,11 @@ class transaction extends operator implements transaction_interface
 
 	protected function event_processed($event_id)
 	{
-		$sql = 'SELECT 1 FROM ' . $this->events_table . "
+		$sql = 'SELECT event_id FROM ' . $this->events_table . "
 				WHERE event_id = '" . $this->db->sql_escape($event_id) . "'";
-		$this->db->sql_query($sql);
-		$processed = (bool) $this->db->sql_fetchfield();
-		$this->db->sql_freeresult();
+		$result = $this->db->sql_query($sql);
+		$processed = (bool) $this->db->sql_fetchfield('event_id', false, $result);
+		$this->db->sql_freeresult($result);
 		return $processed;
 	}
 
@@ -217,13 +219,14 @@ class transaction extends operator implements transaction_interface
 			&& strlen($value) <= 128 && preg_match('/^[A-Za-z0-9_]+$/', $value);
 	}
 
-	protected function insert_transaction($payment_intent, $session_id, $customer, $test, $amount, $currency, $user_id, $sub_id, $term_id)
+	protected function insert_transaction($payment_intent, $session_id, $reference, $customer, $test, $amount, $currency, $user_id, $sub_id, $term_id)
 	{
 		$data = array(
 			'trans_id' => $payment_intent,
 			'trans_test' => (bool) $test,
 			'trans_payer' => substr($customer, 0, 128),
 			'trans_session' => $session_id,
+			'trans_reference' => $reference,
 			'trans_status' => 'paid',
 			'trans_amount' => (int) $amount,
 			'trans_currency' => $currency,

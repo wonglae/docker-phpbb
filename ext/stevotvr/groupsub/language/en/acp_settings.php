@@ -44,7 +44,11 @@ $lang = array_merge($lang, array(
 	'ACP_GROUPSUB_ACTIVE'					=> 'Enable payments',
 	'ACP_GROUPSUB_ACTIVE_EXPLAIN'			=> 'Show packages and allow members to start Stripe Checkout.',
 	'ACP_GROUPSUB_STRIPE_SECRETS'			=> 'Server credentials',
-	'ACP_GROUPSUB_STRIPE_SECRETS_EXPLAIN'	=> 'STRIPE_SECRET_KEY and STRIPE_WEBHOOK_SECRET are read from protected environment variables and are never stored in phpBB.',
+	'ACP_GROUPSUB_STRIPE_SECRETS_EXPLAIN'	=> 'Secrets entered here are stored in the phpBB database. Environment variables are used only when a database value has not been saved.',
+	'ACP_GROUPSUB_STRIPE_SECRET_KEY'		=> 'Stripe secret key',
+	'ACP_GROUPSUB_STRIPE_WEBHOOK_SECRET'	=> 'Stripe webhook signing secret',
+	'ACP_GROUPSUB_STRIPE_SECRET_SAVED'		=> 'A value is saved. Leave this field blank to keep it unchanged.',
+	'ACP_GROUPSUB_STRIPE_SECRET_NOT_SAVED'	=> 'No value is saved. Enter a value to configure it.',
 	'ACP_GROUPSUB_STRIPE_CONFIGURED'		=> 'Both Stripe secrets are configured.',
 	'ACP_GROUPSUB_STRIPE_NOT_CONFIGURED'	=> 'Stripe secrets are missing or invalid.',
 	'ACP_GROUPSUB_STRIPE_MODE'				=> 'API mode',
@@ -68,5 +72,7 @@ $lang = array_merge($lang, array(
 	'ACP_GROUPSUB_GRACE_EXPLAIN'			=> 'The number of days after a subscription ends before removing the user from groups.',
 
 	'ACP_GROUPSUB_ERROR_CURRENCY'	=> 'You must select a valid currency.',
-	'ACP_GROUPSUB_ERROR_STRIPE_CONFIG' => 'Payments cannot be enabled until both Stripe environment secrets are configured.',
+	'ACP_GROUPSUB_ERROR_STRIPE_SECRET_KEY' => 'The Stripe secret key must start with sk_test_, sk_live_, rk_test_, or rk_live_.',
+	'ACP_GROUPSUB_ERROR_STRIPE_WEBHOOK_SECRET' => 'The Stripe webhook signing secret must start with whsec_.',
+	'ACP_GROUPSUB_ERROR_STRIPE_CONFIG' => 'Payments cannot be enabled until both Stripe secrets are configured.',
 ));

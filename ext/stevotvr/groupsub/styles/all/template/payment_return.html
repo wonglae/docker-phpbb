@@ -9,6 +9,9 @@
 	<h3>{{ lang('GROUPSUB_RETURN') }}</h3>
 
 	<p>{{ lang('GROUPSUB_RETURN_MESSAGE', PKG_NAME, TERM_LENGTH) }}</p>
+	{% if PAYMENT_REFERENCE %}
+	<p>{{ lang('GROUPSUB_RETURN_REFERENCE') }} <code>{{ PAYMENT_REFERENCE }}</code></p>
+	{% endif %}
 
 </div>
 

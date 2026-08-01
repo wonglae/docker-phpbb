@@ -9,6 +9,18 @@ namespace stevotvr\groupsub\stripe;
 
 interface client_interface
 {
+	/** @return string */
+	public function get_secret_key();
+
+	/** @return string */
+	public function get_webhook_secret();
+
+	/** @param string $value @return bool */
+	public function is_valid_secret_key($value);
+
+	/** @param string $value @return bool */
+	public function is_valid_webhook_secret($value);
+
 	/** @return bool */
 	public function is_configured();
 

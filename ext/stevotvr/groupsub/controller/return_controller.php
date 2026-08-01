@@ -92,10 +92,13 @@ class return_controller
 
 		$length = $term['term']->get_length();
 		$length = $length > 0 ? $this->unit_helper->get_formatted_timespan($length) : $this->language->lang('GROUPSUB_RETURN_UNLIMITED');
+		$reference = strtoupper(trim($this->request->variable('reference', '', true)));
+		$payment_reference = preg_match('/^(?:TXN|GS|VIP)-[0-9]{8}-[A-F0-9]{8}$/', $reference) ? $reference : '';
 
 		$this->template->assign_vars(array(
-			'PKG_NAME'		=> $term['package']->get_name(),
-			'TERM_LENGTH'	=> $length,
+			'PKG_NAME'			=> $term['package']->get_name(),
+			'TERM_LENGTH'		=> $length,
+			'PAYMENT_REFERENCE'	=> $payment_reference,
 		));
 
 		return $this->helper->render('@stevotvr_groupsub/payment_return.html', $this->language->lang('GROUPSUB_RETURN_TITLE'));

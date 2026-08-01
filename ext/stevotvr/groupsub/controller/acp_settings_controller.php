@@ -74,6 +74,11 @@ class acp_settings_controller extends acp_base_controller implements acp_setting
 				'grace'				=> max(0, $this->request->variable('grace', 0)),
 			);
 
+			$stripe_secret_key = trim($this->request->variable('stripe_secret_key', '', true));
+			$stripe_webhook_secret = trim($this->request->variable('stripe_webhook_secret', '', true));
+			$effective_secret_key = $stripe_secret_key !== '' ? $stripe_secret_key : $this->stripe->get_secret_key();
+			$effective_webhook_secret = $stripe_webhook_secret !== '' ? $stripe_webhook_secret : $this->stripe->get_webhook_secret();
+
 			$header = $this->request->variable('header', '', true);
 			$header_bbcode = $this->request->variable('header_bbcode', false);
 			$header_smilies = $this->request->variable('header_smilies', false);
@@ -104,13 +109,31 @@ class acp_settings_controller extends acp_base_controller implements acp_setting
 			{
 				$errors[] = 'ACP_GROUPSUB_ERROR_CURRENCY';
 			}
-			if ($data['active'] && !$this->stripe->is_configured())
+			if ($stripe_secret_key !== '' && !$this->stripe->is_valid_secret_key($stripe_secret_key))
+			{
+				$errors[] = 'ACP_GROUPSUB_ERROR_STRIPE_SECRET_KEY';
+			}
+			if ($stripe_webhook_secret !== '' && !$this->stripe->is_valid_webhook_secret($stripe_webhook_secret))
+			{
+				$errors[] = 'ACP_GROUPSUB_ERROR_STRIPE_WEBHOOK_SECRET';
+			}
+			if ($data['active'] && (!$this->stripe->is_valid_secret_key($effective_secret_key)
+				|| !$this->stripe->is_valid_webhook_secret($effective_webhook_secret)))
 			{
 				$errors[] = 'ACP_GROUPSUB_ERROR_STRIPE_CONFIG';
 			}
 
 			if (!count($errors))
 			{
+				if ($stripe_secret_key !== '')
+				{
+					$this->config_text->set('STRIPE_SECRET_KEY', $stripe_secret_key);
+				}
+				if ($stripe_webhook_secret !== '')
+				{
+					$this->config_text->set('STRIPE_WEBHOOK_SECRET', $stripe_webhook_secret);
+				}
+
 				foreach ($data as $key => $value)
 				{
 					$this->config->set('stevotvr_groupsub_' . $key, $value);
@@ -142,6 +165,8 @@ class acp_settings_controller extends acp_base_controller implements acp_setting
 
 			'ACTIVE'			=> (bool) $this->config['stevotvr_groupsub_active'],
 			'S_STRIPE_CONFIGURED' => $this->stripe->is_configured(),
+			'S_STRIPE_SECRET_KEY_SET' => $this->stripe->get_secret_key() !== '',
+			'S_STRIPE_WEBHOOK_SECRET_SET' => $this->stripe->get_webhook_secret() !== '',
 			'S_STRIPE_TEST_MODE' => $this->stripe->is_test_mode(),
 			'CURRENCY'			=> $this->config['stevotvr_groupsub_currency'],
 			'NOTIFY_ADMINS'		=> $this->config['stevotvr_groupsub_notify_admins'],

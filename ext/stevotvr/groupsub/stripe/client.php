@@ -11,30 +11,66 @@
 
 namespace stevotvr\groupsub\stripe;
 
+use phpbb\config\db_text;
+
 class client implements client_interface
 {
 	const CHECKOUT_SESSIONS_URI = 'https://api.stripe.com/v1/checkout/sessions';
 	const WEBHOOK_TOLERANCE = 300;
+	const SECRET_KEY_CONFIG = 'STRIPE_SECRET_KEY';
+	const WEBHOOK_SECRET_CONFIG = 'STRIPE_WEBHOOK_SECRET';
+
+	/** @var \phpbb\config\db_text */
+	protected $config_text;
+
+	public function __construct(db_text $config_text)
+	{
+		$this->config_text = $config_text;
+	}
 
 	/** @return string */
-	protected function get_secret_key()
+	public function get_secret_key()
 	{
+		$value = trim((string) $this->config_text->get(self::SECRET_KEY_CONFIG));
+		if ($value !== '')
+		{
+			return $value;
+		}
+
 		$value = getenv('STRIPE_SECRET_KEY');
 		return $value === false ? '' : trim($value);
 	}
 
 	/** @return string */
-	protected function get_webhook_secret()
+	public function get_webhook_secret()
 	{
+		$value = trim((string) $this->config_text->get(self::WEBHOOK_SECRET_CONFIG));
+		if ($value !== '')
+		{
+			return $value;
+		}
+
 		$value = getenv('STRIPE_WEBHOOK_SECRET');
 		return $value === false ? '' : trim($value);
 	}
 
 	/** @inheritDoc */
+	public function is_valid_secret_key($value)
+	{
+		return preg_match('/^(sk|rk)_(test|live)_/', trim((string) $value)) === 1;
+	}
+
+	/** @inheritDoc */
+	public function is_valid_webhook_secret($value)
+	{
+		return strpos(trim((string) $value), 'whsec_') === 0;
+	}
+
+	/** @inheritDoc */
 	public function is_configured()
 	{
-		return preg_match('/^(sk|rk)_(test|live)_/', $this->get_secret_key()) === 1
-			&& strpos($this->get_webhook_secret(), 'whsec_') === 0;
+		return $this->is_valid_secret_key($this->get_secret_key())
+			&& $this->is_valid_webhook_secret($this->get_webhook_secret());
 	}
 
 	/** @inheritDoc */
