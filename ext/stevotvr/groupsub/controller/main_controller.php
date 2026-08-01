@@ -227,7 +227,11 @@ class main_controller
 			throw new http_exception(404, 'GROUPSUB_NO_PACKAGES');
 		}
 
-		$this->template->assign_var('COLLAPSE_TERMS', $this->config['stevotvr_groupsub_collapse_terms']);
+		$this->template->assign_vars(array(
+			'COLLAPSE_TERMS' => $this->config['stevotvr_groupsub_collapse_terms'],
+			'S_PAYMENTS_ENABLED' => (bool) $this->config['stevotvr_groupsub_active']
+				&& $this->stripe->is_configured(),
+		));
 
 		$subscriptions = $this->sub_operator->get_user_subscriptions($this->user->data['user_id']);
 		$warn = $this->config['stevotvr_groupsub_warn_time'] * 86400;
