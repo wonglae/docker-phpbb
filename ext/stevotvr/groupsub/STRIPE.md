@@ -30,7 +30,7 @@ Environment variables remain supported as a fallback when a value has not been s
 2. In **Payment methods**, enable Alipay and WeChat Pay for Checkout. Card payments can remain enabled as a fallback. The code uses Stripe's dynamic payment methods, so Stripe only displays methods eligible for the account, currency, device, and customer.
 3. Create a live webhook endpoint at:
 
-   `https://www.wowang.net/groupsub/stripe/webhook`
+   `https://www.wowang.net/app.php/groupsub/stripe/webhook`
 
 4. Subscribe the endpoint to:
 

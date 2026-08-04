@@ -150,10 +150,10 @@ Keep the deployed site configured with a Stripe `sk_test_...` key during this ph
 The production-style endpoint is:
 
 ```text
-https://www.wowang.net/groupsub/stripe/webhook
+https://www.wowang.net/app.php/groupsub/stripe/webhook
 ```
 
-It must be publicly accessible over HTTPS. A browser or unsigned request can return an error because the route only accepts signed Stripe webhook requests; that does not by itself indicate a routing failure.
+It must be publicly accessible over HTTPS. The `app.php` path is required by the current wowang.net web-server configuration. The shorter `/groupsub/stripe/webhook` path renders the forum homepage with HTTP `200` instead of invoking the webhook controller, so it must not be used. A browser or unsigned request can return an error because the route only accepts signed Stripe webhook requests; that does not by itself indicate a routing failure.
 
 ### 3. Create a sandbox Dashboard destination
 
@@ -168,7 +168,7 @@ In the Stripe Dashboard:
 7. Enter:
 
    ```text
-   https://www.wowang.net/groupsub/stripe/webhook
+   https://www.wowang.net/app.php/groupsub/stripe/webhook
    ```
 
 8. Subscribe to:
@@ -211,7 +211,7 @@ The deployed sandbox test has passed only after both purchase and refund behavio
 Switch the Stripe Dashboard to live mode and create a separate live webhook destination:
 
 ```text
-https://www.wowang.net/groupsub/stripe/webhook
+https://www.wowang.net/app.php/groupsub/stripe/webhook
 ```
 
 Subscribe it to the same four events:
@@ -254,7 +254,8 @@ If practical, refund the controlled purchase and confirm the live revocation flo
 The success redirect is not fulfillment. Check Stripe CLI output locally or **Workbench > Webhooks > Event deliveries** on a deployed site.
 
 - No delivery attempt: the listener is stopped, the Dashboard destination is missing, the wrong Stripe environment is selected, or the event is not subscribed.
-- HTTP `404`: the webhook URL is incorrect. Local Docker uses `/app.php/groupsub/stripe/webhook`; the deployed public route uses `/groupsub/stripe/webhook`.
+- Forum homepage with HTTP `200`: the webhook URL omitted `app.php`; use `/app.php/groupsub/stripe/webhook` both locally and on the deployed site.
+- HTTP `404`: the webhook URL is incorrect. Local Docker and the deployed public site both use `/app.php/groupsub/stripe/webhook`.
 - HTTP `400`: the saved `whsec_...` does not match the active listener or Dashboard destination.
 - HTTP `500`: phpBB accepted the route but event processing failed; inspect phpBB administrative logs and container logs.
 - HTTP `200` with no entitlement: inspect the package term, user metadata, start action, transaction records, and phpBB logs.
