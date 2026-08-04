@@ -103,6 +103,7 @@ class listener implements EventSubscriberInterface
 	{
     $flast = $this->auth->acl_getf('f_read', true);
     $flast = array_unique(array_keys($flast));
+	$can_view_active_topics = !empty($flast);
     $flast = array_merge($flast, array(0));
 	
 //Last active topics
@@ -132,6 +133,7 @@ class listener implements EventSubscriberInterface
 	$this->db->sql_freeresult($result);
 	
 	$this->template->assign_vars(array(
+		'LASTAT_CAN_VIEW'          => $can_view_active_topics,
 		'LASTAT_TOTAL'		        => (isset($this->config['last_total'])) ? $this->config['last_total'] : '',	
 		'LASTAT_DIRECTION'		    => (!empty($this->config['lastat_direction'])) ? true : false,
 		'LASTAT_TYPE'			    => (!empty($this->config['lastat_type'])) ? true : false,
